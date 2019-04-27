@@ -60,9 +60,9 @@ public abstract class BetterGuiScreen extends GuiScreen {
 	@Override
 	public final void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		// TODO Auto-generated method stub
-		
-		super.drawScreen(mouseX, mouseY, partialTicks);
+
 		drawDefaultBackground();
+		super.drawScreen(mouseX, mouseY, partialTicks);
 		for(IGuiComponent comp : components) {
 			
 			if(comp instanceof GuiTextField) {
@@ -74,21 +74,24 @@ public abstract class BetterGuiScreen extends GuiScreen {
 			if(comp instanceof GuiSlider) {
 				((GuiSlider)comp).drawButton(mc, mouseX, mouseY, partialTicks);
 			}
-			if(comp.canHaveTooltip() && isHovered(comp)) {
+			if(comp.canHaveTooltip() && isHovered(comp, mouseX, mouseY) && comp.isVisible()) {
 				
 				ArrayList<String> list = new ArrayList<String>();
 				for(String s : comp.getTooltips()) {
 					list.add(s);
 				}
-				drawHoveringText(list, mouseX, mouseY);
+				if(!list.isEmpty())drawHoveringText(list, mouseX, mouseY);
 			}
 		}
 		
 		
 	}
-	private final boolean isHovered(IGuiComponent comp) {
-		Gui c = (Gui) comp;
-		return false;
+	private final boolean isHovered(IGuiComponent comp, int mouseX, int mouseY) {
+		final int x = comp.getX();
+		final int y = comp.getY();
+		final int w = comp.getWidth();
+		final int h = comp.getHeight();
+		return (mouseX >= x && mouseY >= y && mouseX < x + w && mouseY < y + h);
 	}
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
