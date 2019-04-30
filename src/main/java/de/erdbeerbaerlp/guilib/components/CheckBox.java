@@ -1,10 +1,13 @@
 package de.erdbeerbaerlp.guilib.components;
 
+import java.io.IOException;
+
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
 
 public class CheckBox extends GuiCheckBox implements IGuiComponent{
 	private String[] tooltips = new String[0];
+	private Runnable callback;
 	public CheckBox(int xPos, int yPos, String displayString, boolean isChecked) {
 		super(-1, xPos, yPos, displayString, isChecked);
 	}
@@ -20,7 +23,17 @@ public class CheckBox extends GuiCheckBox implements IGuiComponent{
 		this.height = height;
 	}
 	@Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY, float partial) {
+	public void draw(int mouseX, int mouseY, float partial) {
+		if(!visible) return;
+		this.drawButton(Minecraft.getMinecraft(),mouseX, mouseY, partial);
+	}
+	@Override
+	public void setIsChecked(boolean isChecked) {
+		super.setIsChecked(isChecked);
+		onChange();
+	}
+	@Override
+	public final void drawButton(Minecraft mc, int mouseX, int mouseY, float partial) {
 		super.drawButton(mc, mouseX, mouseY, partial);
 	}
 	@Override
@@ -29,7 +42,6 @@ public class CheckBox extends GuiCheckBox implements IGuiComponent{
 	}
 	@Override
 	public boolean isVisible() {
-		// TODO Auto-generated method stub
 		return this.visible;
 	}
 	@Override
@@ -38,31 +50,67 @@ public class CheckBox extends GuiCheckBox implements IGuiComponent{
 	}
 	@Override
 	public String[] getTooltips() {
-		// TODO Auto-generated method stub
 		return tooltips;
 	}
 	@Override
 	public int getX() {
-		// TODO Auto-generated method stub
 		return x;
 	}
 
 	@Override
 	public int getY() {
-		// TODO Auto-generated method stub
 		return y;
 	}
 
 	@Override
 	public int getWidth() {
-		// TODO Auto-generated method stub
 		return width;
 	}
 
 	@Override
 	public int getHeight() {
-		// TODO Auto-generated method stub
 		return height;
 	}
+	public void onChange() { 
+		if(this.callback != null)this.callback.run();
+	}
+	public final void setChangeListener(Runnable r) {
+		this.callback = r;
+	}
+	@Override
+	public void mouseClick(int mouseX, int mouseY, int mouseButton) throws IOException {
+		if(mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) onChange();
+	}
+	@Override
+	public void mouseReleased(int mouseX, int mouseY, int state) {
+		
+	}
 
+	@Override
+	public void keyTyped(char typedChar, int keyCode) throws IOException {
+		
+		
+	}
+	@Override
+	public void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
+		mouseDragged(mc, mouseX, mouseY);
+		
+	}
+	@Override
+	public boolean isEnabled() {
+		// TODO Auto-generated method stub
+		return this.enabled;
+	}
+
+	@Override
+	public void setVisible(boolean visible) {
+		// TODO Auto-generated method stub
+		this.visible = visible;
+	}
+
+	@Override
+	public void setEnabled(boolean enable) {
+		// TODO Auto-generated method stub
+		this.enabled = enable;
+	}
 }

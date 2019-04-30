@@ -20,6 +20,7 @@ public class McMod {
 		System.out.println(ev.getGui());
 		if(ev.getGui() instanceof GuiMultiplayer) {
 			Minecraft.getMinecraft().displayGuiScreen(new ExampleGUI());
+			ev.setCanceled(true);
 		}
 	}
 	
