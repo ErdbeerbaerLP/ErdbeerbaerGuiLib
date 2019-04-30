@@ -21,8 +21,10 @@ public class ExampleGUI extends BetterGuiScreen {
 	private Button exitButton;
 	private Slider exampleSlider1;
 	private EnumSlider exampleSlider2;
+	
 	@Override
 	public void buildGui() {
+		
 		//Initialize variables
 		exampleButton = new Button(50, 50, "Button", ButtonIcon.SAVE);
 		exampleCheckbox = new CheckBox(50, 70, "Checkbox", false);
@@ -50,6 +52,7 @@ public class ExampleGUI extends BetterGuiScreen {
 		exampleTextField.setReturnAction(()->{
 			exampleButton.setText(exampleTextField.getText());
 		});
+		
 		//Set tooltips
 		exampleButton.setTooltips("Example Tooltip", "This is a Button");
 		exampleCheckbox.setTooltips("Another Tooltip", "This is a Checkbox", "");
@@ -57,6 +60,7 @@ public class ExampleGUI extends BetterGuiScreen {
 		exitButton.setTooltips("Closes this GUI");
 		exampleSlider1.setTooltips("A simple double/integer slider");
 		exampleSlider2.setTooltips("This slider works using Enums", "It will change through all enum values");
+		
 		//Set some values
 		exampleTextField.setAcceptsColors(true);
 		exampleTextField.setText("Text Field");
@@ -74,7 +78,6 @@ public class ExampleGUI extends BetterGuiScreen {
 	}
 	@Override
 	public void updateGui() {
-		//		System.out.println("update");
 		//Update positions
 		exampleLabel1.x = width/2; //always centered!
 
