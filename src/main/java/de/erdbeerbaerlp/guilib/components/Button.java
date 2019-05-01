@@ -7,31 +7,22 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
 import net.minecraftforge.fml.client.config.GuiUtils;
 
-public final class Button extends GuiButtonExt implements IGuiComponent{
-	private ButtonIcon BUTTON_ICON;
+public class Button extends GuiButtonExt implements IGuiComponent{
+	private ResourceLocation BUTTON_ICON;
 	private String[] tooltips = new String[0];
 	private Runnable callback;
-	public enum ButtonIcon{
-		NONE(null),
-		ADD(new ResourceLocation("guilib:textures/gui/buttonicons/add.png")),
-		DELETE(new ResourceLocation("eguilib:textures/gui/buttonicons/delete.png")),
-		PLAY(new ResourceLocation("eguilib:textures/gui/buttonicons/play.png")),
-		PAUSE(new ResourceLocation("eguilib:textures/gui/buttonicons/pause.png")),
-		STOP(new ResourceLocation("eguilib:textures/gui/buttonicons/stop.png")),
-		SAVE(new ResourceLocation("eguilib:textures/gui/buttonicons/save.png")),
-		NEW(new ResourceLocation("eguilib:textures/gui/buttonicons/new.png")),
-		FILE(new ResourceLocation("eguilib:textures/gui/buttonicons/file.png")),
-		FILE_TXT(new ResourceLocation("eguilib:textures/gui/buttonicons/file_txt.png")),
-		FILE_NBT(new ResourceLocation("eguilib:textures/gui/buttonicons/file_nbt.png")),
-		FILE_BIN(new ResourceLocation("eguilib:textures/gui/buttonicons/file_bin.png"));
-		
-		private final ResourceLocation location;
-		ButtonIcon(ResourceLocation loc) {
-			this.location = loc;
-		}
-		public ResourceLocation getResourceLocation() {
-			return location;
-		}
+	public static class DefaultButtonIcons {
+		public static final ResourceLocation ADD = new ResourceLocation("guilib:textures/gui/buttonicons/add.png");
+		public static final ResourceLocation DELETE = new ResourceLocation("eguilib:textures/gui/buttonicons/delete.png");
+		public static final ResourceLocation PLAY = new ResourceLocation("eguilib:textures/gui/buttonicons/play.png");
+		public static final ResourceLocation PAUSE = new ResourceLocation("eguilib:textures/gui/buttonicons/pause.png");
+		public static final ResourceLocation STOP = new ResourceLocation("eguilib:textures/gui/buttonicons/stop.png");
+		public static final ResourceLocation SAVE = new ResourceLocation("eguilib:textures/gui/buttonicons/save.png");
+		public static final ResourceLocation NEW = new ResourceLocation("eguilib:textures/gui/buttonicons/new.png");
+		public static final ResourceLocation FILE = new ResourceLocation("eguilib:textures/gui/buttonicons/file.png");
+		public static final ResourceLocation FILE_TXT = new ResourceLocation("eguilib:textures/gui/buttonicons/file_txt.png");
+		public static final ResourceLocation FILE_NBT = new ResourceLocation("eguilib:textures/gui/buttonicons/file_nbt.png");
+		public static final ResourceLocation FILE_BIN = new ResourceLocation("eguilib:textures/gui/buttonicons/file_bin.png");
 	}
 	public Button(int xPos, int yPos, String displayString) {
 		this(xPos, yPos, 100, displayString);
@@ -40,22 +31,22 @@ public final class Button extends GuiButtonExt implements IGuiComponent{
 	public Button(int xPos, int yPos, int width, String displayString) {
 		this(xPos, yPos, width, 20, displayString);
 	}
-	public Button(int xPos, int yPos, int width, String displayString, ButtonIcon icon) {
+	public Button(int xPos, int yPos, int width, String displayString, ResourceLocation icon) {
 		this(xPos, yPos, width, 20, displayString, icon);
 	}
 	public Button(int xPos, int yPos, int width, int height, String displayString) {
-		this(xPos, yPos, width, height, displayString, ButtonIcon.NONE);
+		this(xPos, yPos, width, height, displayString, null);
 	}
-	public Button(int xPos, int yPos, int width, int height, String displayString, ButtonIcon icon) {
+	public Button(int xPos, int yPos, int width, int height, String displayString, ResourceLocation icon) {
 		super(-1, xPos, yPos, width, height, displayString);
 		this.BUTTON_ICON = icon;
 	}
 	
-	public Button(int xPos, int yPos, String string, ButtonIcon icon) {
+	public Button(int xPos, int yPos, String string, ResourceLocation icon) {
 		this(xPos, yPos, 100, string, icon);
 	}
 
-	public Button(int xPos, int yPos, ButtonIcon icon) {
+	public Button(int xPos, int yPos, ResourceLocation icon) {
 		this(xPos, yPos, 20, "", icon);
 	}
 
@@ -99,8 +90,8 @@ public final class Button extends GuiButtonExt implements IGuiComponent{
             }
             int bx = this.x;
             int mwidth = this.width;
-            if(BUTTON_ICON != ButtonIcon.NONE) {
-            	Minecraft.getMinecraft().getTextureManager().bindTexture(BUTTON_ICON.getResourceLocation());
+            if(BUTTON_ICON != null) {
+            	Minecraft.getMinecraft().getTextureManager().bindTexture(BUTTON_ICON);
 				drawModalRectWithCustomSizedTexture(bx + 2, y + 2, 0, 0, 16, 16, 16, 16);
 
 				// ! MODIFY X !
