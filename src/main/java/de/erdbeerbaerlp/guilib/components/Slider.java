@@ -106,7 +106,8 @@ public class Slider extends GuiSlider implements IGuiComponent {
 		this.tooltips = strings;
 	}
 	public String[] getTooltips() {
-		return tooltips;
+		//Hide the tooltips when dragging the slider
+		return this.dragging ? new String[0] : tooltips;
 	}
 	@Override
 	public int getX() {
