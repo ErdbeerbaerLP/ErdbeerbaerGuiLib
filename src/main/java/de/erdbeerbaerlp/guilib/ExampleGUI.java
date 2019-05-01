@@ -1,7 +1,7 @@
 package de.erdbeerbaerlp.guilib;
 
 import de.erdbeerbaerlp.guilib.components.Button;
-import de.erdbeerbaerlp.guilib.components.Button.ButtonIcon;
+import de.erdbeerbaerlp.guilib.components.Button.DefaultButtonIcons;
 import de.erdbeerbaerlp.guilib.components.CheckBox;
 import de.erdbeerbaerlp.guilib.components.EnumSlider;
 import de.erdbeerbaerlp.guilib.components.Label;
@@ -41,11 +41,11 @@ public class ExampleGUI extends BetterGuiScreen {
 	public void buildGui() {
 		
 		//Initialize variables
-		exampleButton = new Button(50, 50, "Button", ButtonIcon.SAVE);
+		exampleButton = new Button(50, 50, "Button", DefaultButtonIcons.SAVE);
 		exampleCheckbox = new CheckBox(50, 70, "Checkbox", false);
 		exampleTextField = new TextField(50, 100, 150);
 		exampleLabel1 = new Label(width/2, 10);
-		exitButton = new Button(0, 0, ButtonIcon.DELETE); //Set initial position to 0 for complete handling in update()
+		exitButton = new Button(0, 0, DefaultButtonIcons.DELETE); //Set initial position to 0 for complete handling in update()
 		exampleSlider1 = new Slider(50, 130, "Slider: ", 0, 100, 50, ()->{
 			System.out.println(exampleSlider1.getValue());
 		});
