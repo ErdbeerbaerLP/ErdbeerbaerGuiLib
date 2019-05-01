@@ -11,9 +11,19 @@ import de.erdbeerbaerlp.guilib.gui.BetterGuiScreen;
 
 public class ExampleGUI extends BetterGuiScreen {
 	public enum ExampleEnum {
-		THIS("This", 1.0f),IS("is", 100.45f),AN("an", -90f),EXAMPLE("example", 1337f),SLIDER("slider", -2387f),WITH("with", 0.000000001f),ENUM("enum", 3.14159265f),VALUES("values.", 98234.5f),YAAAY("Yaay!", -0f);
+		THIS("This", 1.0f),
+		IS("is", 100.45f),
+		AN("an", -90f),
+		EXAMPLE("example", 1337f),
+		SLIDER("slider", -2387f),
+		WITH("with", 0.000000001f),
+		ENUM("enum", 3.14159265f),
+		VALUES("values.", 98234.5f),
+		YAAAY("Yaay!", -0f);
+		
 		private String name;
 		private float otherValue;
+		
 		ExampleEnum(String name, float someOtherValue){
 			this.name = name;
 			this.otherValue = someOtherValue;
