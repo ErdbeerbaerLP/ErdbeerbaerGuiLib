@@ -11,7 +11,22 @@ import de.erdbeerbaerlp.guilib.gui.BetterGuiScreen;
 
 public class ExampleGUI extends BetterGuiScreen {
 	public enum ExampleEnum {
-		THIS,IS,AN,EXAMPLE,SLIDER,WITH,ENUM,VALUES,YAAAY;
+		THIS("This", 1.0f),IS("is", 100.45f),AN("an", -90f),EXAMPLE("example", 1337f),SLIDER("slider", -2387f),WITH("with", 0.000000001f),ENUM("enum", 3.14159265f),VALUES("values.", 98234.5f),YAAAY("Yaay!", -0f);
+		private String name;
+		private float otherValue;
+		ExampleEnum(String name, float someOtherValue){
+			this.name = name;
+			this.otherValue = someOtherValue;
+		}
+		
+		//This method will be called using reflection from the slider
+		public String getName() {
+			return name;
+		}
+		
+		public float getOtherValue() {
+			return otherValue;
+		}
 	}
 
 	private Button exampleButton;
@@ -35,8 +50,9 @@ public class ExampleGUI extends BetterGuiScreen {
 			System.out.println(exampleSlider1.getValue());
 		});
 		exampleSlider2 = new <ExampleEnum> EnumSlider(200, 130, "Enum Slider: ", ExampleEnum.class, ExampleEnum.EXAMPLE, ()-> {
-			System.out.println("Enum changed to \""+exampleSlider2.getEnum().name()+"\"");
+			System.out.println("Enum changed to \""+((ExampleEnum)exampleSlider2.getEnum()).getName()+"\"");
 			System.out.println("Index: "+exampleSlider2.getValueInt());
+			System.out.println("Other Value: "+((ExampleEnum)exampleSlider2.getEnum()).getOtherValue());
 		});
 
 		//Register listeners
