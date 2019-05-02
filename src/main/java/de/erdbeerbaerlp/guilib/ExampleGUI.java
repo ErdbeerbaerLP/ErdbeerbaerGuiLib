@@ -90,6 +90,7 @@ public class ExampleGUI extends BetterGuiScreen {
 			System.out.println("New Value: "+exampleToggleButton.getValue());
 		});
 		
+		
 		//Set tooltips
 		exampleButton.setTooltips("Example Tooltip", "This is a Button");
 		exampleCheckbox.setTooltips("Another Tooltip", "This is a Checkbox", "");
@@ -98,6 +99,7 @@ public class ExampleGUI extends BetterGuiScreen {
 		exampleSlider1.setTooltips("A simple double/integer slider");
 		exampleSlider2.setTooltips("This slider works using Enums", "It will change through all enum values");
 		exampleToggleButton.setTooltips("This button can be toggled");
+		drawTypeSlider.setTooltips("Change how the toggle button will be rendered");
 		
 		//Set some values
 		exampleTextField.setAcceptsColors(true);
