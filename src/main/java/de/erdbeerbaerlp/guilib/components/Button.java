@@ -8,7 +8,7 @@ import net.minecraftforge.fml.client.config.GuiButtonExt;
 import net.minecraftforge.fml.client.config.GuiUtils;
 
 public class Button extends GuiButtonExt implements IGuiComponent{
-	private ResourceLocation BUTTON_ICON;
+	protected ResourceLocation BUTTON_ICON;
 	private String[] tooltips = new String[0];
 	private Runnable callback;
 	public static class DefaultButtonIcons {
@@ -67,7 +67,7 @@ public class Button extends GuiButtonExt implements IGuiComponent{
      * Draws this button to the screen.
      */
 	@Override
-	public final void draw(int mouseX, int mouseY, float partial) {
+	public void draw(int mouseX, int mouseY, float partial) {
         if (this.visible)
         {
             this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
