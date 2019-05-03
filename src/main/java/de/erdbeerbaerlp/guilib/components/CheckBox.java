@@ -3,6 +3,9 @@ package de.erdbeerbaerlp.guilib.components;
 import java.io.IOException;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.audio.SoundHandler;
+import net.minecraft.init.SoundEvents;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
 
 public class CheckBox extends GuiCheckBox implements IGuiComponent{
@@ -79,22 +82,37 @@ public class CheckBox extends GuiCheckBox implements IGuiComponent{
 	}
 	@Override
 	public void mouseClick(int mouseX, int mouseY, int mouseButton) throws IOException {
-		if(mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) onChange();
+		if(mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) {
+
+			onChange();
+			playPressSound(mc.getSoundHandler());
+		}
 	}
 	@Override
 	public void mouseReleased(int mouseX, int mouseY, int state) {
-		
-	}
 
+	}
+	@Override
+	public void playPressSound(SoundHandler soundHandlerIn) {
+		soundHandlerIn.playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, this.enabled ? 1.0F : 0.5f));
+	}
+	public boolean mousePressed(Minecraft mc, int mouseX, int mouseY)
+	{
+		if(this.visible && mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height) {
+			this.setIsChecked(!isChecked());
+			return true;
+		}
+		return false;
+	}
 	@Override
 	public void keyTyped(char typedChar, int keyCode) throws IOException {
-		
-		
+
+
 	}
 	@Override
 	public void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
 		mouseDragged(mc, mouseX, mouseY);
-		
+
 	}
 	@Override
 	public boolean isEnabled() {

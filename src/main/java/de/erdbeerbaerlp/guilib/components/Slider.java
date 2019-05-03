@@ -2,6 +2,10 @@ package de.erdbeerbaerlp.guilib.components;
 
 import java.io.IOException;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.audio.SoundHandler;
+import net.minecraft.init.SoundEvents;
 import net.minecraftforge.fml.client.config.GuiSlider;
 
 public class Slider extends GuiSlider implements IGuiComponent {
@@ -24,7 +28,7 @@ public class Slider extends GuiSlider implements IGuiComponent {
 	public void setAction(Runnable action) {
 		this.action = action;
 	}
-	
+
 	@Override
 	public void setID(int id) {
 		// TODO Auto-generated method stub
@@ -32,49 +36,49 @@ public class Slider extends GuiSlider implements IGuiComponent {
 	}
 	@Override
 	public void updateSlider() {
-        if (this.sliderValue < 0.0F)
-        {
-            this.sliderValue = 0.0F;
-        }
+		if (this.sliderValue < 0.0F)
+		{
+			this.sliderValue = 0.0F;
+		}
 
-        if (this.sliderValue > 1.0F)
-        {
-            this.sliderValue = 1.0F;
-        }
+		if (this.sliderValue > 1.0F)
+		{
+			this.sliderValue = 1.0F;
+		}
 
-        String val;
+		String val;
 
-        if (showDecimal)
-        {
-            val = Double.toString(sliderValue * (maxValue - minValue) + minValue);
+		if (showDecimal)
+		{
+			val = Double.toString(sliderValue * (maxValue - minValue) + minValue);
 
-            if (val.substring(val.indexOf(".") + 1).length() > precision)
-            {
-                val = val.substring(0, val.indexOf(".") + precision + 1);
+			if (val.substring(val.indexOf(".") + 1).length() > precision)
+			{
+				val = val.substring(0, val.indexOf(".") + precision + 1);
 
-                if (val.endsWith("."))
-                {
-                    val = val.substring(0, val.indexOf(".") + precision);
-                }
-            }
-            else
-            {
-                while (val.substring(val.indexOf(".") + 1).length() < precision)
-                {
-                    val = val + "0";
-                }
-            }
-        }
-        else
-        {
-            val = Integer.toString((int)Math.round(sliderValue * (maxValue - minValue) + minValue));
-        }
+				if (val.endsWith("."))
+				{
+					val = val.substring(0, val.indexOf(".") + precision);
+				}
+			}
+			else
+			{
+				while (val.substring(val.indexOf(".") + 1).length() < precision)
+				{
+					val = val + "0";
+				}
+			}
+		}
+		else
+		{
+			val = Integer.toString((int)Math.round(sliderValue * (maxValue - minValue) + minValue));
+		}
 
-        if(drawString)
-        {
-            displayString = dispString + val + suffix;
-        }
-        if(prevValue != getValue()) this.onValueChanged();
+		if(drawString)
+		{
+			displayString = dispString + val + suffix;
+		}
+		if(prevValue != getValue()) this.onValueChanged();
 	}
 	public void onValueChanged() {
 		if(this.action != null) action.run();
@@ -141,9 +145,24 @@ public class Slider extends GuiSlider implements IGuiComponent {
 	@Override
 	public void mouseClick(int mouseX, int mouseY, int mouseButton) throws IOException {
 		this.prevValue = getValue();
-		this.mousePressed(mc, mouseX, mouseY);
+		if(this.mousePressed(mc, mouseX, mouseY)) {
+			playPressSound(mc.getSoundHandler());
+		}
 	}
-
+	@Override
+	public void playPressSound(SoundHandler soundHandlerIn) {
+		soundHandlerIn.playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, this.enabled ? 1.0F : 0.5f));
+	}
+	public boolean mousePressed(Minecraft mc, int mouseX, int mouseY)
+	{ 
+		if(this.visible && mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height) {
+			this.sliderValue = (float)(mouseX - (this.x + 4)) / (float)(this.width - 8);
+			updateSlider();
+			this.dragging = true;
+			return true;
+		}
+		return false;
+	}
 	@Override
 	public void mouseReleased(int mouseX, int mouseY, int state) {
 		this.mouseReleased(mouseX, mouseY);

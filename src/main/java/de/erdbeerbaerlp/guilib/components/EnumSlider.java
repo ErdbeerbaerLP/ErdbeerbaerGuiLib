@@ -5,7 +5,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.init.SoundEvents;
 
 public class  EnumSlider extends Slider {
 	private Runnable action;
@@ -118,7 +121,7 @@ public class  EnumSlider extends Slider {
 		if (superMousePressed(par2, par3))
 		{
 			final int index = getCurrentIndex();
-
+			playPressSound(mc.getSoundHandler());
 			this.sliderValue = (float)(par2 - (this.x + 4)) / (float)(this.width - 8);
 			int sliderValue = (int)Math.round(this.sliderValue * (maxValue - minValue) + this.minValue);
 			if(sliderValue <0) return false;
@@ -137,6 +140,10 @@ public class  EnumSlider extends Slider {
 		{
 			return false;
 		}
+	}
+	@Override
+	public void playPressSound(SoundHandler soundHandlerIn) {
+		soundHandlerIn.playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, this.enabled ? 1.0F : 0.5f));
 	}
 	private int getCurrentIndex() {
 		int out = 0;

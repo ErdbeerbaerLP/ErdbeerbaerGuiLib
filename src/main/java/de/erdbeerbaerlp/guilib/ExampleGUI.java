@@ -57,7 +57,7 @@ public class ExampleGUI extends BetterGuiScreen {
 		exampleCheckbox = new CheckBox(50, 70, "Checkbox", false);
 		exampleTextField = new TextField(50, 100, 150);
 		exampleLabel1 = new Label(width/2, 10);
-		exitButton = new Button(0, 0, DefaultButtonIcons.DELETE); //Set initial position to 0 for complete handling in update()
+		exitButton = new Button(0, 0, DefaultButtonIcons.DELETE);
 		exampleSlider1 = new Slider(50, 130, "Slider: ", 0, 100, 50, ()->{
 			System.out.println(exampleSlider1.getValue());
 		});
@@ -65,7 +65,7 @@ public class ExampleGUI extends BetterGuiScreen {
 			System.out.println("Enum changed to \""+((ExampleEnum)exampleSlider2.getEnum()).getName()+"\"");
 			System.out.println("Index: "+exampleSlider2.getValueInt());
 			System.out.println("Other Value: "+((ExampleEnum)exampleSlider2.getEnum()).getOtherValue());
-		});
+		}); 
 		exampleToggleButton = new ToggleButton(50, 170, "Toggle Button: ");
 		drawTypeSlider = new <ToggleButton.DrawType> EnumSlider(156, 170, "Draw type: ", ToggleButton.DrawType.class, ToggleButton.DrawType.COLORED_LINE, ()-> {
 			this.exampleToggleButton.setDrawType((ToggleButton.DrawType)drawTypeSlider.getEnum());
@@ -88,6 +88,7 @@ public class ExampleGUI extends BetterGuiScreen {
 		});
 		exampleToggleButton.setClickListener(()->{
 			System.out.println("New Value: "+exampleToggleButton.getValue());
+			this.exampleButton.setEnabled(exampleToggleButton.getValue());
 		});
 		
 		
@@ -101,10 +102,12 @@ public class ExampleGUI extends BetterGuiScreen {
 		exampleToggleButton.setTooltips("This button can be toggled");
 		drawTypeSlider.setTooltips("Change how the toggle button will be rendered");
 		
+		
 		//Set some values
 		exampleTextField.setAcceptsColors(true);
 		exampleTextField.setText("Text Field");
 		exampleLabel1.setCentered();
+		exampleToggleButton.setValue(true);
 
 		//Add components
 		this.addComponent(exampleLabel1);

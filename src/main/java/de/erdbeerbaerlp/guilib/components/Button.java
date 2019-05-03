@@ -3,6 +3,9 @@ package de.erdbeerbaerlp.guilib.components;
 import java.io.IOException;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.audio.SoundHandler;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
 import net.minecraftforge.fml.client.config.GuiUtils;
@@ -12,7 +15,7 @@ public class Button extends GuiButtonExt implements IGuiComponent{
 	private String[] tooltips = new String[0];
 	private Runnable callback;
 	public static class DefaultButtonIcons {
-		public static final ResourceLocation ADD = new ResourceLocation("guilib:textures/gui/buttonicons/add.png");
+		public static final ResourceLocation ADD = new ResourceLocation("eguilib:textures/gui/buttonicons/add.png");
 		public static final ResourceLocation DELETE = new ResourceLocation("eguilib:textures/gui/buttonicons/delete.png");
 		public static final ResourceLocation PLAY = new ResourceLocation("eguilib:textures/gui/buttonicons/play.png");
 		public static final ResourceLocation PAUSE = new ResourceLocation("eguilib:textures/gui/buttonicons/pause.png");
@@ -153,7 +156,14 @@ public class Button extends GuiButtonExt implements IGuiComponent{
 			
 		}
 	}
-
+	@Override
+	public void playPressSound(SoundHandler soundHandlerIn) {
+		soundHandlerIn.playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, this.enabled ? 1.0F : 0.5f));
+	}
+    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY)
+    {
+        return this.visible && mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
+    }
 	@Override
 	public void mouseReleased(int mouseX, int mouseY, int state) {
 		
