@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.erdbeerbaerlp.guilib.components.IGuiComponent;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.Side;
