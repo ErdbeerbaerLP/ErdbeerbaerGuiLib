@@ -11,6 +11,7 @@ import net.minecraftforge.fml.client.config.GuiCheckBox;
 public class CheckBox extends GuiCheckBox implements IGuiComponent{
 	private String[] tooltips = new String[0];
 	private Runnable callback;
+	
 	public CheckBox(int xPos, int yPos, String displayString, boolean isChecked) {
 		super(-1, xPos, yPos, displayString, isChecked);
 	}
@@ -130,5 +131,15 @@ public class CheckBox extends GuiCheckBox implements IGuiComponent{
 	public void setEnabled(boolean enable) {
 		// TODO Auto-generated method stub
 		this.enabled = enable;
+	}
+	private int page = -1;
+	@Override
+	public void assignToPage(int page) {
+		this.page = page;
+	}
+
+	@Override
+	public int getAssignedPage() {
+		return this.page;
 	}
 }

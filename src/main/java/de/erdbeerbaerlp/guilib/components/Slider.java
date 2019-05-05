@@ -181,5 +181,15 @@ public class Slider extends GuiSlider implements IGuiComponent {
 		this.prevValue = getValue();
 		this.mouseDragged(mc, mouseX, mouseY);
 	}
+	private int page = -1;
+	@Override
+	public void assignToPage(int page) {
+		this.page = page;
+	}
+
+	@Override
+	public int getAssignedPage() {
+		return this.page;
+	}
 
 }

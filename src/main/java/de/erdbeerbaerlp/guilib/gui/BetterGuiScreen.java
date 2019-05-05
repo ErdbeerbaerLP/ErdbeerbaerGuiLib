@@ -15,6 +15,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public abstract class BetterGuiScreen extends GuiScreen {
 	private final List<IGuiComponent> components;
 	private int nextComponentID = 0;
+	private int pages;
+	private int currentPage;
 	public BetterGuiScreen() {
 		components =  new ArrayList<IGuiComponent>();
 		components.clear();
@@ -40,6 +42,12 @@ public abstract class BetterGuiScreen extends GuiScreen {
 	@Override
 	public abstract boolean doesGuiPauseGame();
 	public abstract boolean doesEscCloseGui();
+	public void nextPage() {
+		if(currentPage < pages) currentPage++; 
+	}
+	public void prevPage() {
+		if(currentPage > 0) currentPage--; 
+	}
 	/**
 	 * Use this to add your components
 	 * @param component
@@ -58,6 +66,12 @@ public abstract class BetterGuiScreen extends GuiScreen {
 			this.addComponent(c);
 		}
 	}
+	public void setAmountOfPages(int pages) {
+		this.pages = pages;
+	}
+	public void assignComponentToPage(IGuiComponent comp, int page) {
+		comp.assignToPage(page);
+	}
 	@Override
 	@Deprecated
 	/**
@@ -70,10 +84,12 @@ public abstract class BetterGuiScreen extends GuiScreen {
 		super.drawScreen(mouseX, mouseY, partialTicks);
 		drawDefaultBackground();
 		for(final IGuiComponent comp : components) {
+			if(comp.getAssignedPage() != -1) if(comp.getAssignedPage() != currentPage) continue;
 			comp.draw(mouseX, mouseY, partialTicks);
 		}
 		//Second for to not have components overlap the tooltips
 		for(final IGuiComponent comp : components) {
+			if(comp.getAssignedPage() != -1) if(comp.getAssignedPage() != currentPage) continue;
 			if(comp.canHaveTooltip() && isHovered(comp, mouseX, mouseY) && comp.isVisible()) {
 
 				final ArrayList<String> list = new ArrayList<String>();
@@ -89,20 +105,15 @@ public abstract class BetterGuiScreen extends GuiScreen {
 
 	}
 	private final boolean isHovered(IGuiComponent comp, int mouseX, int mouseY) {
+		if(comp.getAssignedPage() != -1 ) if(comp.getAssignedPage() != currentPage) return false;
 		final int x = comp.getX();
 		final int y = comp.getY();
 		final int w = comp.getWidth();
 		final int h = comp.getHeight();
 		return (mouseX >= x && mouseY >= y && mouseX < x + w && mouseY < y + h);
 	}
-
-
 	public final IGuiComponent getComponent(int index){
 		return components.get(index);
-	}
-	public FontRenderer getFontRenderer() {
-
-		return this.fontRenderer;
 	}
 	public final void openGui(GuiScreen gui) {
 		if(gui == null) mc.displayGuiScreen((GuiScreen)null);
@@ -112,6 +123,7 @@ public abstract class BetterGuiScreen extends GuiScreen {
 	public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
 
 		for(IGuiComponent comp : components) {
+			if(comp.getAssignedPage() != -1) if(comp.getAssignedPage() != currentPage) continue;
 			comp.mouseClick(mouseX, mouseY, mouseButton);
 		}
 	}
@@ -119,6 +131,7 @@ public abstract class BetterGuiScreen extends GuiScreen {
 	public void mouseReleased(int mouseX, int mouseY, int state) {
 
 		for(IGuiComponent comp : components) {
+			if(comp.getAssignedPage() != -1) if(comp.getAssignedPage() != currentPage) continue;
 			comp.mouseReleased(mouseX, mouseY, state);
 		}
 	}
@@ -126,6 +139,7 @@ public abstract class BetterGuiScreen extends GuiScreen {
 	public void keyTyped(char typedChar, int keyCode) throws IOException {
 
 		for(IGuiComponent comp : components) {
+			if(comp.getAssignedPage() != -1 ) if(comp.getAssignedPage() != currentPage) continue;
 			comp.keyTyped(typedChar, keyCode);
 		}
 	}
@@ -134,12 +148,14 @@ public abstract class BetterGuiScreen extends GuiScreen {
 	public void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
 
 		for(IGuiComponent comp : components) {
+			if(comp.getAssignedPage() != -1 ) if(comp.getAssignedPage() != currentPage) continue;
 			comp.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
 		}
 	}
 	@Override
 	public void handleMouseInput() throws IOException {
 		for(IGuiComponent comp : components) {
+			if(comp.getAssignedPage() != -1 ) if(comp.getAssignedPage() != currentPage) continue;
 			comp.handleMouseInput();
 		}
 		super.handleMouseInput();
@@ -147,6 +163,7 @@ public abstract class BetterGuiScreen extends GuiScreen {
 	@Override
 	public void handleKeyboardInput() throws IOException {
 		for(IGuiComponent comp : components) {
+			if(comp.getAssignedPage() != -1 ) if(comp.getAssignedPage() != currentPage) continue;
 			comp.handleKeyboardInput();
 		}
 		super.handleKeyboardInput();

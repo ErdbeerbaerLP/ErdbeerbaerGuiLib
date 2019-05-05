@@ -98,4 +98,14 @@ public class Label extends GuiLabel implements IGuiComponent{
 	@Override
 	public void setEnabled(boolean enable) {
 	}
+	private int page = -1;
+	@Override
+	public void assignToPage(int page) {
+		this.page = page;
+	}
+
+	@Override
+	public int getAssignedPage() {
+		return this.page;
+	}
 }

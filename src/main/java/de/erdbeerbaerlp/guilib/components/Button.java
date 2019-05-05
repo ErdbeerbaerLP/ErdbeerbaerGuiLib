@@ -26,6 +26,9 @@ public class Button extends GuiButtonExt implements IGuiComponent{
 		public static final ResourceLocation FILE_TXT = new ResourceLocation("eguilib:textures/gui/buttonicons/file_txt.png");
 		public static final ResourceLocation FILE_NBT = new ResourceLocation("eguilib:textures/gui/buttonicons/file_nbt.png");
 		public static final ResourceLocation FILE_BIN = new ResourceLocation("eguilib:textures/gui/buttonicons/file_bin.png");
+		public static final ResourceLocation ARROW_RIGHT = new ResourceLocation("eguilib:textures/gui/buttonicons/arrow-right.png");
+		public static final ResourceLocation ARROW_LEFT = new ResourceLocation("eguilib:textures/gui/buttonicons/arrow-left.png");
+		
 	}
 	public Button(int xPos, int yPos, String displayString) {
 		this(xPos, yPos, 100, displayString);
@@ -59,7 +62,7 @@ public class Button extends GuiButtonExt implements IGuiComponent{
 	public final void setClickListener(Runnable r) {
 		this.callback = r;
 	}
-	public final void onClick() {
+	public void onClick() {
 		if(this.callback != null) this.callback.run();
 	}
 	@Override
@@ -201,6 +204,17 @@ public class Button extends GuiButtonExt implements IGuiComponent{
 	public void setEnabled(boolean enable) {
 		// TODO Auto-generated method stub
 		this.enabled = enable;
+	}
+
+	private int page = -1;
+	@Override
+	public void assignToPage(int page) {
+		this.page = page;
+	}
+
+	@Override
+	public int getAssignedPage() {
+		return this.page;
 	}
 	
 }

@@ -335,4 +335,14 @@ public class TextField extends GuiTextField implements IGuiComponent{
 		// TODO Auto-generated method stub
 		this.enabled = enable;
 	}
+	private int page = -1;
+	@Override
+	public void assignToPage(int page) {
+		this.page = page;
+	}
+
+	@Override
+	public int getAssignedPage() {
+		return this.page;
+	}
 }

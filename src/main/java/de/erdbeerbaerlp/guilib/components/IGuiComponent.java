@@ -59,4 +59,8 @@ public interface IGuiComponent {
 	default void show() {
 		setVisible(true);
 	}
+	void assignToPage(int page);
+	int getAssignedPage();
+	
+	
 }
