@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public abstract class BetterGuiScreen extends GuiScreen {
 	private final List<IGuiComponent> components;
 	private int nextComponentID = 0;
-	private int pages;
+	private int pages = 0;
 	private int currentPage = 0;
 	public BetterGuiScreen() {
 		components =  new ArrayList<IGuiComponent>();
