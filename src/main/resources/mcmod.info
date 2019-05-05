@@ -1,14 +1,13 @@
 [
 {
   "modid": "eguilib",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
+  "name": "Erdbeerbaer´s Gui Lib",
+  "description": "A easy-to-use gui library",
+  "version": "0.1",
+  "mcversion": "1.12",
   "url": "",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": ["ErdbeerbaerLP"],
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
