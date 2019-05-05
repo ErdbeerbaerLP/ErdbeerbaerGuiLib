@@ -45,7 +45,6 @@ public abstract class BetterGuiScreen extends GuiScreen {
 	 * @param component
 	 */
 	public final void addComponent(IGuiComponent component) {
-		System.out.println("add");
 		component.setID(nextComponentID);
 		nextComponentID++;
 		this.components.add(component);
