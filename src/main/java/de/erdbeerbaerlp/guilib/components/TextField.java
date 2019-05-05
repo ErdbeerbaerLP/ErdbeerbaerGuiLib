@@ -23,7 +23,6 @@ public class TextField extends GuiTextField implements IGuiComponent{
 	private boolean enabled;
 	@Override
 	public void writeText(String textToWrite) {
-		System.out.println(textToWrite);
         String s = "";
         if(acceptsColors) {
         	textToWrite = textToWrite.replace('\u00A7', colorCodePlaceholder);
@@ -215,7 +214,6 @@ public class TextField extends GuiTextField implements IGuiComponent{
                 	return true;
                 default:
                 	if(this.acceptsColors && typedChar == '\u00A7') {
-                		System.out.println("§");
                 		typedChar = colorCodePlaceholder;
                 	}
                     if (ChatAllowedCharacters.isAllowedCharacter(typedChar))
