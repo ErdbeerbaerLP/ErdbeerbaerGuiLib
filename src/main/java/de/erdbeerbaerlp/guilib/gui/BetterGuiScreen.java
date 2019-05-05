@@ -50,6 +50,15 @@ public abstract class BetterGuiScreen extends GuiScreen {
 		nextComponentID++;
 		this.components.add(component);
 	}
+	/**
+	 * Use this to add multiple components at once
+	 * @param component
+	 */
+	public final void addAllComponents(IGuiComponent...components) {
+		for(IGuiComponent c : components) {
+			this.addComponent(c);
+		}
+	}
 	@Override
 	@Deprecated
 	/**
