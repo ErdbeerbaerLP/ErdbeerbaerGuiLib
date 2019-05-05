@@ -15,13 +15,6 @@ public class McMod {
 	public McMod() {
 		MinecraftForge.EVENT_BUS.register(this);
 	}
-	@SubscribeEvent
-	public void onGuiOpened(GuiOpenEvent ev) {
-		System.out.println(ev.getGui());
-		if(ev.getGui() instanceof GuiMultiplayer) {
-			Minecraft.getMinecraft().displayGuiScreen(new ExampleGUI());
-			ev.setCanceled(true);
-		}
-	}
+
 	
 }
