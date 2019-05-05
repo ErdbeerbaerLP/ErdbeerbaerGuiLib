@@ -29,6 +29,9 @@ public abstract class BetterGuiScreen extends GuiScreen {
 	public final void initGui() {
 		
 	};
+	public int getCurrentPage() {
+		return currentPage;
+	}
 	public abstract void buildGui();
 	@Override
 	public final void updateScreen() {
