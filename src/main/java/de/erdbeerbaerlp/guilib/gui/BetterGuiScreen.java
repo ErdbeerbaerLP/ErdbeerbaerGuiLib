@@ -16,7 +16,7 @@ public abstract class BetterGuiScreen extends GuiScreen {
 	private final List<IGuiComponent> components;
 	private int nextComponentID = 0;
 	private int pages;
-	private int currentPage;
+	private int currentPage = 0;
 	public BetterGuiScreen() {
 		components =  new ArrayList<IGuiComponent>();
 		components.clear();
@@ -47,6 +47,9 @@ public abstract class BetterGuiScreen extends GuiScreen {
 	}
 	public void prevPage() {
 		if(currentPage > 0) currentPage--; 
+	}
+	public void setPage(int page){
+		this.currentPage = page;
 	}
 	/**
 	 * Use this to add your components
