@@ -12,6 +12,7 @@ public class CheckBox extends GuiComponent{
 	private boolean isChecked = false;
 	public CheckBox(int xPos, int yPos, String displayString, boolean isChecked) {
 		super(xPos, yPos, 0 , 0);
+		this.displayString = displayString;
 		this.isChecked = isChecked;
 		this.boxWidth = 11;
 	    this.height = 11;
@@ -70,7 +71,6 @@ public class CheckBox extends GuiComponent{
 	@Override
 	public void mouseClick(int mouseX, int mouseY, int mouseButton) throws IOException {
 		if(mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) {
-
 			onChange();
 			playPressSound();
 		}
@@ -88,14 +88,12 @@ public class CheckBox extends GuiComponent{
 		return false;
 	}
 	@Override
-	public
-	void keyTyped(char typedChar, int keyCode) throws IOException {
+	public void keyTyped(char typedChar, int keyCode) throws IOException {
 		// TODO Auto-generated method stub
 		
 	}
 	@Override
-	public
-	void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
+	public void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
 		// TODO Auto-generated method stub
 		
 	}

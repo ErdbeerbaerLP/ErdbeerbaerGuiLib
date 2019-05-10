@@ -20,7 +20,7 @@ public class TextField extends  GuiComponent{
 	private boolean acceptsColors = false;
 	private Runnable callback;
 	protected String text = "";
-    protected int maxStringLength = 32;
+    protected int maxStringLength = 100;
     protected int cursorCounter;
     protected boolean enableBackgroundDrawing = true;
     /** if true the textbox can lose focus by clicking elsewhere on the screen */
@@ -46,7 +46,6 @@ public class TextField extends  GuiComponent{
 	}
 	
 	final char colorCodePlaceholder = '\u0378';
-	private boolean enabled;
 	/**
      * Sets the GuiResponder associated with this text box.
      */

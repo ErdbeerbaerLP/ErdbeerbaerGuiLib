@@ -12,7 +12,6 @@ import net.minecraft.client.resources.I18n;
 public class Label extends GuiComponent{
 	private final List<String> labels;
 	private boolean centered;
-	public boolean visible = true;
 	private boolean labelBgEnabled;
 	private final int textColor;
 	private int backColor;
@@ -22,7 +21,6 @@ public class Label extends GuiComponent{
 
 	public Label(int x, int y, int width, int height, int color) {
 		super(x, y, width, height);
-
 		this.labels = Lists.<String>newArrayList();
 		this.textColor = color;
 		this.setX(x);
