@@ -5,12 +5,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.init.SoundEvents;
 
-public class  EnumSlider extends Slider {
+public class EnumSlider extends Slider {
 	private Runnable action;
 	private Enum<?> enumValue;
 	private Enum<?>[] enumValues;
@@ -89,7 +86,6 @@ public class  EnumSlider extends Slider {
 	public void onValueChanged() {
 		if(this.action != null) action.run();
 	}
-	@Override
 	protected void mouseDragged(Minecraft par1Minecraft, int par2, int par3)
 	{
 		this.prevIndex = getCurrentIndex();
@@ -98,7 +94,7 @@ public class  EnumSlider extends Slider {
 			if (this.dragging)
 			{
 				final int index = getCurrentIndex();
-				this.sliderValue = (float)(par2 - (this.x + 4)) / (float)(this.width - 8);
+				this.sliderValue = (float)(par2 - (this.getX() + 4)) / (float)(this.width - 8);
 				int sliderValue = (int)Math.round(this.sliderValue * (maxValue - minValue) + this.minValue);
 				if(sliderValue < 0) sliderValue=0;
 				if(index == -1) {
@@ -112,8 +108,8 @@ public class  EnumSlider extends Slider {
 			}
 
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			this.drawTexturedModalRect(this.x + (int)(this.sliderValue * (float)(this.width - 8)), this.y, 0, 66, 4, 20);
-			this.drawTexturedModalRect(this.x + (int)(this.sliderValue * (float)(this.width - 8)) + 4, this.y, 196, 66, 4, 20);
+			this.drawTexturedModalRect(this.getX() + (int)(this.sliderValue * (float)(this.width - 8)), this.getY(), 0, 66, 4, 20);
+			this.drawTexturedModalRect(this.getX() + (int)(this.sliderValue * (float)(this.width - 8)) + 4, this.getY(), 196, 66, 4, 20);
 		}
 	}
 	@Override
@@ -121,8 +117,8 @@ public class  EnumSlider extends Slider {
 		if (superMousePressed(par2, par3))
 		{
 			final int index = getCurrentIndex();
-			playPressSound(mc.getSoundHandler());
-			this.sliderValue = (float)(par2 - (this.x + 4)) / (float)(this.width - 8);
+			playPressSound();
+			this.sliderValue = (float)(par2 - (this.getX() + 4)) / (float)(this.width - 8);
 			int sliderValue = (int)Math.round(this.sliderValue * (maxValue - minValue) + this.minValue);
 			if(sliderValue <0) return false;
 			if(index == -1) {
@@ -141,10 +137,6 @@ public class  EnumSlider extends Slider {
 			return false;
 		}
 	}
-	@Override
-	public void playPressSound(SoundHandler soundHandlerIn) {
-		soundHandlerIn.playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, this.enabled ? 1.0F : 0.5f));
-	}
 	private int getCurrentIndex() {
 		int out = 0;
 		for(Enum<?> e : this.enumValues) {
@@ -155,7 +147,7 @@ public class  EnumSlider extends Slider {
 	}
 	public boolean superMousePressed(int mouseX, int mouseY)
 	{
-		return this.enabled && this.visible && mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
+		return this.enabled && this.visible && mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
 	}
 	public void mouseClick(int mouseX, int mouseY, int mouseButton) throws IOException {
 		this.prevIndex = getCurrentIndex();

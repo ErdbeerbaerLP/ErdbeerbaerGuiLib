@@ -123,10 +123,10 @@ public class ExampleGUI extends BetterGuiScreen {
 	@Override
 	public void updateGui() {
 		//Update positions
-		exampleLabel1.x = width/2; //always centered!
+		exampleLabel1.setX(width/2); //always centered!
 
-		exitButton.x = width-exitButton.width-6;
-		exitButton.y = 6;
+		exitButton.setX(width-exitButton.getWidth()-6);
+		exitButton.setY(6);
 	}
 
 	@Override

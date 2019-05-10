@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.erdbeerbaerlp.guilib.components.IGuiComponent;
+import de.erdbeerbaerlp.guilib.components.GuiComponent;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.Side;
@@ -12,12 +12,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public abstract class BetterGuiScreen extends GuiScreen {
-	private final List<IGuiComponent> components;
+	private final List<GuiComponent> components;
 	private int nextComponentID = 0;
 	private int pages = 0;
 	private int currentPage = 0;
 	public BetterGuiScreen() {
-		components =  new ArrayList<IGuiComponent>();
+		components =  new ArrayList<GuiComponent>();
 		components.clear();
 		buildGui();
 		initGui();
@@ -35,7 +35,7 @@ public abstract class BetterGuiScreen extends GuiScreen {
 	@Override
 	public final void updateScreen() {
 		updateGui();
-		for(IGuiComponent comp : components) {
+		for(GuiComponent comp : components) {
 			comp.updateComponent();
 		}
 
@@ -57,8 +57,8 @@ public abstract class BetterGuiScreen extends GuiScreen {
 	 * Use this to add your components
 	 * @param component
 	 */
-	public final void addComponent(IGuiComponent component) {
-		component.setID(nextComponentID);
+	public final void addComponent(GuiComponent component) {
+		component.setId(nextComponentID);
 		nextComponentID++;
 		this.components.add(component);
 	}
@@ -66,15 +66,15 @@ public abstract class BetterGuiScreen extends GuiScreen {
 	 * Use this to add multiple components at once
 	 * @param component
 	 */
-	public final void addAllComponents(IGuiComponent...components) {
-		for(IGuiComponent c : components) {
+	public final void addAllComponents(GuiComponent...components) {
+		for(GuiComponent c : components) {
 			this.addComponent(c);
 		}
 	}
 	public void setAmountOfPages(int pages) {
 		this.pages = pages;
 	}
-	public void assignComponentToPage(IGuiComponent comp, int page) {
+	public void assignComponentToPage(GuiComponent comp, int page) {
 		comp.assignToPage(page);
 	}
 	@Override
@@ -88,12 +88,12 @@ public abstract class BetterGuiScreen extends GuiScreen {
 	public final void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		super.drawScreen(mouseX, mouseY, partialTicks);
 		drawDefaultBackground();
-		for(final IGuiComponent comp : components) {
+		for(final GuiComponent comp : components) {
 			if(comp.getAssignedPage() != -1) if(comp.getAssignedPage() != currentPage) continue;
 			comp.draw(mouseX, mouseY, partialTicks);
 		}
 		//Second for to not have components overlap the tooltips
-		for(final IGuiComponent comp : components) {
+		for(final GuiComponent comp : components) {
 			if(comp.getAssignedPage() != -1) if(comp.getAssignedPage() != currentPage) continue;
 			if(comp.canHaveTooltip() && isHovered(comp, mouseX, mouseY) && comp.isVisible()) {
 
@@ -109,7 +109,7 @@ public abstract class BetterGuiScreen extends GuiScreen {
 
 
 	}
-	private final boolean isHovered(IGuiComponent comp, int mouseX, int mouseY) {
+	private final boolean isHovered(GuiComponent comp, int mouseX, int mouseY) {
 		if(comp.getAssignedPage() != -1 ) if(comp.getAssignedPage() != currentPage) return false;
 		final int x = comp.getX();
 		final int y = comp.getY();
@@ -117,7 +117,7 @@ public abstract class BetterGuiScreen extends GuiScreen {
 		final int h = comp.getHeight();
 		return (mouseX >= x && mouseY >= y && mouseX < x + w && mouseY < y + h);
 	}
-	public final IGuiComponent getComponent(int index){
+	public final GuiComponent getComponent(int index){
 		return components.get(index);
 	}
 	public final void openGui(GuiScreen gui) {
@@ -127,7 +127,7 @@ public abstract class BetterGuiScreen extends GuiScreen {
 	@Override
 	public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
 
-		for(IGuiComponent comp : components) {
+		for(GuiComponent comp : components) {
 			if(comp.getAssignedPage() != -1) if(comp.getAssignedPage() != currentPage) continue;
 			comp.mouseClick(mouseX, mouseY, mouseButton);
 		}
@@ -135,7 +135,7 @@ public abstract class BetterGuiScreen extends GuiScreen {
 	@Override
 	public void mouseReleased(int mouseX, int mouseY, int state) {
 
-		for(IGuiComponent comp : components) {
+		for(GuiComponent comp : components) {
 			if(comp.getAssignedPage() != -1) if(comp.getAssignedPage() != currentPage) continue;
 			comp.mouseReleased(mouseX, mouseY, state);
 		}
@@ -143,7 +143,7 @@ public abstract class BetterGuiScreen extends GuiScreen {
 	@Override
 	public void keyTyped(char typedChar, int keyCode) throws IOException {
 
-		for(IGuiComponent comp : components) {
+		for(GuiComponent comp : components) {
 			if(comp.getAssignedPage() != -1 ) if(comp.getAssignedPage() != currentPage) continue;
 			comp.keyTyped(typedChar, keyCode);
 		}
@@ -152,14 +152,14 @@ public abstract class BetterGuiScreen extends GuiScreen {
 	@Override
 	public void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
 
-		for(IGuiComponent comp : components) {
+		for(GuiComponent comp : components) {
 			if(comp.getAssignedPage() != -1 ) if(comp.getAssignedPage() != currentPage) continue;
 			comp.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
 		}
 	}
 	@Override
 	public void handleMouseInput() throws IOException {
-		for(IGuiComponent comp : components) {
+		for(GuiComponent comp : components) {
 			if(comp.getAssignedPage() != -1 ) if(comp.getAssignedPage() != currentPage) continue;
 			comp.handleMouseInput();
 		}
@@ -167,7 +167,7 @@ public abstract class BetterGuiScreen extends GuiScreen {
 	}
 	@Override
 	public void handleKeyboardInput() throws IOException {
-		for(IGuiComponent comp : components) {
+		for(GuiComponent comp : components) {
 			if(comp.getAssignedPage() != -1 ) if(comp.getAssignedPage() != currentPage) continue;
 			comp.handleKeyboardInput();
 		}
