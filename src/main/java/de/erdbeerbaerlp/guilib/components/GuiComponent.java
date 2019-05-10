@@ -20,7 +20,9 @@ public abstract class GuiComponent extends Gui{
 	protected final FontRenderer fontRenderer;
 	protected int id;
     public int packedFGColour; //FML  (what does this do?)
-    protected boolean hovered;
+    protected boolean hovered; //Sometimes used by components
+	private int assignedPage = -1;
+	protected boolean visible = true , enabled = true;
 	protected GuiComponent(int x, int y, int width, int height) {
 		this.fontRenderer = mc.fontRenderer;
 		this.setX(x);
@@ -37,7 +39,7 @@ public abstract class GuiComponent extends Gui{
 	public final String[] getTooltips() {
 		return this.tooltips;
 	}
-	protected boolean visible,enabled = true;
+	
 	public final boolean isVisible() {
 		return this.visible;
 	}
@@ -96,7 +98,6 @@ public abstract class GuiComponent extends Gui{
 	public final void show() {
 		setVisible(true);
 	}
-	private int assignedPage = -1;
 	public final void assignToPage(int page) {
 		assignedPage = page;
 	}

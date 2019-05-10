@@ -7,6 +7,10 @@ import java.util.List;
 import de.erdbeerbaerlp.guilib.components.GuiComponent;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -87,7 +91,7 @@ public abstract class BetterGuiScreen extends GuiScreen {
 	@Override
 	public final void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		super.drawScreen(mouseX, mouseY, partialTicks);
-		drawDefaultBackground();
+		drawBackground();
 		for(final GuiComponent comp : components) {
 			if(comp.getAssignedPage() != -1) if(comp.getAssignedPage() != currentPage) continue;
 			comp.draw(mouseX, mouseY, partialTicks);
@@ -108,6 +112,27 @@ public abstract class BetterGuiScreen extends GuiScreen {
 		}
 
 
+	}
+	protected void drawBackground() {
+        if (this.mc.world != null)
+        {
+            this.drawGradientRect(0, 0, this.width, this.height, -1072689136, -804253680);
+        }
+        else
+        {
+        	GlStateManager.disableLighting();
+            GlStateManager.disableFog();
+            Tessellator tessellator = Tessellator.getInstance();
+            BufferBuilder bufferbuilder = tessellator.getBuffer();
+            this.mc.getTextureManager().bindTexture(OPTIONS_BACKGROUND);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+            bufferbuilder.pos(0.0D, (double)this.height, 0.0D).tex(0.0D, (double)((float)this.height / 32.0F + (float)0)).color(64, 64, 64, 255).endVertex();
+            bufferbuilder.pos((double)this.width, (double)this.height, 0.0D).tex((double)((float)this.width / 32.0F), (double)((float)this.height / 32.0F + (float)0)).color(64, 64, 64, 255).endVertex();
+            bufferbuilder.pos((double)this.width, 0.0D, 0.0D).tex((double)((float)this.width / 32.0F), (double)0).color(64, 64, 64, 255).endVertex();
+            bufferbuilder.pos(0.0D, 0.0D, 0.0D).tex(0.0D, (double)0).color(64, 64, 64, 255).endVertex();
+            tessellator.draw();
+        }
 	}
 	private final boolean isHovered(GuiComponent comp, int mouseX, int mouseY) {
 		if(comp.getAssignedPage() != -1 ) if(comp.getAssignedPage() != currentPage) return false;
