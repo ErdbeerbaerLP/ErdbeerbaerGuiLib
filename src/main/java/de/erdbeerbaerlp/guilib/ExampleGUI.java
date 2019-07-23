@@ -23,7 +23,7 @@ public class ExampleGUI extends BetterGuiScreen {
         exampleButton = new Button(50, 50, "Button", DefaultButtonIcons.SAVE);
         exampleCheckbox = new CheckBox(50, 70, "Checkbox", false);
         exampleTextField = new TextField(50, 100, 150);
-        exampleLabel1 = new Label(width / 2, 10);
+        exampleLabel1 = new Label("Example GUI", width / 2, 10);
         exitButton = new Button(0, 0, DefaultButtonIcons.DELETE);
         exampleSlider1 = new Slider(50, 130, "Slider: ", 0, 100, 50, () -> System.out.println(exampleSlider1.getValue()));
         exampleSlider2 = new <ExampleEnum>EnumSlider(200, 130, "Enum Slider: ", ExampleEnum.class, ExampleEnum.EXAMPLE, () -> {

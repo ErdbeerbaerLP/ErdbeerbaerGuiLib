@@ -18,8 +18,8 @@ public class Label extends GuiComponent {
     private int brColor;
     private int border;
 
-    public Label(int x, int y, int width, int height, int color) {
-        super(x, y, width, height);
+    public Label(int x, int y, int color) {
+        super(x, y, 0, 0);
         this.labels = Lists.newArrayList();
         this.textColor = color;
         this.setX(x);
@@ -28,14 +28,13 @@ public class Label extends GuiComponent {
     }
 
     public Label(int x, int y) {
-        this(x, y, 150, 20, -1);
+        this(x, y, -1);
     }
 
     public Label(String text, int x, int y) {
         this(x, y);
         this.addLine(text);
     }
-
     @Override
     public void draw(int mouseX, int mouseY, float partial) {
         if (this.visible) {
@@ -47,7 +46,7 @@ public class Label extends GuiComponent {
 
             for (int k = 0; k < this.labels.size(); ++k) {
                 if (this.centered) {
-                    this.drawCenteredString(this.fontRenderer, this.labels.get(k), this.getX() + this.width / 2, j + k * 10, this.textColor);
+                    this.drawCenteredString(this.fontRenderer, this.labels.get(k), this.getX(), j + k * 10, this.textColor);
                 } else {
                     this.drawString(this.fontRenderer, this.labels.get(k), this.getX(), j + k * 10, this.textColor);
                 }

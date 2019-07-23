@@ -81,6 +81,14 @@ public abstract class GuiComponent extends Gui {
         return width;
     }
 
+    public final void setWidth(int width) {
+        this.width = width;
+    }
+
+    public final void setHeight(int height) {
+        this.height = height;
+    }
+
     public final int getHeight() {
         return height;
     }
