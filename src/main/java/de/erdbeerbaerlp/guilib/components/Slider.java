@@ -108,7 +108,7 @@ public class Slider extends GuiComponent {
             this.hovered = mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
             int k = this.getHoverState(this.hovered);
             GuiUtils.drawContinuousTexturedBox(BUTTON_TEXTURES, this.getX(), this.getY(), 0, 46 + k * 20, this.width, this.height, 200, 20, 2, 3, 2, 2, this.zLevel);
-//            this.mouseDragged(mc, mouseX, mouseY);
+            this.mouseClickMove(mouseX, mouseY, 0, 0);
             int color = 14737632;
 
             if (packedFGColour != 0) {
@@ -160,13 +160,11 @@ public class Slider extends GuiComponent {
 
     @Override
     public void keyTyped(char typedChar, int keyCode) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
-        // TODO Auto-generated method stub
         this.prevValue = getValue();
         if (this.visible) {
             if (this.dragging) {

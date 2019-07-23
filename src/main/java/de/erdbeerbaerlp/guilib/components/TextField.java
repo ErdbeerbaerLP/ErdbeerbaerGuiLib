@@ -513,7 +513,7 @@ public class TextField extends GuiComponent {
      */
     @SuppressWarnings("UnusedReturnValue")
     public final boolean textboxKeyTyped(char typedChar, int keyCode) {
-        if (!this.isFocused) {
+        if (!this.isFocused || !this.enabled) {
             return false;
         } else if (GuiScreen.isKeyComboCtrlA(keyCode)) {
             this.setCursorPositionEnd();

@@ -58,6 +58,11 @@ public class EnumSlider extends Slider {
     }
 
     @Override
+    public void draw(int mouseX, int mouseY, float partial) {
+        super.draw(mouseX, mouseY, partial);
+    }
+
+    @Override
     public void updateSlider() {
         if (this.sliderValue < 0.0F) {
             this.sliderValue = 0.0F;
@@ -89,12 +94,13 @@ public class EnumSlider extends Slider {
         if (this.action != null) action.run();
     }
 
-    protected void mouseDragged(Minecraft par1Minecraft, int par2, int par3) {
+    @Override
+    public void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
         this.prevIndex = getCurrentIndex();
         if (this.visible) {
             if (this.dragging) {
                 final int index = getCurrentIndex();
-                this.sliderValue = (float) (par2 - (this.getX() + 4)) / (float) (this.width - 8);
+                this.sliderValue = (float) (mouseX - (this.getX() + 4)) / (float) (this.width - 8);
                 int sliderValue = (int) Math.round(this.sliderValue * (maxValue - minValue) + this.minValue);
                 if (sliderValue < 0) sliderValue = 0;
                 if (index == -1) {
@@ -151,6 +157,8 @@ public class EnumSlider extends Slider {
 
     public void mouseClick(int mouseX, int mouseY, int mouseButton) {
         this.prevIndex = getCurrentIndex();
-        this.mousePressed(mc, mouseX, mouseY);
+        if (this.mousePressed(mc, mouseX, mouseY)) {
+            playPressSound();
+        }
     }
 }
