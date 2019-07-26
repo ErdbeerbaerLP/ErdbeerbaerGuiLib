@@ -114,7 +114,7 @@ public class Button extends GuiComponent {
     public void mouseClick(int mouseX, int mouseY, int mouseButton) {
         if (mousePressed(mc, mouseX, mouseY)) {
             playPressSound();
-            onClick();
+            if (enabled) onClick();
         }
     }
 
