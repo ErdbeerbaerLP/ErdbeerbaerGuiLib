@@ -18,13 +18,12 @@ import java.util.List;
 @SuppressWarnings("unused")
 @SideOnly(Side.CLIENT)
 public abstract class BetterGuiScreen extends GuiScreen {
-    private final List<GuiComponent> components;
+    private final List<GuiComponent> components = new ArrayList<>();
     private int nextComponentID = 0;
     private int pages = 0;
     private int currentPage = 0;
 
     public BetterGuiScreen() {
-        components = new ArrayList<>();
         buildGui();
     }
 
