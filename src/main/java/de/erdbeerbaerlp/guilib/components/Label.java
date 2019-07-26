@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 
+import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -57,7 +58,10 @@ public class Label extends GuiComponent {
     public void addLine(String p_175202_1_) {
         this.labels.add(I18n.format(p_175202_1_));
     }
-
+    public void setText(String text){
+        this.labels.clear();
+        labels.addAll(Arrays.asList(text.split("\n")));
+    }
     /**
      * Sets the Label to be centered
      */
