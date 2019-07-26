@@ -74,8 +74,6 @@ public abstract class BetterGuiScreen extends GuiScreen {
      * @param component The component to add
      */
     public final void addComponent(GuiComponent component) {
-        component.setId(nextComponentID);
-        nextComponentID++;
         this.components.add(component);
     }
 
@@ -98,7 +96,7 @@ public abstract class BetterGuiScreen extends GuiScreen {
         comp.assignToPage(page);
     }
 
-    @SuppressWarnings({"NullableProblems", "DanglingJavadoc"})
+    @SuppressWarnings({"DanglingJavadoc"})
     @Override
     @Deprecated
     /**
@@ -195,6 +193,7 @@ public abstract class BetterGuiScreen extends GuiScreen {
     public void keyTyped(char typedChar, int keyCode) throws IOException {
         if (keyCode == 1 && doesEscCloseGui())
         {
+            //noinspection RedundantCast
             this.mc.displayGuiScreen((GuiScreen)null);
 
             if (this.mc.currentScreen == null)

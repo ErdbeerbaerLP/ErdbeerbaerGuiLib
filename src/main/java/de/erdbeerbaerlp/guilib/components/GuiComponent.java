@@ -17,7 +17,6 @@ public abstract class GuiComponent extends Gui {
     protected Minecraft mc = Minecraft.getMinecraft();
     protected int width;
     protected int height;
-    protected int id;
     protected boolean hovered; //Sometimes used by components
     protected boolean visible = true, enabled = true;
     private int x;
@@ -143,9 +142,6 @@ public abstract class GuiComponent extends Gui {
         return assignedPage;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public void setPosition(int x, int y) {
         setX(x);
