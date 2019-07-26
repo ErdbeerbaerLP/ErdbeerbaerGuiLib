@@ -193,7 +193,15 @@ public abstract class BetterGuiScreen extends GuiScreen {
 
     @Override
     public void keyTyped(char typedChar, int keyCode) throws IOException {
+        if (keyCode == 1 && doesEscCloseGui())
+        {
+            this.mc.displayGuiScreen((GuiScreen)null);
 
+            if (this.mc.currentScreen == null)
+            {
+                this.mc.setIngameFocus();
+            }
+        }
         for (GuiComponent comp : components) {
             if (comp.getAssignedPage() != -1) if (comp.getAssignedPage() != currentPage) continue;
             comp.keyTyped(typedChar, keyCode);
