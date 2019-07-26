@@ -7,6 +7,9 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 @SuppressWarnings("unused")
@@ -33,6 +36,22 @@ public abstract class GuiComponent extends Gui {
         this.height = height;
     }
 
+    /**
+     * This function resize the image file and returns the BufferedImage object that can be drawn
+     */
+    final BufferedImage scaleImage(final BufferedImage img, int width, int height) {
+        final int w = img.getWidth() * width;
+        final int h = img.getHeight() * height;
+
+        final BufferedImage scaledImage = new BufferedImage(w, h, img.getType());
+        final Graphics2D g = scaledImage.createGraphics();
+
+        AffineTransform at = AffineTransform.getScaleInstance(height, width);
+        g.drawRenderedImage(img, at);
+        g.dispose();
+
+        return scaledImage;
+    }
     public boolean canHaveTooltip() {
         return true;
     }

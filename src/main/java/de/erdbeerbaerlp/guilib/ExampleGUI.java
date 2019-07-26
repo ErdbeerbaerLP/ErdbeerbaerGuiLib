@@ -3,6 +3,11 @@ package de.erdbeerbaerlp.guilib;
 import de.erdbeerbaerlp.guilib.components.*;
 import de.erdbeerbaerlp.guilib.components.Button.DefaultButtonIcons;
 import de.erdbeerbaerlp.guilib.gui.BetterGuiScreen;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.util.ResourceLocation;
+
+import java.io.IOException;
 
 @SuppressWarnings("unused")
 public class ExampleGUI extends BetterGuiScreen {
@@ -15,7 +20,8 @@ public class ExampleGUI extends BetterGuiScreen {
     private EnumSlider exampleSlider2;
     private ToggleButton exampleToggleButton;
     private EnumSlider drawTypeSlider;
-
+    private Image googleImage;
+    private Image apple;
     @Override
     public void buildGui() {
 
@@ -33,7 +39,11 @@ public class ExampleGUI extends BetterGuiScreen {
         });
         exampleToggleButton = new ToggleButton(50, 170, "Toggle Button: ");
         drawTypeSlider = new <ToggleButton.DrawType>EnumSlider(156, 170, "Draw type: ", ToggleButton.DrawType.class, ToggleButton.DrawType.COLORED_LINE, () -> this.exampleToggleButton.setDrawType((ToggleButton.DrawType) drawTypeSlider.getEnum()));
-
+        try {
+            googleImage = new Image(200, 60, 136, 46, "https://www.google.de/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png", true);
+        } catch (IOException ignored) {
+        }
+        apple = new Image(0, 0, 16, 16, new ResourceLocation("minecraft", "textures/items/apple.png"));
 
         //Register listeners
         exampleButton.setClickListener(() -> System.out.println("I have been clicked!"));
@@ -43,6 +53,11 @@ public class ExampleGUI extends BetterGuiScreen {
         exampleToggleButton.setClickListener(() -> {
             System.out.println("New Value: " + exampleToggleButton.getValue());
             this.exampleButton.setEnabled(exampleToggleButton.getValue());
+        });
+        apple.setCallback(() -> {
+            mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_PLAYER_BURP, 1));
+            apple.setVisible(false);
+            apple.disable();
         });
 
 
@@ -55,7 +70,8 @@ public class ExampleGUI extends BetterGuiScreen {
         exampleSlider2.setTooltips("This slider works using Enums", "It will change through all enum values");
         exampleToggleButton.setTooltips("This button can be toggled");
         drawTypeSlider.setTooltips("Change how the toggle button will be rendered");
-
+        googleImage.setTooltips("This is an example image", "It was parsed using an URL");
+        apple.setTooltips("Oh, look at this apple!");
 
         //Set some values
         exampleTextField.setAcceptsColors(true);
@@ -73,6 +89,7 @@ public class ExampleGUI extends BetterGuiScreen {
         this.addComponent(exampleSlider2);
         this.addComponent(exampleToggleButton);
         this.addComponent(drawTypeSlider);
+        this.addAllComponents(googleImage, apple);
     }
 
     @Override
@@ -82,6 +99,7 @@ public class ExampleGUI extends BetterGuiScreen {
 
         exitButton.setX(width - exitButton.getWidth() - 6);
         exitButton.setY(6);
+        apple.setPosition(exitButton.getX() - 40, exitButton.getY() + 30);
     }
 
     @Override

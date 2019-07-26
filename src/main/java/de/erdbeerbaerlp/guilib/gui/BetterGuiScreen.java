@@ -1,5 +1,6 @@
 package de.erdbeerbaerlp.guilib.gui;
 
+import com.google.common.collect.Lists;
 import de.erdbeerbaerlp.guilib.components.GuiComponent;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -118,7 +119,7 @@ public abstract class BetterGuiScreen extends GuiScreen {
             comp.draw(mouseX, mouseY, partialTicks);
         }
         //Second for to not have components overlap the tooltips
-        for (final GuiComponent comp : components) {
+        for (final GuiComponent comp : Lists.reverse(components)) { //Reversing to call front component
             if (comp.getAssignedPage() != -1) if (comp.getAssignedPage() != currentPage) continue;
             if (comp.canHaveTooltip() && isHovered(comp, mouseX, mouseY) && comp.isVisible()) {
 
@@ -126,7 +127,10 @@ public abstract class BetterGuiScreen extends GuiScreen {
                 if (comp.getTooltips() != null) {
                     list.addAll(Arrays.asList(comp.getTooltips()));
                 }
-                if (!list.isEmpty()) drawHoveringText(list, mouseX, mouseY);
+                if (!list.isEmpty()) {
+                    drawHoveringText(list, mouseX, mouseY);
+                    break;
+                }
             }
         }
 
