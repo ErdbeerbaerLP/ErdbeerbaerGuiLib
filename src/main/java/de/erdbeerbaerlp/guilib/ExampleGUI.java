@@ -7,8 +7,6 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 
-import java.io.IOException;
-
 @SuppressWarnings("unused")
 public class ExampleGUI extends BetterGuiScreen {
     private Button exampleButton;
@@ -39,10 +37,8 @@ public class ExampleGUI extends BetterGuiScreen {
         });
         exampleToggleButton = new ToggleButton(50, 170, "Toggle Button: ");
         drawTypeSlider = new <ToggleButton.DrawType>EnumSlider(156, 170, "Draw type: ", ToggleButton.DrawType.class, ToggleButton.DrawType.COLORED_LINE, () -> this.exampleToggleButton.setDrawType((ToggleButton.DrawType) drawTypeSlider.getEnum()));
-        try {
-            googleImage = new Image(200, 60, 136, 46, "https://www.google.de/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png", true);
-        } catch (IOException ignored) {
-        }
+        googleImage = new Image(200, 40, 136, 46, "https://www.google.de/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png", true);
+
         apple = new Image(0, 0, 16, 16, new ResourceLocation("minecraft", "textures/items/apple.png"));
 
         //Register listeners
@@ -70,8 +66,8 @@ public class ExampleGUI extends BetterGuiScreen {
         exampleSlider2.setTooltips("This slider works using Enums", "It will change through all enum values");
         exampleToggleButton.setTooltips("This button can be toggled");
         drawTypeSlider.setTooltips("Change how the toggle button will be rendered");
-        googleImage.setTooltips("This is an example image", "It was parsed using an URL");
-        apple.setTooltips("Oh, look at this apple!");
+        googleImage.setTooltips("This is an example image", "It was loaded from an URL");
+        apple.setTooltips("Oh, look at this apple!", "", "Click to eat");
 
         //Set some values
         exampleTextField.setAcceptsColors(true);

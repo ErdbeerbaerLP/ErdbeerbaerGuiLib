@@ -1,12 +1,16 @@
 package de.erdbeerbaerlp.guilib.components;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.config.GuiUtils;
+
+import java.awt.image.BufferedImage;
 
 @SuppressWarnings("unused")
 public class Button extends GuiComponent {
 
+    protected DynamicTexture BUTTON_ICON_IMAGE;
     protected ResourceLocation BUTTON_ICON;
     protected String displayString;
     private Runnable callback;
@@ -24,14 +28,19 @@ public class Button extends GuiComponent {
     }
 
     public Button(int xPos, int yPos, int width, int height, String displayString) {
-        this(xPos, yPos, width, height, displayString, null);
+        this(xPos, yPos, width, height, displayString, (ResourceLocation) null);
     }
 
     public Button(int xPos, int yPos, int width, int height, String displayString, ResourceLocation icon) {
         super(xPos, yPos, width, height);
         this.BUTTON_ICON = icon;
         this.displayString = displayString;
+    }
 
+    public Button(int xPos, int yPos, int width, int height, String displayString, BufferedImage icon) {
+        super(xPos, yPos, width, height);
+        this.BUTTON_ICON_IMAGE = new DynamicTexture(icon);
+        this.displayString = displayString;
     }
 
     public Button(int xPos, int yPos, String string, ResourceLocation icon) {
@@ -71,11 +80,16 @@ public class Button extends GuiComponent {
             }
             int bx = this.getX();
             int mwidth = this.width;
-            if (BUTTON_ICON != null) {
+            if (BUTTON_ICON != null && BUTTON_ICON_IMAGE == null) {
                 Minecraft.getMinecraft().getTextureManager().bindTexture(BUTTON_ICON);
                 drawModalRectWithCustomSizedTexture(bx + 2, getY() + 2, 0, 0, 16, 16, 16, 16);
 
                 // ! MODIFY X !
+                bx += 2 + 16;
+                mwidth -= 16;
+            } else if (BUTTON_ICON_IMAGE != null && BUTTON_ICON == null) {
+                mc.getTextureManager().bindTexture(mc.renderEngine.getDynamicTextureLocation("icon", BUTTON_ICON_IMAGE));
+                drawModalRectWithCustomSizedTexture(getX(), getY(), 0, 0, 16, 16, 16, 16);
                 bx += 2 + 16;
                 mwidth -= 16;
             }

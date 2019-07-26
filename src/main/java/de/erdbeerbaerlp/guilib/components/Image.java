@@ -1,8 +1,9 @@
 package de.erdbeerbaerlp.guilib.components;
 
+import de.erdbeerbaerlp.guilib.McMod;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -13,12 +14,19 @@ import java.net.URL;
 public class Image extends GuiComponent {
     private final DynamicTexture image;
     private final ResourceLocation resLoc;
-
+    private static final ResourceLocation errorLoading = new ResourceLocation(McMod.MODID, "textures/gui/imgError.png");
     private Runnable callback;
 
-    public Image(int x, int y, int width, int height, URL imageURL, boolean resizeIfNeeded) throws IOException {
+    public Image(int x, int y, int width, int height, String imageURL, boolean resizeIfNeeded) {
         super(x, y, width, height);
-        BufferedImage img = ImageIO.read(imageURL);
+        BufferedImage img = null;
+        try {
+            img = ImageIO.read(new URL(imageURL));
+        } catch (IOException e) {
+            image = null;
+            resLoc = null;
+            return;
+        }
         if (resizeIfNeeded)
             if (img.getWidth() > width || img.getHeight() > height) {
                 image = new DynamicTexture(scaleImage(img, getWidth(), getHeight()));
@@ -27,15 +35,23 @@ public class Image extends GuiComponent {
             }
         image = new DynamicTexture(img);
         resLoc = null;
+
     }
 
-    public Image(int x, int y, int width, int height, String imageURL, boolean resizeIfNeeded) throws IOException {
-        this(x, y, width, height, new URL(imageURL), resizeIfNeeded);
+    public Image(int x, int y, int width, int height, URL imageURL, boolean resizeIfNeeded) {
+        this(x, y, width, height, imageURL.toString(), resizeIfNeeded);
     }
 
-    public Image(int x, int y, int width, int height, File imageFile, boolean resizeIfNeeded) throws IOException {
+    public Image(int x, int y, int width, int height, File imageFile, boolean resizeIfNeeded) {
         super(x, y, width, height);
-        BufferedImage img = ImageIO.read(imageFile);
+        BufferedImage img;
+        try {
+            img = ImageIO.read(imageFile);
+        } catch (IOException e) {
+            image = null;
+            resLoc = null;
+            return;
+        }
         if (resizeIfNeeded)
             if (img.getWidth() > width || img.getHeight() > height) {
                 img = scaleImage(img, getWidth(), getHeight());
@@ -61,8 +77,11 @@ public class Image extends GuiComponent {
                 mc.getTextureManager().bindTexture(resLoc);
                 drawModalRectWithCustomSizedTexture(getX(), getY(), 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
             } else if (image != null && resLoc == null) {
-                GL11.glBindTexture(GL11.GL_TEXTURE_2D, image.getGlTextureId());
-                drawTexturedModalRect(getX(), getY(), 0, 0, getWidth(), getHeight());
+                Minecraft.getMinecraft().getTextureManager().bindTexture(mc.renderEngine.getDynamicTextureLocation("image", image));
+                drawModalRectWithCustomSizedTexture(getX(), getY(), 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
+            } else {
+                mc.getTextureManager().bindTexture(errorLoading);
+                drawModalRectWithCustomSizedTexture(getX(), getY(), 0, 0, 16, 16, 16, 16);
             }
         }
     }
