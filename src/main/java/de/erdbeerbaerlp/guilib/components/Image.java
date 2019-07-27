@@ -13,9 +13,9 @@ import java.io.IOException;
 import java.net.URL;
 
 public class Image extends GuiComponent {
+    private static final ResourceLocation errorLoading = new ResourceLocation(McMod.MODID, "textures/gui/imgerror.png");
     private final DynamicTexture image;
     private final ResourceLocation resLoc;
-    private static final ResourceLocation errorLoading = new ResourceLocation(McMod.MODID, "textures/gui/imgerror.png");
     private Runnable callback;
     private String errorTooltip = "";
 
@@ -95,6 +95,7 @@ public class Image extends GuiComponent {
     private boolean mousePressed(int mouseX, int mouseY) {
         return this.visible && mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
     }
+
     @Override
     public void mouseClick(int mouseX, int mouseY, int mouseButton) {
         if (mousePressed(mouseX, mouseY) && enabled && visible) {

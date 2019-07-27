@@ -60,6 +60,7 @@ public abstract class GuiComponent extends Gui {
         httpcon.disconnect();
         return img;
     }
+
     public boolean canHaveTooltip() {
         return true;
     }
@@ -112,12 +113,12 @@ public abstract class GuiComponent extends Gui {
         this.width = width;
     }
 
-    public final void setHeight(int height) {
-        this.height = height;
-    }
-
     public final int getHeight() {
         return height;
+    }
+
+    public final void setHeight(int height) {
+        this.height = height;
     }
 
     public void playPressSound() {

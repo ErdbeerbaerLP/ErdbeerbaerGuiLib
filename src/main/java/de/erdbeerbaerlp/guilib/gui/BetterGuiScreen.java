@@ -194,13 +194,11 @@ public abstract class BetterGuiScreen extends GuiScreen {
 
     @Override
     public void keyTyped(char typedChar, int keyCode) throws IOException {
-        if (keyCode == 1 && doesEscCloseGui())
-        {
+        if (keyCode == 1 && doesEscCloseGui()) {
             //noinspection RedundantCast
-            this.mc.displayGuiScreen((GuiScreen)null);
+            this.mc.displayGuiScreen((GuiScreen) null);
 
-            if (this.mc.currentScreen == null)
-            {
+            if (this.mc.currentScreen == null) {
                 this.mc.setIngameFocus();
             }
         }

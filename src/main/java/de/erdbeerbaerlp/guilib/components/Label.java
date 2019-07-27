@@ -36,6 +36,7 @@ public class Label extends GuiComponent {
         this(x, y);
         this.addLine(text);
     }
+
     @Override
     public void draw(int mouseX, int mouseY, float partial) {
         if (this.visible) {
@@ -58,10 +59,12 @@ public class Label extends GuiComponent {
     public void addLine(String p_175202_1_) {
         this.labels.add(I18n.format(p_175202_1_));
     }
-    public void setText(String text){
+
+    public void setText(String text) {
         this.labels.clear();
         labels.addAll(Arrays.asList(text.split("\n")));
     }
+
     /**
      * Sets the Label to be centered
      */
