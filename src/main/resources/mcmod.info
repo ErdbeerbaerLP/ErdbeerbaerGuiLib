@@ -3,7 +3,7 @@
   "modid": "eguilib",
   "name": "Erdbeerbaer´s Gui Lib",
   "description": "A easy-to-use gui library",
-  "version": "0.1",
+  "version": "0.1.0",
   "mcversion": "1.12",
   "url": "",
   "updateUrl": "",
