@@ -7,9 +7,12 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 @SuppressWarnings("unused")
 public abstract class GuiComponent extends Gui {
@@ -49,11 +52,19 @@ public abstract class GuiComponent extends Gui {
         g.dispose();
         return dimg;
     }
+
+    final BufferedImage loadImageFromURL(String url) throws IOException {
+        final HttpURLConnection httpcon = (HttpURLConnection) new URL(url).openConnection();
+        httpcon.addRequestProperty("User-Agent", "Minecraft");
+        final BufferedImage img = ImageIO.read(httpcon.getInputStream());
+        httpcon.disconnect();
+        return img;
+    }
     public boolean canHaveTooltip() {
         return true;
     }
 
-    public final String[] getTooltips() {
+    public String[] getTooltips() {
         return this.tooltips;
     }
 

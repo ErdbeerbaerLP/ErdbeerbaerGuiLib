@@ -4,6 +4,7 @@ import de.erdbeerbaerlp.guilib.McMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.lang3.ArrayUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -16,14 +17,14 @@ public class Image extends GuiComponent {
     private final ResourceLocation resLoc;
     private static final ResourceLocation errorLoading = new ResourceLocation(McMod.MODID, "textures/gui/imgerror.png");
     private Runnable callback;
-
+    private String errorTooltip = "";
     public Image(int x, int y, int width, int height, String imageURL, boolean resizeIfNeeded) {
         super(x, y, width, height);
         BufferedImage img;
         try {
-            img = ImageIO.read(new URL(imageURL));
+            img = loadImageFromURL(imageURL);
         } catch (IOException e) {
-            e.printStackTrace();
+            errorTooltip = e.getCause().getLocalizedMessage();
             image = null;
             resLoc = null;
             return;
@@ -49,7 +50,7 @@ public class Image extends GuiComponent {
         try {
             img = ImageIO.read(imageFile);
         } catch (IOException e) {
-            e.printStackTrace();
+            errorTooltip = e.getCause().getLocalizedMessage();
             image = null;
             resLoc = null;
             return;
@@ -68,6 +69,14 @@ public class Image extends GuiComponent {
         resLoc = resourceLocation;
     }
 
+    @Override
+    public String[] getTooltips() {
+        if (image == null && resLoc == null) {
+            return ArrayUtils.addAll(super.getTooltips(), "", "§cError loading image:", "§c" + errorTooltip);
+        }
+        return super.getTooltips();
+    }
+
     public void setCallback(Runnable callback) {
         this.callback = callback;
     }
@@ -83,7 +92,7 @@ public class Image extends GuiComponent {
                 drawModalRectWithCustomSizedTexture(getX(), getY(), 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
             } else {
                 mc.getTextureManager().bindTexture(errorLoading);
-                drawModalRectWithCustomSizedTexture(getX(), getY(), 0, 0, 16, 16, 16, 16);
+                drawModalRectWithCustomSizedTexture(getX() + getWidth() / 2, getY() + getHeight() / 2, 0, 0, 16, 16, 16, 16);
             }
         }
     }
@@ -95,7 +104,6 @@ public class Image extends GuiComponent {
     private boolean mousePressed(int mouseX, int mouseY) {
         return this.visible && mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
     }
-
     @Override
     public void mouseClick(int mouseX, int mouseY, int mouseButton) throws IOException {
         if (mousePressed(mouseX, mouseY) && enabled && visible) {
