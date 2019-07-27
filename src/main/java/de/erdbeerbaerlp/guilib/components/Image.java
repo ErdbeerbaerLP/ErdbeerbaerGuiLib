@@ -18,7 +18,8 @@ public class Image extends GuiComponent {
     private static final ResourceLocation errorLoading = new ResourceLocation(McMod.MODID, "textures/gui/imgerror.png");
     private Runnable callback;
     private String errorTooltip = "";
-    public Image(int x, int y, int width, int height, String imageURL, boolean resizeIfNeeded) {
+
+    public Image(int x, int y, int width, int height, String imageURL) {
         super(x, y, width, height);
         BufferedImage img;
         try {
@@ -29,22 +30,16 @@ public class Image extends GuiComponent {
             resLoc = null;
             return;
         }
-        if (resizeIfNeeded)
-            if (img.getWidth() > width || img.getHeight() > height) {
-                image = new DynamicTexture(scaleImage(img, getWidth(), getHeight()));
-                resLoc = null;
-                return;
-            }
         image = new DynamicTexture(img);
         resLoc = null;
 
     }
 
-    public Image(int x, int y, int width, int height, URL imageURL, boolean resizeIfNeeded) {
-        this(x, y, width, height, imageURL.toString(), resizeIfNeeded);
+    public Image(int x, int y, int width, int height, URL imageURL) {
+        this(x, y, width, height, imageURL.toString());
     }
 
-    public Image(int x, int y, int width, int height, File imageFile, boolean resizeIfNeeded) {
+    public Image(int x, int y, int width, int height, File imageFile) {
         super(x, y, width, height);
         BufferedImage img;
         try {
@@ -55,10 +50,6 @@ public class Image extends GuiComponent {
             resLoc = null;
             return;
         }
-        if (resizeIfNeeded)
-            if (img.getWidth() > width || img.getHeight() > height) {
-                img = scaleImage(img, getWidth(), getHeight());
-            }
         image = new DynamicTexture(img);
         resLoc = null;
     }
@@ -105,7 +96,7 @@ public class Image extends GuiComponent {
         return this.visible && mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
     }
     @Override
-    public void mouseClick(int mouseX, int mouseY, int mouseButton) throws IOException {
+    public void mouseClick(int mouseX, int mouseY, int mouseButton) {
         if (mousePressed(mouseX, mouseY) && enabled && visible) {
             onClick();
         }
@@ -117,7 +108,7 @@ public class Image extends GuiComponent {
     }
 
     @Override
-    public void keyTyped(char typedChar, int keyCode) throws IOException {
+    public void keyTyped(char typedChar, int keyCode) {
 
     }
 
