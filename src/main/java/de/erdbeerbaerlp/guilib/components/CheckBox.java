@@ -10,6 +10,14 @@ public class CheckBox extends GuiComponent {
     private String displayString;
     private boolean isChecked;
 
+    /**
+     * Creates an new checkbox
+     *
+     * @param xPos          X position
+     * @param yPos          Y position
+     * @param displayString Text to display next to the box
+     * @param isChecked     Default state
+     */
     public CheckBox(int xPos, int yPos, String displayString, boolean isChecked) {
         super(xPos, yPos, 0, 0);
         this.displayString = displayString;
@@ -19,14 +27,33 @@ public class CheckBox extends GuiComponent {
         this.width = this.boxWidth + 2 + Minecraft.getMinecraft().fontRenderer.getStringWidth(displayString);
     }
 
+    /**
+     * Creates an new checkbox
+     *
+     * @param xPos          X position
+     * @param yPos          Y position
+     * @param displayString Text to display next to the box
+     */
     public CheckBox(int xPos, int yPos, String displayString) {
         this(xPos, yPos, displayString, false);
     }
 
+    /**
+     * Creates an new textless checkbox
+     * @param xPos X position
+     * @param yPos Y position
+     */
     public CheckBox(int xPos, int yPos) {
         this(xPos, yPos, "", false);
     }
 
+    /**
+     * Creates an new checkbox
+     * @param xPos X position
+     * @param yPos Y position
+     * @param height Height of the checkbox
+     * @param width Width of the checkbox
+     */
     public CheckBox(int xPos, int yPos, int width, int height) {
         this(xPos, yPos, "", false);
         this.width = width;
@@ -54,18 +81,33 @@ public class CheckBox extends GuiComponent {
         }
     }
 
+    /**
+     * Checks if the checkbox was checked
+     * @return checked?
+     */
     public boolean isChecked() {
         return this.isChecked;
     }
 
+    /**
+     * Checks or unchecks the checkbox
+     * @param isChecked state
+     */
     public void setIsChecked(boolean isChecked) {
         this.isChecked = isChecked;
     }
 
+    /**
+     * Gets called on check/uncheck
+     */
     public void onChange() {
         if (this.callback != null) this.callback.run();
     }
 
+    /**
+     * Adds an change listener to the checkbox
+     * @param r listener
+     */
     public final void setChangeListener(Runnable r) {
         this.callback = r;
     }
@@ -93,13 +135,11 @@ public class CheckBox extends GuiComponent {
 
     @Override
     public void keyTyped(char typedChar, int keyCode) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
-        // TODO Auto-generated method stub
 
     }
 }

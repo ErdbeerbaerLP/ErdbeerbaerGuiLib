@@ -21,14 +21,55 @@ public class Slider extends GuiComponent {
     protected boolean drawString;
     protected boolean dragging;
 
-    public Slider(int xPos, int yPos, String displayStr, double minVal, double maxVal, double currentVal, Runnable changeAction) {
-        this(xPos, yPos, 150, 20, displayStr, "", minVal, maxVal, currentVal, true, true, changeAction);
+    /**
+     * Creates an Slider
+     *
+     * @param xPos         X position
+     * @param yPos         Y position
+     * @param prefix       String to display before the value
+     * @param minVal       minimum value
+     * @param maxVal       maximum value
+     * @param currentVal   current value
+     * @param changeAction Runnable being called on value change
+     */
+    public Slider(int xPos, int yPos, String prefix, double minVal, double maxVal, double currentVal, Runnable changeAction) {
+        this(xPos, yPos, 150, 20, prefix, "", minVal, maxVal, currentVal, true, true, changeAction);
     }
 
+    /**
+     * Creates an Slider
+     *
+     * @param xPos       X position
+     * @param yPos       Y position
+     * @param prefix     String to display before the value
+     * @param minVal     minimum value
+     * @param maxVal     maximum value
+     * @param currentVal current value
+     * @param drawStr    should the slide draw an string?
+     * @param height     Slider height
+     * @param width      Slider width
+     * @param suf        String to display behind the value
+     * @param showDec    Should the slider show decimal values?
+     */
     public Slider(int xPos, int yPos, int width, int height, String prefix, String suf, double minVal, double maxVal, double currentVal, boolean showDec, boolean drawStr) {
         this(xPos, yPos, width, height, prefix, suf, minVal, maxVal, currentVal, showDec, drawStr, null);
     }
 
+    /**
+     * Creates an Slider
+     * @param xPos X position
+     * @param yPos Y position
+     * @param prefix String to display before the value
+     * @param minVal minimum value
+     * @param maxVal maximum value
+     * @param currentVal current value
+     * @param changeAction Runnable being called on value change
+     * @param drawStr should the slide draw an string?
+     * @param height Slider height
+     * @param width Slider width
+     * @param suf String to display behind the value
+     * @param showDec Should the slider show decimal values?
+     */
     public Slider(int xPos, int yPos, int width, int height, String prefix, String suf, double minVal, double maxVal, double currentVal, boolean showDec, boolean drawStr, Runnable changeAction) {
         super(xPos, yPos, width, height);
         this.action = changeAction;
@@ -57,6 +98,10 @@ public class Slider extends GuiComponent {
 
     }
 
+    /**
+     * Sets the value change action
+     * @param action runnable being run on value change
+     */
     public void setAction(Runnable action) {
         this.action = action;
     }
@@ -98,6 +143,9 @@ public class Slider extends GuiComponent {
         if (prevValue != getValue()) this.onValueChanged();
     }
 
+    /**
+     * Gets called on value change
+     */
     public void onValueChanged() {
         if (this.action != null) action.run();
     }
@@ -126,7 +174,7 @@ public class Slider extends GuiComponent {
             if (strWidth > width - 6 && strWidth > ellipsisWidth)
                 buttonText = mc.fontRenderer.trimStringToWidth(buttonText, width - 6 - ellipsisWidth).trim() + "...";
 
-            this.drawCenteredString(mc.fontRenderer, buttonText, this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2, color);
+            if (drawString) this.drawCenteredString(mc.fontRenderer, buttonText, this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2, color);
         }
     }
 
@@ -178,10 +226,18 @@ public class Slider extends GuiComponent {
         }
     }
 
+    /**
+     * Gets the value as integer
+     * @return Value as int
+     */
     public int getValueInt() {
         return (int) Math.round(sliderValue * (maxValue - minValue) + minValue);
     }
 
+    /**
+     * Gets the value as double
+     * @return Value
+     */
     public double getValue() {
         return sliderValue * (maxValue - minValue) + minValue;
     }

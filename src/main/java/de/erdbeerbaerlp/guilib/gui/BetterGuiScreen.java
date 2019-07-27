@@ -24,6 +24,9 @@ public abstract class BetterGuiScreen extends GuiScreen {
     private int pages = 0;
     private int currentPage = 0;
 
+    /**
+     * The constructor, you need to call this!
+     */
     public BetterGuiScreen() {
         buildGui();
     }
@@ -31,6 +34,11 @@ public abstract class BetterGuiScreen extends GuiScreen {
     public final void initGui() {
     }
 
+    /**
+     * Gets current open page
+     *
+     * @return current page
+     */
     public int getCurrentPage() {
         return currentPage;
     }
@@ -49,23 +57,41 @@ public abstract class BetterGuiScreen extends GuiScreen {
 
     }
 
+    /**
+     * Gets called often to e.g. update components postions
+     */
     public abstract void updateGui();
 
     @Override
     public abstract boolean doesGuiPauseGame();
 
+    /**
+     * Should pressing ESC close the GUI?
+     */
     public abstract boolean doesEscCloseGui();
 
+    /**
+     * Open the next page of the GUI (if available)
+     */
     public void nextPage() {
         if (currentPage < pages) currentPage++;
     }
 
+    /**
+     * Open the previous page of the GUI (if available)
+     */
     public void prevPage() {
         if (currentPage > 0) currentPage--;
     }
 
+    /**
+     * Sets the gui to a specific Page (if it is available!)
+     *
+     * @param page Page to set the GUI to
+     */
     public void setPage(int page) {
-        this.currentPage = page;
+        if (page < pages)
+            this.currentPage = page;
     }
 
     /**
@@ -88,20 +114,25 @@ public abstract class BetterGuiScreen extends GuiScreen {
         }
     }
 
+    /**
+     * Sets the amount of pages this GUI has
+     * @param pages Amount of pages
+     */
     public void setAmountOfPages(int pages) {
         this.pages = pages;
     }
 
+    /**
+     * Assigns a component to the page by calling comp.assignToPage(page)
+     * @param comp The component to assign
+     * @param page The page for the component
+     */
     public void assignComponentToPage(GuiComponent comp, int page) {
         comp.assignToPage(page);
     }
 
-    @SuppressWarnings({"DanglingJavadoc"})
     @Override
     @Deprecated
-    /**
-     * Use addComponent instead!!!<br>This method does no longer do anything!
-     */
     protected final <T extends GuiButton> T addButton(T buttonIn) {
         throw new UnsupportedOperationException();
     }
@@ -137,6 +168,9 @@ public abstract class BetterGuiScreen extends GuiScreen {
 
     }
 
+    /**
+     * Override to draw a custom background
+     */
     protected void drawBackground() {
         if (this.mc.world != null) {
             this.drawGradientRect(0, 0, this.width, this.height, -1072689136, -804253680);
@@ -169,13 +203,17 @@ public abstract class BetterGuiScreen extends GuiScreen {
         return components.get(index);
     }
 
+    /**
+     * Opens an GUI
+     * @param gui GuiScreen or null
+     */
     public final void openGui(GuiScreen gui) {
         if (gui == null) mc.displayGuiScreen(null);
-        mc.displayGuiScreen(gui);
+        else mc.displayGuiScreen(gui);
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton)  {
 
         for (GuiComponent comp : components) {
             if (comp.getAssignedPage() != -1) if (comp.getAssignedPage() != currentPage) continue;
@@ -193,7 +231,7 @@ public abstract class BetterGuiScreen extends GuiScreen {
     }
 
     @Override
-    public void keyTyped(char typedChar, int keyCode) throws IOException {
+    public void keyTyped(char typedChar, int keyCode) {
         if (keyCode == 1 && doesEscCloseGui()) {
             //noinspection RedundantCast
             this.mc.displayGuiScreen((GuiScreen) null);

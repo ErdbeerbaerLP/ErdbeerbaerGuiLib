@@ -8,6 +8,9 @@ import javax.annotation.Nullable;
 import java.util.Set;
 
 @SuppressWarnings("unused")
+/*
+ * Used to show the "config" gui (example gui) in the mod list
+ */
 public class GuiFactory implements IModGuiFactory {
 
     @Override

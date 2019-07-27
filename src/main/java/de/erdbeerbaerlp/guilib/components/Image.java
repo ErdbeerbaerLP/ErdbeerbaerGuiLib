@@ -11,12 +11,24 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
+/**
+ * An image to display on the GUI
+ */
 public class Image extends GuiComponent {
     private final DynamicTexture image;
     private final ResourceLocation resLoc;
     private Runnable callback;
     private String errorTooltip = "";
 
+    /**
+     * Creates an image from an URL
+     *
+     * @param x        X position
+     * @param y        Y position
+     * @param width    Image width (might be resized!)
+     * @param height   Image hight (might be resized!)
+     * @param imageURL URL to image
+     */
     public Image(int x, int y, int width, int height, String imageURL) {
         super(x, y, width, height);
         BufferedImage img;
@@ -33,10 +45,27 @@ public class Image extends GuiComponent {
 
     }
 
+    /**
+     * Creates an image from an URL
+     *
+     * @param x        X position
+     * @param y        Y position
+     * @param width    Image width (might be resized!)
+     * @param height   Image hight (might be resized!)
+     * @param imageURL URL to image
+     */
     public Image(int x, int y, int width, int height, URL imageURL) {
         this(x, y, width, height, imageURL.toString());
     }
 
+    /**
+     * Creates an image from an File
+     * @param x X position
+     * @param y Y position
+     * @param width Image width (might be resized!)
+     * @param height Image hight (might be resized!)
+     * @param imageFile File to the image
+     */
     public Image(int x, int y, int width, int height, File imageFile) {
         super(x, y, width, height);
         BufferedImage img;
@@ -52,6 +81,14 @@ public class Image extends GuiComponent {
         resLoc = null;
     }
 
+    /**
+     * Creates an image from an ResourceLocation
+     * @param x X position
+     * @param y Y position
+     * @param width Image width (might be resized!)
+     * @param height Image hight (might be resized!)
+     * @param resourceLocation ResourceLocation of the image
+     */
     public Image(int x, int y, int width, int height, ResourceLocation resourceLocation) {
         super(x, y, width, height);
         image = null;
@@ -66,6 +103,10 @@ public class Image extends GuiComponent {
         return super.getTooltips();
     }
 
+    /**
+     * Sets the callback being run when clicking on the image
+     * @param callback Runnable to run
+     */
     public void setCallback(Runnable callback) {
         this.callback = callback;
     }
@@ -86,6 +127,9 @@ public class Image extends GuiComponent {
         }
     }
 
+    /**
+     * Called when clicking the image
+     */
     public void onClick() {
         if (this.callback != null) callback.run();
     }

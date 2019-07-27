@@ -108,6 +108,9 @@ public class ExampleGUI extends BetterGuiScreen {
         return false;
     }
 
+    /**
+     * An example enum
+     */
     public enum ExampleEnum {
         THIS("This", 1.0f),
         IS("is", 100.45f),

@@ -14,14 +14,53 @@ public class EnumSlider extends Slider {
 
     private int prevIndex;
 
-    public <T extends Enum<T>> EnumSlider(int xPos, int yPos, String displayStr, Class<T> enumClass, T currentVal, Runnable changeAction) {
-        this(xPos, yPos, 150, 20, displayStr, "", enumClass, currentVal, true, changeAction);
+    /**
+     * Creates an new Enum slider
+     *
+     * @param xPos         X position
+     * @param yPos         Y position
+     * @param prefix       String to display before the enum value
+     * @param enumClass    Class of the enum
+     * @param currentVal   Current value
+     * @param changeAction Runnable being called on value change
+     * @param <T>          Your enum
+     */
+    public <T extends Enum<T>> EnumSlider(int xPos, int yPos, String prefix, Class<T> enumClass, T currentVal, Runnable changeAction) {
+        this(xPos, yPos, 150, 20, prefix, "", enumClass, currentVal, true, changeAction);
     }
 
+    /**
+     * Creates an new Enum slider
+     *
+     * @param xPos       X position
+     * @param yPos       Y position
+     * @param prefix     String to display before the enum value
+     * @param suf        String to display behind the enum value
+     * @param enumClass  Class of the enum
+     * @param width      Width of the slider
+     * @param height     Height of the slider
+     * @param drawStr    Should the slider draw an string?
+     * @param currentVal Current value
+     * @param <T>        Your enum
+     */
     public <T extends Enum<T>> EnumSlider(int xPos, int yPos, int width, int height, String prefix, String suf, Class<T> enumClass, T currentVal, boolean drawStr) {
         this(xPos, yPos, width, height, prefix, suf, enumClass, currentVal, drawStr, null);
     }
 
+    /**
+     * Creates an new Enum slider
+     * @param xPos X position
+     * @param yPos Y position
+     * @param prefix String to display before the enum value
+     * @param suf String to display behind the enum value
+     * @param enumClass Class of the enum
+     * @param width Width of the slider
+     * @param height Height of the slider
+     * @param drawStr Should the slider draw an string?
+     * @param currentVal Current value
+     * @param <T> Your enum
+     * @param changeAction Runnable being called on value change
+     */
     public <T extends Enum<T>> EnumSlider(int xPos, int yPos, int width, int height, String prefix, String suf, Class<T> enumClass, T currentVal, boolean drawStr, Runnable changeAction) {
         super(xPos, yPos, width, height, prefix, suf, -1, -1, -1, false, drawStr, null);
 
@@ -53,6 +92,10 @@ public class EnumSlider extends Slider {
 
     }
 
+    /**
+     * Gets the enum value
+     * @return Value
+     */
     public Enum<?> getEnum() {
         return enumValue;
     }
@@ -90,6 +133,9 @@ public class EnumSlider extends Slider {
         if (prevIndex != getCurrentIndex()) this.onValueChanged();
     }
 
+    /**
+     * Gets called when the value changes
+     */
     public void onValueChanged() {
         if (this.action != null) action.run();
     }
@@ -151,7 +197,7 @@ public class EnumSlider extends Slider {
         return -1;
     }
 
-    public boolean superMousePressed(int mouseX, int mouseY) {
+    protected boolean superMousePressed(int mouseX, int mouseY) {
         return this.enabled && this.visible && mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
     }
 

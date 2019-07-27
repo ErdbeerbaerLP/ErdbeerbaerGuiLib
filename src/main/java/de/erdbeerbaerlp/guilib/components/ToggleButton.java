@@ -12,30 +12,83 @@ public class ToggleButton extends Button {
     private DrawType drawType = DrawType.COLORED_LINE;
     private ResourceLocation offIcon = null;
 
+    /**
+     * Creates an new ToggleButton
+     *
+     * @param xPos          X positon
+     * @param yPos          Y Position
+     * @param displayString Button Text
+     */
     public ToggleButton(int xPos, int yPos, String displayString) {
         this(xPos, yPos, 100, displayString);
     }
 
+    /**
+     * Creates an new ToggleButton
+     *
+     * @param xPos          X positon
+     * @param yPos          Y Position
+     * @param width         Button Width
+     * @param displayString Default String
+     */
     public ToggleButton(int xPos, int yPos, int width, String displayString) {
         this(xPos, yPos, width, 20, displayString);
     }
 
+    /**
+     * Creates an new ToggleButton
+     * @param xPos X positon
+     * @param yPos Y Position
+     * @param width Button Width
+     * @param displayString Default String
+     * @param icon Resource Location for an icon
+     */
     public ToggleButton(int xPos, int yPos, int width, String displayString, ResourceLocation icon) {
         this(xPos, yPos, width, 20, displayString, icon);
     }
 
+    /**
+     * Creates an new ToggleButton
+     * @param xPos X positon
+     * @param yPos Y Position
+     * @param width Button Width
+     * @param displayString Default String
+     * @param height Button Height
+     */
     public ToggleButton(int xPos, int yPos, int width, int height, String displayString) {
         this(xPos, yPos, width, height, displayString, null);
     }
 
+    /**
+     * Creates an new ToggleButton
+     * @param xPos X positon
+     * @param yPos Y Position
+     * @param width Button Width
+     * @param displayString Default String
+     * @param icon Resource Location for an icon
+     * @param height Button Height
+     */
     public ToggleButton(int xPos, int yPos, int width, int height, String displayString, ResourceLocation icon) {
         super(xPos, yPos, width, height, displayString, icon);
     }
 
+    /**
+     * Creates an new ToggleButton
+     * @param xPos X positon
+     * @param yPos Y Position
+     * @param icon Resource Location for an icon
+     */
     public ToggleButton(int xPos, int yPos, String string, ResourceLocation icon) {
         this(xPos, yPos, 100, string, icon);
     }
 
+    /**
+     * Creates an new ToggleButton
+     * @param xPos X positon
+     * @param yPos Y Position
+     * @param onIcon Icon image displayed for ON / TRUE
+     * @param offIcon Icon image displayed for OFF / FALSE
+     */
     public ToggleButton(int xPos, int yPos, ResourceLocation onIcon, ResourceLocation offIcon) {
         this(xPos, yPos, 20, "", onIcon);
         this.offIcon = offIcon;
@@ -79,6 +132,9 @@ public class ToggleButton extends Button {
             drawRect(this.getX() + 6, this.getY() + height - 3, this.getX() + this.width - 6, this.getY() + height - 4, value ? Color.GREEN.getRGB() : Color.red.getRGB());
     }
 
+    /**
+     * Sets the DrawType of the button
+     */
     public void setDrawType(DrawType type) {
         this.drawType = type;
     }
@@ -93,18 +149,38 @@ public class ToggleButton extends Button {
         }
     }
 
+    /**
+     * Gets the button value
+     */
     public boolean getValue() {
         return value;
     }
 
+    /**
+     * Sets the button value
+     */
     public void setValue(boolean value) {
         this.value = value;
     }
 
     public enum DrawType {
+        /**
+         * Draws An colored line below the string
+         */
+        COLORED_LINE,
+        /**
+         * Draws an specified string after the display string
+         * Or toggles the icons
+         */
+        STRING_OR_ICON,
+        /**
+         * Displays an colored line AND toggles the string/icon
+         */
+        BOTH;
 
-        COLORED_LINE, STRING_OR_ICON, BOTH;
-
+        /**
+         * Only used for the ExampleGUI
+         */
         public String getName() {
             switch (this) {
                 case COLORED_LINE:

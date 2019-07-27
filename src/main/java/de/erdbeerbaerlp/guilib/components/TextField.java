@@ -47,10 +47,25 @@ public class TextField extends GuiComponent {
     private boolean acceptsColors = false;
     private Runnable callback;
 
+    /**
+     * Creates an new text field
+     *
+     * @param x      X position
+     * @param y      Y position
+     * @param width  Text Field width
+     * @param height Text Field height
+     */
     public TextField(int x, int y, int width, int height) {
         super(x, y, width, height);
     }
 
+    /**
+     * Creates an new text field
+     *
+     * @param x     X position
+     * @param y     Y position
+     * @param width Text Field width
+     */
     public TextField(int x, int y, int width) {
         this(x, y, width, 20);
     }
@@ -429,13 +444,6 @@ public class TextField extends GuiComponent {
     }
 
     /**
-     * Sets whether this text box loses focus when something other than it is clicked.
-     */
-    public void setCanLoseFocus(boolean canLoseFocusIn) {
-        this.canLoseFocus = canLoseFocusIn;
-    }
-
-    /**
      * Returns the contents of the textbox
      */
     public String getText() {
@@ -635,14 +643,25 @@ public class TextField extends GuiComponent {
         this.drawTextBox();
     }
 
+    /**
+     * Sets wether or not the text box should accept color codes by using a §
+     * @param acceptsColors accept color code char?
+     */
     public void setAcceptsColors(boolean acceptsColors) {
         this.acceptsColors = acceptsColors;
     }
 
+    /**
+     * Gets called when pressing return
+     */
     public void onReturn() {
         if (this.callback != null) this.callback.run();
     }
 
+    /**
+     * Sets an callback for pressing return
+     * @param r Runnable to run
+     */
     public final void setReturnAction(Runnable r) {
         this.callback = r;
     }

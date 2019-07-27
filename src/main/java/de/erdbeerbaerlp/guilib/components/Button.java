@@ -19,28 +19,77 @@ public class Button extends GuiComponent {
     private Runnable callback;
     private String errorTooltip = "";
 
+    /**
+     * Creates a Button
+     *
+     * @param xPos          x position
+     * @param yPos          y position
+     * @param displayString Button Text
+     */
     public Button(int xPos, int yPos, String displayString) {
         this(xPos, yPos, 100, displayString);
     }
 
+    /**
+     * Creates a Button
+     *
+     * @param xPos          x position
+     * @param yPos          y position
+     * @param width         Button width
+     * @param displayString Button Text
+     */
     public Button(int xPos, int yPos, int width, String displayString) {
         this(xPos, yPos, width, 20, displayString);
     }
 
+    /**
+     * Creates a Button with icon
+     * @param xPos x position
+     * @param yPos y position
+     * @param width Button width
+     * @param displayString Button Text
+     * @param icon ResourceLocation to an Icon image (16x16!)
+     */
     public Button(int xPos, int yPos, int width, String displayString, ResourceLocation icon) {
         this(xPos, yPos, width, 20, displayString, icon);
     }
 
+    /**
+     * Creates a Button
+     * @param xPos x position
+     * @param yPos y position
+     * @param width Button width
+     * @param height Button height
+     * @param displayString Button Text
+     */
     public Button(int xPos, int yPos, int width, int height, String displayString) {
         this(xPos, yPos, width, height, displayString, (ResourceLocation) null);
     }
 
+    /**
+     * Creates a Button with icon
+     * @param xPos x position
+     * @param yPos y position
+     * @param width Button width
+     * @param height Button height
+     * @param displayString Button Text
+     * @param icon ResourceLocation to an Icon image (16x16!)
+     */
     public Button(int xPos, int yPos, int width, int height, String displayString, ResourceLocation icon) {
         super(xPos, yPos, width, height);
         this.BUTTON_ICON = icon;
         this.displayString = displayString;
     }
 
+    /**
+     * Creates a Button with icon
+     * @param xPos x position
+     * @param yPos y position
+     * @param width Button width
+     * @param height Button height
+     * @param displayString Button Text
+     * @param iconURL URL to an Icon image (16x16!)
+     */
     public Button(int xPos, int yPos, int width, int height, String displayString, String iconURL) {
         this(xPos, yPos, width, height, displayString);
         try {
@@ -51,29 +100,69 @@ public class Button extends GuiComponent {
         this.displayString = displayString;
     }
 
+    /**
+     * Creates a Button with icon
+     * @param xPos x position
+     * @param yPos y position
+     * @param width Button width
+     * @param height Button height
+     * @param displayString Button Text
+     * @param iconURL URL to an Icon image (16x16!)
+     */
     public Button(int xPos, int yPos, int width, int height, String displayString, URL iconURL) {
         this(xPos, yPos, width, height, displayString, iconURL.toString());
 
 
     }
+
+    /**
+     * Creates a Button with icon
+     * @param xPos x position
+     * @param yPos y position
+     * @param width Button width
+     * @param height Button height
+     * @param displayString Button Text
+     * @param icon Icon as BufferedImage (16x16!)
+     */
     public Button(int xPos, int yPos, int width, int height, String displayString, BufferedImage icon) {
         super(xPos, yPos, width, height);
         this.BUTTON_ICON_IMAGE = new DynamicTexture(icon);
         this.displayString = displayString;
     }
 
-    public Button(int xPos, int yPos, String string, ResourceLocation icon) {
-        this(xPos, yPos, 100, string, icon);
+    /**
+     * Creates a Button with icon
+     *
+     * @param xPos          x position
+     * @param yPos          y position
+     * @param displayString Button text
+     * @param icon          ResourceLocation to an Icon image (16x16!)
+     */
+    public Button(int xPos, int yPos, String displayString, ResourceLocation icon) {
+        this(xPos, yPos, 100, displayString, icon);
     }
 
+    /**
+     * Creates a Button with icon
+     * @param xPos x position
+     * @param yPos y position
+     * @param icon ResourceLocation to an Icon image (16x16!)
+     */
     public Button(int xPos, int yPos, ResourceLocation icon) {
         this(xPos, yPos, 20, "", icon);
     }
 
+    /**
+     * Add a click listener / callback
+     * @param r Listener
+     */
     public final void setClickListener(Runnable r) {
         this.callback = r;
     }
 
+    /**
+     * Gets called on button click
+     */
     public void onClick() {
         if (this.callback != null) this.callback.run();
     }
@@ -85,9 +174,6 @@ public class Button extends GuiComponent {
         }
         return super.getTooltips();
     }
-    /**
-     * Draws this button to the screen.
-     */
     @Override
     public void draw(int mouseX, int mouseY, float partial) {
         if (this.visible) {
