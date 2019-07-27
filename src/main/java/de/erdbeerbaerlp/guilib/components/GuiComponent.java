@@ -1,5 +1,6 @@
 package de.erdbeerbaerlp.guilib.components;
 
+import de.erdbeerbaerlp.guilib.McMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
@@ -25,6 +26,7 @@ public abstract class GuiComponent extends Gui {
     protected int id;
     protected boolean hovered; //Sometimes used by components
     protected boolean visible = true, enabled = true;
+    protected static final ResourceLocation errorIcon = new ResourceLocation(McMod.MODID, "textures/gui/imgerror.png");
     private int x;
     private int y;
     private String[] tooltips = new String[0];

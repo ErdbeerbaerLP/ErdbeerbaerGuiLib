@@ -1,6 +1,5 @@
 package de.erdbeerbaerlp.guilib.components;
 
-import de.erdbeerbaerlp.guilib.McMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
@@ -13,7 +12,6 @@ import java.io.IOException;
 import java.net.URL;
 
 public class Image extends GuiComponent {
-    private static final ResourceLocation errorLoading = new ResourceLocation(McMod.MODID, "textures/gui/imgerror.png");
     private final DynamicTexture image;
     private final ResourceLocation resLoc;
     private Runnable callback;
@@ -82,7 +80,7 @@ public class Image extends GuiComponent {
                 Minecraft.getMinecraft().getTextureManager().bindTexture(mc.renderEngine.getDynamicTextureLocation("image", image));
                 drawModalRectWithCustomSizedTexture(getX(), getY(), 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
             } else {
-                mc.getTextureManager().bindTexture(errorLoading);
+                mc.getTextureManager().bindTexture(errorIcon);
                 drawModalRectWithCustomSizedTexture(getX() + getWidth() / 2, getY() + getHeight() / 2, 0, 0, 16, 16, 16, 16);
             }
         }

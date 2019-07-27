@@ -39,7 +39,6 @@ public class ExampleGUI extends BetterGuiScreen {
         exampleToggleButton = new ToggleButton(50, 170, "Toggle Button: ");
         drawTypeSlider = new <ToggleButton.DrawType>EnumSlider(156, 170, "Draw type: ", ToggleButton.DrawType.class, ToggleButton.DrawType.COLORED_LINE, () -> this.exampleToggleButton.setDrawType((ToggleButton.DrawType) drawTypeSlider.getEnum()));
         googleImage = new Image(200, 40, 136, 46, "https://www.google.de/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png");
-
         apple = new Image(0, 0, 16, 16, new ResourceLocation("minecraft", "textures/items/apple.png"));
 
         //Register listeners

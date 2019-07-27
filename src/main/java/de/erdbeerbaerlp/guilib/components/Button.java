@@ -4,8 +4,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.config.GuiUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
 
 @SuppressWarnings("unused")
 public class Button extends GuiComponent {
@@ -14,6 +17,7 @@ public class Button extends GuiComponent {
     protected ResourceLocation BUTTON_ICON;
     protected String displayString;
     private Runnable callback;
+    private String errorTooltip = "";
 
     public Button(int xPos, int yPos, String displayString) {
         this(xPos, yPos, 100, displayString);
@@ -37,6 +41,21 @@ public class Button extends GuiComponent {
         this.displayString = displayString;
     }
 
+    public Button(int xPos, int yPos, int width, int height, String displayString, String iconURL) {
+        this(xPos, yPos, width, height, displayString);
+        try {
+            this.BUTTON_ICON_IMAGE = new DynamicTexture(loadImageFromURL(iconURL));
+        } catch (IOException e) {
+            errorTooltip = e.getCause().getLocalizedMessage();
+        }
+        this.displayString = displayString;
+    }
+
+    public Button(int xPos, int yPos, int width, int height, String displayString, URL iconURL) {
+        this(xPos, yPos, width, height, displayString, iconURL.toString());
+
+
+    }
     public Button(int xPos, int yPos, int width, int height, String displayString, BufferedImage icon) {
         super(xPos, yPos, width, height);
         this.BUTTON_ICON_IMAGE = new DynamicTexture(icon);
@@ -59,6 +78,13 @@ public class Button extends GuiComponent {
         if (this.callback != null) this.callback.run();
     }
 
+    @Override
+    public String[] getTooltips() {
+        if (BUTTON_ICON == null && BUTTON_ICON_IMAGE == null) {
+            return ArrayUtils.addAll(super.getTooltips(), "", "§cError loading image:", "§c" + errorTooltip);
+        }
+        return super.getTooltips();
+    }
     /**
      * Draws this button to the screen.
      */
@@ -68,7 +94,6 @@ public class Button extends GuiComponent {
             this.hovered = mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
             int k = this.getHoverState(this.hovered);
             GuiUtils.drawContinuousTexturedBox(BUTTON_TEXTURES, this.getX(), this.getY(), 0, 46 + k * 20, this.width, this.height, 200, 20, 2, 3, 2, 2, this.zLevel);
-//            this.mouseDragged(mc, mouseX, mouseY);
             int color = 14737632;
 
             if (packedFGColour != 0) {
@@ -89,10 +114,16 @@ public class Button extends GuiComponent {
                 mwidth -= 16;
             } else if (BUTTON_ICON_IMAGE != null && BUTTON_ICON == null) {
                 mc.getTextureManager().bindTexture(mc.renderEngine.getDynamicTextureLocation("icon", BUTTON_ICON_IMAGE));
-                drawModalRectWithCustomSizedTexture(getX(), getY(), 0, 0, 16, 16, 16, 16);
+                drawModalRectWithCustomSizedTexture(bx + 2, getY(), 0, 0, 16, 16, 16, 16);
                 bx += 2 + 16;
                 mwidth -= 16;
-            }
+            } else //noinspection ConstantConditions
+                if (BUTTON_ICON_IMAGE == null && BUTTON_ICON == null && !errorTooltip.equals("")) {
+                    mc.getTextureManager().bindTexture(errorIcon);
+                    drawModalRectWithCustomSizedTexture(bx + 2, getY(), 0, 0, 16, 16, 16, 16);
+                    bx += 2 + 16;
+                    mwidth -= 16;
+                }
             String buttonText = this.displayString;
             int strWidth = mc.fontRenderer.getStringWidth(buttonText);
             int ellipsisWidth = mc.fontRenderer.getStringWidth("...");
