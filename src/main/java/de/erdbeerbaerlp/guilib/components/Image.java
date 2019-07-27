@@ -14,15 +14,16 @@ import java.net.URL;
 public class Image extends GuiComponent {
     private final DynamicTexture image;
     private final ResourceLocation resLoc;
-    private static final ResourceLocation errorLoading = new ResourceLocation(McMod.MODID, "textures/gui/imgError.png");
+    private static final ResourceLocation errorLoading = new ResourceLocation(McMod.MODID, "textures/gui/imgerror.png");
     private Runnable callback;
 
     public Image(int x, int y, int width, int height, String imageURL, boolean resizeIfNeeded) {
         super(x, y, width, height);
-        BufferedImage img = null;
+        BufferedImage img;
         try {
             img = ImageIO.read(new URL(imageURL));
         } catch (IOException e) {
+            e.printStackTrace();
             image = null;
             resLoc = null;
             return;
@@ -48,6 +49,7 @@ public class Image extends GuiComponent {
         try {
             img = ImageIO.read(imageFile);
         } catch (IOException e) {
+            e.printStackTrace();
             image = null;
             resLoc = null;
             return;
