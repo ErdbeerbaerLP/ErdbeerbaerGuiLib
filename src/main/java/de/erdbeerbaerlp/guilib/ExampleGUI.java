@@ -56,7 +56,6 @@ public class ExampleGUI extends BetterGuiScreen {
             apple.disable();
         });
 
-
         //Set tooltips
         exampleButton.setTooltips("Example Tooltip", "This is a Button");
         exampleCheckbox.setTooltips("Another Tooltip", "This is a Checkbox", "");
