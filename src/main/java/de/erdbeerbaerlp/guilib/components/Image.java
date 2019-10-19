@@ -35,7 +35,7 @@ public class Image extends GuiComponent {
         try {
             img = loadImageFromURL(imageURL);
         } catch (IOException e) {
-            errorTooltip = e.getCause().getLocalizedMessage();
+            errorTooltip = (e.getCause() == null) ? e.getClass().getCanonicalName() + ": " + e.getMessage() : e.getCause().getLocalizedMessage();
             image = null;
             resLoc = null;
             return;
@@ -72,7 +72,7 @@ public class Image extends GuiComponent {
         try {
             img = ImageIO.read(imageFile);
         } catch (IOException e) {
-            errorTooltip = e.getCause().getLocalizedMessage();
+            errorTooltip = (e.getCause() == null) ? e.getClass().getCanonicalName() + ": " + e.getMessage() : e.getCause().getLocalizedMessage();
             image = null;
             resLoc = null;
             return;
