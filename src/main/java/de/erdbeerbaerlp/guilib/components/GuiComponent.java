@@ -2,65 +2,36 @@ package de.erdbeerbaerlp.guilib.components;
 
 import de.erdbeerbaerlp.guilib.McMod;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.util.ResourceLocation;
-
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import net.minecraft.util.SoundEvents;
 
 @SuppressWarnings("unused")
-public abstract class GuiComponent extends Gui {
-    protected static final ResourceLocation BUTTON_TEXTURES = new ResourceLocation("textures/gui/widgets.png");
+public abstract class GuiComponent extends Widget {
+    protected static final ResourceLocation WIDGETS_LOCATION = new ResourceLocation("textures/gui/widgets.png");
+    protected static final ResourceLocation errorIcon = new ResourceLocation(McMod.MODID, "textures/gui/imgerror.png");
     protected final FontRenderer fontRenderer;
-    public int packedFGColour; //FML  (what does this do?)
-    protected Minecraft mc = Minecraft.getMinecraft();
+    protected Minecraft mc = Minecraft.getInstance();
     protected int width;
     protected int height;
     protected int id;
     protected boolean hovered; //Sometimes used by components
     protected boolean visible = true, enabled = true;
-    protected static final ResourceLocation errorIcon = new ResourceLocation(McMod.MODID, "textures/gui/imgerror.png");
     private int x;
     private int y;
     private String[] tooltips = new String[0];
     private int assignedPage = -1;
 
-    protected GuiComponent(int x, int y, int width, int height) {
+
+    public GuiComponent(int xIn, int yIn, int widthIn, int heightIn) {
+        super(xIn, yIn, widthIn, heightIn, "");
         this.fontRenderer = mc.fontRenderer;
-        this.setX(x);
-        this.setY(y);
-        this.width = width;
-        this.height = height;
-    }
-
-    /**
-     * This function resizes the image and returns the BufferedImage object that can be drawn
-     */
-    final BufferedImage scaleImage(final BufferedImage img, int width, int height) {
-        int w = img.getWidth();
-        int h = img.getHeight();
-        BufferedImage dimg = new BufferedImage(width, height, img.getType());
-        Graphics2D g = dimg.createGraphics();
-        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g.drawImage(img, 0, 0, width, height, 0, 0, w, h, null);
-        g.dispose();
-        return dimg;
-    }
-
-    final BufferedImage loadImageFromURL(String url) throws IOException {
-        final HttpURLConnection httpcon = (HttpURLConnection) new URL(url).openConnection();
-        httpcon.addRequestProperty("User-Agent", "Minecraft");
-        final BufferedImage img = ImageIO.read(httpcon.getInputStream());
-        httpcon.disconnect();
-        return img;
+        this.setX(xIn);
+        this.setY(yIn);
+        this.width = widthIn;
+        this.height = heightIn;
     }
 
     /**
@@ -97,6 +68,7 @@ public abstract class GuiComponent extends Gui {
 
     /**
      * Sets the components visibility state
+     *
      * @param visible visible?
      */
     public final void setVisible(boolean visible) {
@@ -126,6 +98,7 @@ public abstract class GuiComponent extends Gui {
 
     /**
      * Sets the component´s X position
+     *
      * @param x X position
      */
     public void setX(int x) {
@@ -141,6 +114,7 @@ public abstract class GuiComponent extends Gui {
 
     /**
      * Sets the component´s Y position
+     *
      * @param y Y position
      */
     public void setY(int y) {
@@ -149,32 +123,40 @@ public abstract class GuiComponent extends Gui {
 
     /**
      * Gets the component width
+     *
      * @return width
      */
+    @Override
     public final int getWidth() {
         return width;
     }
 
     /**
      * Sets the component width
+     *
      * @param width Width
      */
+    @Override
     public final void setWidth(int width) {
         this.width = width;
     }
 
     /**
      * Gets the component height
+     *
      * @return height
      */
+    @Override
     public final int getHeight() {
         return height;
     }
 
     /**
      * Sets the component height
+     *
      * @param height Height
      */
+    @Override
     public final void setHeight(int height) {
         this.height = height;
     }
@@ -183,50 +165,37 @@ public abstract class GuiComponent extends Gui {
      * Plays a press sound
      */
     public void playPressSound() {
-        mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, this.enabled ? 1.0F : 0.5f));
+        mc.getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
     }
 
     /**
      * Draws the component
      */
-    public abstract void draw(int mouseX, int mouseY, float partial);
+    @Override
+    public abstract void render(int mouseX, int mouseY, float partial);
 
     /**
      * Called on mouse click
      */
-    public abstract void mouseClick(int mouseX, int mouseY, int mouseButton);
+    @Override
+    public final boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+        mouseClick(mouseX, mouseY, mouseButton);
+        return true;
+    }
+
+    public abstract void mouseClick(double mouseX, double mouseY, int mouseButton);
+
 
     /**
      * Called on mouse release
      */
-    public abstract void mouseReleased(int mouseX, int mouseY, int state);
+    public abstract void mouseRelease(double mouseX, double mouseY, int state);
 
     /**
-     * Fired when a key is typed (except F11 which toggles full screen). This is the equivalent of
-     * KeyListener.keyTyped(KeyEvent e). Args : character (character on the key), keyCode (lwjgl Keyboard key code)
+     * Fired when a key is typed (except F11 which toggles full screen)
      */
-    public abstract void keyTyped(char typedChar, int keyCode);
+    public abstract boolean charTyped(char typedChar, int keyCode);
 
-    /**
-     * Called when a mouse button is pressed and the mouse is moved around. Parameters are : mouseX, mouseY,
-     * lastButtonClicked & timeSinceMouseClick.
-     */
-    public abstract void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick);
-
-    /**
-     * Updates the component on gui update
-     */
-    public void updateComponent() {
-
-    }
-
-    public void handleMouseInput() {
-
-    }
-
-    public void handleKeyboardInput() {
-
-    }
 
     /**
      * Disables this component
@@ -260,6 +229,7 @@ public abstract class GuiComponent extends Gui {
      * Assigns this component to an page
      * -1 means global
      * Default: -1
+     *
      * @param page Page to assign to
      */
     public final void assignToPage(int page) {
@@ -268,6 +238,7 @@ public abstract class GuiComponent extends Gui {
 
     /**
      * Gets the page this component is assigned to
+     *
      * @return Assigned page
      */
     public final int getAssignedPage() {
@@ -277,6 +248,7 @@ public abstract class GuiComponent extends Gui {
     /**
      * Sets the ID of this component
      * (almost unused!)
+     *
      * @param id ID
      */
     public void setId(int id) {
@@ -285,6 +257,7 @@ public abstract class GuiComponent extends Gui {
 
     /**
      * Sets the position of this component
+     *
      * @param x X position
      * @param y Y position
      */
@@ -293,4 +266,10 @@ public abstract class GuiComponent extends Gui {
         setY(y);
     }
 
+    /**
+     * Gets called on GUI Close, used to stop threads and/or free memory
+     */
+    public void unload() {
+
+    }
 }

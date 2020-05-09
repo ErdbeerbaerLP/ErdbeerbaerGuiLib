@@ -1,10 +1,11 @@
 package de.erdbeerbaerlp.guilib.components;
 
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.client.config.GuiUtils;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
-@SuppressWarnings("unused")
 public class CheckBox extends GuiComponent {
+    private static final ResourceLocation CHECKBOX_LOCATION = new ResourceLocation("minecraft", "textures/gui/checkbox.png");
     private Runnable callback;
     private int boxWidth;
     private String displayString;
@@ -24,7 +25,7 @@ public class CheckBox extends GuiComponent {
         this.isChecked = isChecked;
         this.boxWidth = 11;
         this.height = 11;
-        this.width = this.boxWidth + 2 + Minecraft.getMinecraft().fontRenderer.getStringWidth(displayString);
+        this.width = this.boxWidth + 2 + Minecraft.getInstance().fontRenderer.getStringWidth(displayString);
     }
 
     /**
@@ -40,6 +41,7 @@ public class CheckBox extends GuiComponent {
 
     /**
      * Creates an new textless checkbox
+     *
      * @param xPos X position
      * @param yPos Y position
      */
@@ -49,10 +51,11 @@ public class CheckBox extends GuiComponent {
 
     /**
      * Creates an new checkbox
-     * @param xPos X position
-     * @param yPos Y position
+     *
+     * @param xPos   X position
+     * @param yPos   Y position
      * @param height Height of the checkbox
-     * @param width Width of the checkbox
+     * @param width  Width of the checkbox
      */
     public CheckBox(int xPos, int yPos, int width, int height) {
         this(xPos, yPos, "", false);
@@ -60,29 +63,9 @@ public class CheckBox extends GuiComponent {
         this.height = height;
     }
 
-    @Override
-    public void draw(int mouseX, int mouseY, float partial) {
-        if (this.visible) {
-            this.hovered = mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.boxWidth && mouseY < this.getY() + this.height;
-            GuiUtils.drawContinuousTexturedBox(BUTTON_TEXTURES, this.getX(), this.getY(), 0, 46, this.boxWidth, this.height, 200, 20, 2, 3, 2, 2, this.zLevel);
-//            this.mouseDragged(mc, mouseX, mouseY);
-            int color = 14737632;
-
-            if (packedFGColour != 0) {
-                color = packedFGColour;
-            } else if (!this.enabled) {
-                color = 10526880;
-            }
-
-            if (this.isChecked)
-                this.drawCenteredString(mc.fontRenderer, "x", this.getX() + this.boxWidth / 2 + 1, this.getY() + 1, 14737632);
-
-            this.drawString(mc.fontRenderer, displayString, this.getX() + this.boxWidth + 2, this.getY() + 2, color);
-        }
-    }
-
     /**
      * Checks if the checkbox was checked
+     *
      * @return checked?
      */
     public boolean isChecked() {
@@ -91,6 +74,7 @@ public class CheckBox extends GuiComponent {
 
     /**
      * Checks or unchecks the checkbox
+     *
      * @param isChecked state
      */
     public void setIsChecked(boolean isChecked) {
@@ -106,6 +90,7 @@ public class CheckBox extends GuiComponent {
 
     /**
      * Adds an change listener to the checkbox
+     *
      * @param r listener
      */
     public final void setChangeListener(Runnable r) {
@@ -113,33 +98,39 @@ public class CheckBox extends GuiComponent {
     }
 
     @Override
-    public void mouseClick(int mouseX, int mouseY, int mouseButton) {
-        if (mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) {
+    public void render(int mouseX, int mouseY, float partial) {
+        this.isHovered = mouseX >= getX() && mouseY >= getY() && mouseX < this.getX() + this.width && mouseY < getY() + this.height;
+        int color = 14737632;
+        if (packedFGColor != 0) {
+            color = packedFGColor;
+        } else if (!this.enabled) {
+            color = 10526880;
+        } else if (this.hovered) {
+            color = 16777120;
+        }
+        GuiUtils.drawContinuousTexturedBox(WIDGETS_LOCATION, this.getX(), this.getY(), 0, 46, this.boxWidth, this.height, 200, 20, 2, 3, 2, 2, this.getBlitOffset());
+        if (this.isChecked)
+            this.drawCenteredString(mc.fontRenderer, "x", this.getX() + this.boxWidth / 2 + 1, this.getY() + 1, 14737632);
+
+        this.drawString(mc.fontRenderer, displayString, this.getX() + this.boxWidth + 2, this.getY() + 2, color);
+    }
+
+    @Override
+    public void mouseClick(double mouseX, double mouseY, int mouseButton) {
+        if (this.visible && mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height) {
+            this.setIsChecked(!isChecked());
             onChange();
             playPressSound();
         }
     }
 
     @Override
-    public void mouseReleased(int mouseX, int mouseY, int state) {
+    public void mouseRelease(double mouseX, double mouseY, int state) {
 
     }
 
-    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-        if (this.visible && mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height) {
-            this.setIsChecked(!isChecked());
-            return true;
-        }
+    @Override
+    public boolean charTyped(char typedChar, int keyCode) {
         return false;
-    }
-
-    @Override
-    public void keyTyped(char typedChar, int keyCode) {
-
-    }
-
-    @Override
-    public void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
-
     }
 }

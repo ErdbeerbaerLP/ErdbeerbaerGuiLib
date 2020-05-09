@@ -1,7 +1,8 @@
 package de.erdbeerbaerlp.guilib.components;
 
 import com.google.common.collect.Lists;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.resources.I18n;
 
 import java.util.Arrays;
@@ -45,8 +46,9 @@ public class Label extends GuiComponent {
 
     /**
      * Creates a new Label
-     * @param x X position
-     * @param y Y position
+     *
+     * @param x    X position
+     * @param y    Y position
      * @param text Label text (1. line)
      */
     public Label(String text, int x, int y) {
@@ -54,26 +56,26 @@ public class Label extends GuiComponent {
         this.addLine(text);
     }
 
-    @Override
-    public void draw(int mouseX, int mouseY, float partial) {
-        if (this.visible) {
-            GlStateManager.enableBlend();
-            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            int i = this.getY() + this.height / 2 + this.border / 2;
-            int j = i - this.labels.size() * 10 / 2;
 
-            for (int k = 0; k < this.labels.size(); ++k) {
-                if (this.centered) {
-                    this.drawCenteredString(this.fontRenderer, this.labels.get(k), this.getX(), j + k * 10, this.textColor);
-                } else {
-                    this.drawString(this.fontRenderer, this.labels.get(k), this.getX(), j + k * 10, this.textColor);
-                }
+    @Override
+    public void render(int mouseX, int mouseY, float partial) {
+        RenderSystem.enableBlend();
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        int i = this.getY() + this.height / 2 + this.border / 2;
+        int j = i - this.labels.size() * 10 / 2;
+
+        for (int k = 0; k < this.labels.size(); ++k) {
+            if (this.centered) {
+                this.drawCenteredString(this.fontRenderer, this.labels.get(k), this.getX(), j + k * 10, this.textColor);
+            } else {
+                this.drawString(this.fontRenderer, this.labels.get(k), this.getX(), j + k * 10, this.textColor);
             }
         }
     }
 
     /**
      * Adds an line of text
+     *
      * @param p_175202_1_ Text
      */
     public void addLine(String p_175202_1_) {
@@ -83,6 +85,7 @@ public class Label extends GuiComponent {
     /**
      * Sets the label text
      * Use \n for an new line
+     *
      * @param text Text
      */
     public void setText(String text) {
@@ -98,25 +101,18 @@ public class Label extends GuiComponent {
     }
 
     @Override
-    public void mouseClick(int mouseX, int mouseY, int mouseButton) {
+    public void mouseClick(double mouseX, double mouseY, int mouseButton) {
 
     }
 
     @Override
-    public void mouseReleased(int mouseX, int mouseY, int state) {
-
-
-    }
-
-    @Override
-    public void keyTyped(char typedChar, int keyCode) {
+    public void mouseRelease(double mouseX, double mouseY, int state) {
 
 
     }
 
     @Override
-    public void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
-
-
+    public boolean charTyped(char typedChar, int keyCode) {
+        return false;
     }
 }

@@ -1,12 +1,10 @@
 package de.erdbeerbaerlp.guilib.components;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-@SuppressWarnings("unused")
 public class EnumSlider extends Slider {
     private Runnable action;
     private Enum<?> enumValue;
@@ -49,16 +47,17 @@ public class EnumSlider extends Slider {
 
     /**
      * Creates an new Enum slider
-     * @param xPos X position
-     * @param yPos Y position
-     * @param prefix String to display before the enum value
-     * @param suf String to display behind the enum value
-     * @param enumClass Class of the enum
-     * @param width Width of the slider
-     * @param height Height of the slider
-     * @param drawStr Should the slider draw an string?
-     * @param currentVal Current value
-     * @param <T> Your enum
+     *
+     * @param xPos         X position
+     * @param yPos         Y position
+     * @param prefix       String to display before the enum value
+     * @param suf          String to display behind the enum value
+     * @param enumClass    Class of the enum
+     * @param width        Width of the slider
+     * @param height       Height of the slider
+     * @param drawStr      Should the slider draw an string?
+     * @param currentVal   Current value
+     * @param <T>          Your enum
      * @param changeAction Runnable being called on value change
      */
     public <T extends Enum<T>> EnumSlider(int xPos, int yPos, int width, int height, String prefix, String suf, Class<T> enumClass, T currentVal, boolean drawStr, Runnable changeAction) {
@@ -71,6 +70,7 @@ public class EnumSlider extends Slider {
         this.showDecimal = false;
         this.minValue = 0;
         this.sliderValue = (getCurrentIndex() - minValue) / (maxValue - minValue);
+        prevIndex = getCurrentIndex();
         //Try to get custom name
         String val = "";
         for (Method m : this.enumValue.getClass().getMethods()) {
@@ -94,15 +94,11 @@ public class EnumSlider extends Slider {
 
     /**
      * Gets the enum value
+     *
      * @return Value
      */
     public Enum<?> getEnum() {
         return enumValue;
-    }
-
-    @Override
-    public void draw(int mouseX, int mouseY, float partial) {
-        super.draw(mouseX, mouseY, partial);
     }
 
     @Override
@@ -131,6 +127,7 @@ public class EnumSlider extends Slider {
             displayString = dispString + val + suffix;
         }
         if (prevIndex != getCurrentIndex()) this.onValueChanged();
+        this.prevIndex = getCurrentIndex();
     }
 
     /**
@@ -138,54 +135,6 @@ public class EnumSlider extends Slider {
      */
     public void onValueChanged() {
         if (this.action != null) action.run();
-    }
-
-    @Override
-    public void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
-        this.prevIndex = getCurrentIndex();
-        if (this.visible) {
-            if (this.dragging) {
-                final int index = getCurrentIndex();
-                this.sliderValue = (float) (mouseX - (this.getX() + 4)) / (float) (this.width - 8);
-                int sliderValue = (int) Math.round(this.sliderValue * (maxValue - minValue) + this.minValue);
-                if (sliderValue < 0) sliderValue = 0;
-                if (index == -1) {
-                    this.enumValue = enumValues[0];
-                } else {
-                    if (sliderValue < this.enumValues.length) {
-                        this.enumValue = enumValues[sliderValue];
-                    }
-                }
-                updateSlider();
-            }
-
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            this.drawTexturedModalRect(this.getX() + (int) (this.sliderValue * (float) (this.width - 8)), this.getY(), 0, 66, 4, 20);
-            this.drawTexturedModalRect(this.getX() + (int) (this.sliderValue * (float) (this.width - 8)) + 4, this.getY(), 196, 66, 4, 20);
-        }
-    }
-
-    @Override
-    public boolean mousePressed(Minecraft par1Minecraft, int par2, int par3) {
-        if (superMousePressed(par2, par3)) {
-            final int index = getCurrentIndex();
-            playPressSound();
-            this.sliderValue = (float) (par2 - (this.getX() + 4)) / (float) (this.width - 8);
-            int sliderValue = (int) Math.round(this.sliderValue * (maxValue - minValue) + this.minValue);
-            if (sliderValue < 0) return false;
-            if (index == -1) {
-                this.enumValue = enumValues[0];
-            } else {
-                if (sliderValue < this.enumValues.length) {
-                    this.enumValue = enumValues[sliderValue];
-                }
-            }
-            updateSlider();
-            this.dragging = true;
-            return true;
-        } else {
-            return false;
-        }
     }
 
     private int getCurrentIndex() {
@@ -197,14 +146,34 @@ public class EnumSlider extends Slider {
         return -1;
     }
 
-    protected boolean superMousePressed(int mouseX, int mouseY) {
-        return this.enabled && this.visible && mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
+    @Override
+    public void mouseClick(double mouseX, double mouseY, int mouseButton) {
+        if (this.enabled && this.visible && mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height) {
+            playPressSound();
+            updateSlider();
+            this.dragging = true;
+        }
     }
 
-    public void mouseClick(int mouseX, int mouseY, int mouseButton) {
-        this.prevIndex = getCurrentIndex();
-        if (this.mousePressed(mc, mouseX, mouseY)) {
-            playPressSound();
+    @Override
+    public void render(int mouseX, int mouseY, float partial) {
+        if (this.dragging) {
+            final int index = getCurrentIndex();
+            this.sliderValue = (float) (mouseX - (this.getX() + 4)) / (float) (this.width - 8);
+            int sliderValue = (int) Math.round(this.sliderValue * (maxValue - minValue) + this.minValue);
+            if (sliderValue < 0) sliderValue = 0;
+            if (index == -1) {
+                this.enumValue = enumValues[0];
+            } else {
+                if (sliderValue < this.enumValues.length) {
+                    this.enumValue = enumValues[sliderValue];
+                }
+            }
         }
+
+        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        blit(this.getX() + (int) (this.sliderValue * (float) (this.width - 8)), this.getY(), 0, 66, 4, 20);
+        blit(this.getX() + (int) (this.sliderValue * (float) (this.width - 8)) + 4, this.getY(), 196, 66, 4, 20);
+        super.render(mouseX, mouseY, partial);
     }
 }
