@@ -150,6 +150,9 @@ curseforge {
             mainArtifact(jar) {
                 displayName = "Erdbeerbaer's GUI Library-$version (MC 1.15)"
             }
+            relations {
+                requiredDependency 'mixinbootstrap'
+            }
             options {
                 forgeGradleIntegration = false // defaults to true
             }
