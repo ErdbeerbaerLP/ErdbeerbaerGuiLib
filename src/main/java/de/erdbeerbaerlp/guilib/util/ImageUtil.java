@@ -1,6 +1,7 @@
 package de.erdbeerbaerlp.guilib.util;
 
 import net.minecraft.client.renderer.texture.NativeImage;
+import org.imgscalr.Scalr;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -23,11 +24,7 @@ public class ImageUtil {
         int w = img.getWidth();
         int h = img.getHeight();
         if (w == width && h == height) return img;
-        BufferedImage dimg = new BufferedImage(width, height, img.getType());
-        Graphics2D g = dimg.createGraphics();
-        g.drawImage(img, 0, 0, width, height, 0, 0, w, h, null);
-        g.dispose();
-        return dimg;
+        return Scalr.resize(img, Scalr.Method.AUTOMATIC, Scalr.Mode.FIT_EXACT, width, height);
     }
 
     /**
@@ -40,15 +37,10 @@ public class ImageUtil {
         final Dimension scaled = getScaledDimension(new Dimension(w, h), new Dimension(width, height));
         final int newWidth = (int) scaled.getWidth();
         final int newHeight = (int) scaled.getHeight();
-        final BufferedImage dimg = new BufferedImage(newWidth, newHeight, img.getType());
-        final Graphics2D g = dimg.createGraphics();
-        g.drawImage(img, 0, 0, newWidth, newHeight, 0, 0, w, h, null);
-        g.dispose();
-        return dimg;
+        return Scalr.resize(img, Scalr.Method.AUTOMATIC, Scalr.Mode.AUTOMATIC, newWidth, newHeight);
     }
 
     private static Dimension getScaledDimension(Dimension imgSize, Dimension boundary) {
-
         int original_width = imgSize.width;
         int original_height = imgSize.height;
         int bound_width = boundary.width;
@@ -76,24 +68,24 @@ public class ImageUtil {
         }
         final byte[] out = os.toByteArray();
         os.close();
+        is.close();
         return out;
     }
 
     public static ByteArrayInputStream getInputStreamFromImageURL(String url) throws IOException {
         final HttpURLConnection httpcon = (HttpURLConnection) new URL(url).openConnection();
         httpcon.addRequestProperty("User-Agent", "Minecraft");
-        final ByteArrayInputStream is = new ByteArrayInputStream(toByteArray(httpcon.getInputStream()));
+        final ByteArrayInputStream is = convertToByteArrayIS(httpcon.getInputStream());
         httpcon.disconnect();
         return is;
     }
 
-    /**
-     * Downloads an image as {@link NativeImage}
-     */
-    public static NativeImage loadImageFromURL(String url, boolean keepAspectRatio, int width, int height) throws IOException {
-        final ByteArrayInputStream is = getInputStreamFromImageURL(url);
+    public static ByteArrayInputStream convertToByteArrayIS(InputStream is) throws IOException {
+        return new ByteArrayInputStream(toByteArray(is));
+    }
+
+    public static NativeImage getImageFromIS(final InputStream is, boolean keepAspectRatio, int width, int height) throws IOException {
         final BufferedImage img = ImageIO.read(is);
-        is.close();
         final ByteArrayOutputStream os = new ByteArrayOutputStream();
         if (keepAspectRatio)
             ImageIO.write(ImageUtil.scaleImageKeepAspectRatio(img, width, height), "png", os);
@@ -102,22 +94,25 @@ public class ImageUtil {
         final ByteArrayInputStream is2 = new ByteArrayInputStream(os.toByteArray());
         final NativeImage imgo = NativeImage.read(is2);
         is2.close();
+        is.reset();
         return imgo;
     }
 
-    public static boolean isURLGif(String url) throws IOException {
-        final InputStream is = getInputStreamFromImageURL(url);
-        ImageInputStream iis = ImageIO.createImageInputStream(is);
-        Iterator<ImageReader> imageReaders = ImageIO.getImageReaders(iis);
+    public static boolean isISGif(final InputStream is) throws IOException {
+        final ImageInputStream iis = ImageIO.createImageInputStream(is);
+        final Iterator<ImageReader> imageReaders = ImageIO.getImageReaders(iis);
         while (imageReaders.hasNext()) {
-            ImageReader reader = imageReaders.next();
-            System.out.printf("formatName: %s%n", reader.getFormatName());
+            final ImageReader reader = imageReaders.next();
+            System.out.println("formatName: " + reader.getFormatName());
             if (reader.getFormatName().endsWith("gif")) {
                 iis.close();
+                reader.dispose();
                 return true;
             }
+            reader.dispose();
         }
         iis.close();
+        is.reset();
         return false;
     }
 }

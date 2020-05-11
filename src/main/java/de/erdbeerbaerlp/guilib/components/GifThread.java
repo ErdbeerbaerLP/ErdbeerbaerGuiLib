@@ -10,28 +10,28 @@ import javax.imageio.ImageIO;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 
 public class GifThread extends Thread {
     private final ArrayList<Map.Entry<byte[], Integer>> gifData = new ArrayList<>();
     private final DynamicTexture outputTexture;
-    private final InputStream is;
     private final boolean doGifLoop;
+    private final GuiComponent comp;
 
-    public GifThread(final InputStream inputStream, final DynamicTexture outputTexture) {
-        this(inputStream, outputTexture, true, true);
+    public GifThread(GuiComponent component, final ByteArrayInputStream is, final DynamicTexture outputTexture) {
+        this(component, is, outputTexture, true, true);
     }
 
-    public GifThread(final InputStream inputStream, final DynamicTexture outputTexture, boolean keepAspectRatio, boolean doGifLoop) {
-        this.is = inputStream;
+    public GifThread(GuiComponent component, final ByteArrayInputStream is, final DynamicTexture outputTexture, boolean keepAspectRatio, boolean doGifLoop) {
         this.outputTexture = outputTexture;
         this.doGifLoop = doGifLoop;
+        this.comp = component;
         setDaemon(true);
         setName("Gif Renderer " + UUID.randomUUID().toString());
         List<GIFFrame> gifFrames;
         final GIFReader r = new GIFReader();
         try {
+            is.reset();
             r.read(is);
         } catch (Exception e) {
             e.printStackTrace();
@@ -69,6 +69,8 @@ public class GifThread extends Thread {
                         img = NativeImage.read(is);
                     } while (img.getBytes().length == 0);
                     outputTexture.setTextureData(img);
+                    outputTexture.updateDynamicTexture();
+                    comp.markUpdate();
                     is.close();
                     sleep(frame.getValue() * 10);
                 } catch (InterruptedException ignored) {

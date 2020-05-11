@@ -97,7 +97,7 @@ public class Button extends GuiComponent {
     public Button(int xPos, int yPos, int width, int height, String displayString, String iconURL) {
         this(xPos, yPos, width, height, displayString);
         try {
-            this.BUTTON_ICON_IMAGE = new DynamicTexture(ImageUtil.loadImageFromURL(iconURL, false, 16, 16));
+            this.BUTTON_ICON_IMAGE = new DynamicTexture(ImageUtil.getImageFromIS(ImageUtil.getInputStreamFromImageURL(iconURL), false, 16, 16));
         } catch (IOException e) {
             errorTooltip = e.getCause().getLocalizedMessage();
         }

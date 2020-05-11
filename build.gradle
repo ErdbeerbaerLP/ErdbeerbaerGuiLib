@@ -108,6 +108,7 @@ dependencies {
         transitive = false
     }
     embed 'com.github.dragon66:icafe:26c49d5d40'
+    embed 'com.github.rkalla:imgscalr:4.2-release'
 }
 mixin {
     add sourceSets.main, 'mixins.eguilib.refmap.json'

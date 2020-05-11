@@ -26,6 +26,11 @@ public class ExampleGUI extends ExtendedScreen {
     private Button nextPageButton;
     private Button prevPageButton;
     private Label pageIndicator;
+    private ScrollPanel scrollPanel;
+    private Button scrollButton1, scrollButton2;
+    private TextField scrollTextField;
+    private Slider xSlider, ySlider, contentSlider;
+    private Image scrollImage;
 
     public ExampleGUI(Screen parent) {
         super(parent);
@@ -48,14 +53,31 @@ public class ExampleGUI extends ExtendedScreen {
         });
         exampleToggleButton = new ToggleButton(50, 170, "Toggle Button: ");
         drawTypeSlider = new <ToggleButton.DrawType>EnumSlider(156, 170, "Draw type: ", ToggleButton.DrawType.class, ToggleButton.DrawType.COLORED_LINE, () -> this.exampleToggleButton.setDrawType((ToggleButton.DrawType) drawTypeSlider.getEnum()));
-        beeGif = new Image(250, 40, 64, 64, "https://gamepedia.cursecdn.com/minecraft_gamepedia/thumb/5/58/Bee.gif/120px-Bee.gif");
-        apple = new Image(0, 0, 16, 16, new ResourceLocation("minecraft", "textures/item/apple.png"));
+        beeGif = new Image(250, 40, 64, 64);
+        apple = new Image(0, 0);
 
-        dynamicImage = new Image(0, 0, 300, 180, "https://www.minecraft.net/etc.clientlibs/minecraft/clientlibs/main/resources/img/header/logo.png");
+        dynamicImage = new Image(0, 0, 300, 180);
         urlField = new TextField(0, 0, 240);
         nextPageButton = new Button(0, 0, 40, ">");
         prevPageButton = new Button(0, 0, 40, "<");
         pageIndicator = new Label(0, 0);
+
+
+        scrollPanel = new ScrollPanel(0, 0, 300, 200);
+        scrollButton1 = new Button(30, 10, "Button 1");
+        scrollButton2 = new Button(30, 500, "Button 2");
+        scrollTextField = new TextField(2, 300, 100);
+        xSlider = new Slider(10, 20, "ScrollPanel X Pos", 0, 350, 0, () -> scrollPanel.setX(xSlider.getValueInt()));
+        ySlider = new Slider(10, 50, "ScrollPanel Y Pos", 0, 255, 0, () -> scrollPanel.setY(ySlider.getValueInt()));
+        contentSlider = new Slider(10, 80, "ScrollPanel Content length", 0, 1200, 500, () -> scrollPanel.setContentHeight(contentSlider.getValueInt()));
+        scrollImage = new Image(150, 10, 150, 150);
+
+
+        //Load images
+        beeGif.loadImage("https://gamepedia.cursecdn.com/minecraft_gamepedia/thumb/5/58/Bee.gif/120px-Bee.gif");
+        apple.loadImage(new ResourceLocation("minecraft", "textures/item/apple.png"));
+        dynamicImage.loadImage("https://www.minecraft.net/etc.clientlibs/minecraft/clientlibs/main/resources/img/header/logo.png");
+        scrollImage.loadImage("https://bodyback.co.za/wp-content/uploads/2017/07/scroll-down.gif");
 
         //Register listeners
         exampleButton.setClickListener(() -> System.out.println("I have been clicked!"));
@@ -73,7 +95,7 @@ public class ExampleGUI extends ExtendedScreen {
         });
         urlField.setText(dynamicImage.getImageURL());
         urlField.setReturnAction(() -> {
-            dynamicImage.setImageURL(urlField.getText());
+            dynamicImage.loadImage(urlField.getText());
         });
         nextPageButton.setClickListener(this::nextPage);
         prevPageButton.setClickListener(this::prevPage);
@@ -90,15 +112,23 @@ public class ExampleGUI extends ExtendedScreen {
         beeGif.setTooltips("This is an example image", "It was loaded from an URL");
         apple.setTooltips("Oh, look at this apple!", "", "Click to eat");
 
+        scrollButton1.setClickListener(() -> System.out.println("TEST1"));
+        scrollButton2.setClickListener(() -> System.out.println("TEST2"));
+        scrollTextField.setReturnAction(() -> System.out.println(scrollTextField.getText()));
+
         //Set some values
         exampleTextField.setAcceptsColors(true);
         exampleTextField.setText("Text Field");
         exampleTextField.setLabel("Text Field Label");
+        scrollTextField.setLabel("Example Text field in scroll panel");
+        scrollTextField.setText("TEEXT");
         exampleLabel1.setCentered();
         pageIndicator.setCentered();
         exampleToggleButton.setValue(true);
         urlField.setLabel("Image URL");
         urlField.setMaxStringLength(1024);
+        scrollPanel.setContentHeight(500);
+
 
         //Add components
         this.addAllComponents(exampleLabel1, exitButton, prevPageButton, nextPageButton, pageIndicator);
@@ -113,6 +143,13 @@ public class ExampleGUI extends ExtendedScreen {
         this.addComponent(apple, 0);
         this.addComponent(dynamicImage, 1);
         this.addComponent(urlField, 1);
+        this.addComponent(scrollPanel, 2);
+        this.addComponent(xSlider, 3);
+        this.addComponent(ySlider, 3);
+        this.addComponent(contentSlider, 3);
+
+        scrollPanel.addAllComponents(scrollButton1, scrollButton2, scrollTextField, scrollImage);
+
     }
 
     @Override

@@ -19,11 +19,15 @@ public abstract class GuiComponent extends Widget {
     protected int id;
     protected boolean hovered; //Sometimes used by components
     protected boolean visible = true, enabled = true;
+    int scrollOffsetX = 0, scrollOffsetY = 0;
+    /**
+     * Used to prevent crash with animated images
+     */
+    private boolean shouldUpdate = false;
     private int x;
     private int y;
     private String[] tooltips = new String[0];
     private int assignedPage = -1;
-
 
     public GuiComponent(int xIn, int yIn, int widthIn, int heightIn) {
         super(xIn, yIn, widthIn, heightIn, "");
@@ -32,6 +36,10 @@ public abstract class GuiComponent extends Widget {
         this.setY(yIn);
         this.width = widthIn;
         this.height = heightIn;
+    }
+
+    public boolean shouldUpdate() {
+        return shouldUpdate;
     }
 
     /**
@@ -57,6 +65,11 @@ public abstract class GuiComponent extends Widget {
      */
     public final void setTooltips(String... strings) {
         this.tooltips = strings;
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        return true;
     }
 
     /**
@@ -93,7 +106,7 @@ public abstract class GuiComponent extends Widget {
      * @return X position
      */
     public final int getX() {
-        return x;
+        return x + scrollOffsetX;
     }
 
     /**
@@ -109,7 +122,7 @@ public abstract class GuiComponent extends Widget {
      * @return Y position
      */
     public final int getY() {
-        return y;
+        return y + scrollOffsetY;
     }
 
     /**
@@ -137,7 +150,7 @@ public abstract class GuiComponent extends Widget {
      * @param width Width
      */
     @Override
-    public final void setWidth(int width) {
+    public void setWidth(int width) {
         this.width = width;
     }
 
@@ -157,7 +170,7 @@ public abstract class GuiComponent extends Widget {
      * @param height Height
      */
     @Override
-    public final void setHeight(int height) {
+    public void setHeight(int height) {
         this.height = height;
     }
 
@@ -178,7 +191,7 @@ public abstract class GuiComponent extends Widget {
      * Called on mouse click
      */
     @Override
-    public final boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
         mouseClick(mouseX, mouseY, mouseButton);
         return true;
     }
@@ -271,5 +284,13 @@ public abstract class GuiComponent extends Widget {
      */
     public void unload() {
 
+    }
+
+    /**
+     * Marks an component to require an update<br>
+     * Used by {@link Image}
+     */
+    public void markUpdate() {
+        this.shouldUpdate = true;
     }
 }

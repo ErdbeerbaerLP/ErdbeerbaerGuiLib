@@ -31,3 +31,9 @@ A easy-to-use gui library
     versionRange="[1.15.2]"
     ordering="NONE"
     side="CLIENT"
+[[dependencies.yourmodid]]
+    modId="eguilib"
+    mandatory=true
+    versionRange="[1.0.0,)"
+    ordering="NONE"
+    side="CLIENT"

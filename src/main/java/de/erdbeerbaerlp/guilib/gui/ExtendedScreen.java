@@ -3,6 +3,7 @@ package de.erdbeerbaerlp.guilib.gui;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.erdbeerbaerlp.guilib.components.GuiComponent;
+import de.erdbeerbaerlp.guilib.components.TextField;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -151,6 +152,35 @@ public abstract class ExtendedScreen extends Screen {
     }
 
     @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scroll) {
+        for (GuiComponent comp : components) {
+            if (comp.getAssignedPage() != -1) if (comp.getAssignedPage() != currentPage) continue;
+            if (comp.isVisible() && mouseX >= comp.getX() && mouseY >= comp.getY() && mouseX < comp.getX() + comp.getWidth() && mouseY < comp.getY() + comp.getHeight())
+                comp.mouseScrolled(mouseX, mouseY, scroll);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double deltaX, double deltaY) {
+        for (GuiComponent comp : components) {
+            if (comp.getAssignedPage() != -1) if (comp.getAssignedPage() != currentPage) continue;
+            if (comp.isVisible())
+                comp.mouseDragged(mouseX, mouseY, mouseButton, deltaX, deltaY);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+        for (GuiComponent comp : components) {
+            if (comp.getAssignedPage() != -1) if (comp.getAssignedPage() != currentPage) continue;
+            comp.keyReleased(keyCode, scanCode, modifiers);
+        }
+        return false;
+    }
+
+    @Override
     public final void render(int mouseX, int mouseY, float partialTicks) {
         super.render(mouseX, mouseY, partialTicks);
         updateGui();
@@ -256,7 +286,7 @@ public abstract class ExtendedScreen extends Screen {
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
         for (GuiComponent comp : components) {
             if (comp.getAssignedPage() != -1) if (comp.getAssignedPage() != currentPage) continue;
-            if (comp.isVisible() && mouseX >= comp.getX() && mouseY >= comp.getY() && mouseX < comp.getX() + comp.getWidth() && mouseY < comp.getY() + comp.getHeight())
+            if (comp.isVisible() && ((mouseX >= comp.getX() && mouseY >= comp.getY() && mouseX < comp.getX() + comp.getWidth() && mouseY < comp.getY() + comp.getHeight()) || comp instanceof TextField))
                 comp.mouseClicked(mouseX, mouseY, mouseButton);
         }
         return true;
