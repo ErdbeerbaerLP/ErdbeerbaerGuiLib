@@ -95,10 +95,10 @@ public class ScrollPanel extends GuiComponent {
     protected void drawBackground() {
     }
 
-    protected void drawPanel(int entryRight, int relativeY, Tessellator tess, int mouseX, int mouseY, float partialTicks) {
-        for (GuiComponent c : components) {
-            c.scrollOffsetY = getY() - (int) scrollDistance;
-            c.scrollOffsetX = getX();
+    protected void drawPanel(int mouseX, int mouseY, float partialTicks) {
+        for (final GuiComponent c : components) {
+            c.scrollOffsetY = this.getY() - (int) scrollDistance;
+            c.scrollOffsetX = this.getX();
             c.render(mouseX, mouseY, partialTicks);
         }
     }
@@ -214,7 +214,7 @@ public class ScrollPanel extends GuiComponent {
     }
 
     private boolean isMouseInComponent(double mouseX, double mouseY, GuiComponent comp) {
-        return (mouseX >= comp.getX() - getX() && mouseY >= comp.getY() - getY() && mouseX < comp.getX() - getX() + comp.getWidth() && mouseY < comp.getY() - getY() + comp.getHeight());
+        return (mouseX >= comp.getX() && mouseY >= comp.getY() && mouseX < comp.getX() + comp.getWidth() && mouseY < comp.getY() + comp.getHeight());
     }
 
     private int getBarHeight() {
@@ -273,8 +273,7 @@ public class ScrollPanel extends GuiComponent {
             tess.draw();
         }
 
-        int baseY = this.top + border - (int) this.scrollDistance;
-        this.drawPanel(right, baseY, tess, mouseX, mouseY, partialTicks);
+        this.drawPanel(mouseX, mouseY, partialTicks);
 
         RenderSystem.disableDepthTest();
 
