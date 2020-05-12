@@ -190,6 +190,11 @@ public abstract class GuiComponent extends Widget {
 
     public abstract void mouseClick(double mouseX, double mouseY, int mouseButton);
 
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int state) {
+        this.mouseRelease(mouseX, mouseY, state);
+        return true;
+    }
 
     /**
      * Called on mouse release

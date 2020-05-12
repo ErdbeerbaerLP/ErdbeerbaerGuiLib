@@ -30,7 +30,8 @@ public class ExampleGUI extends ExtendedScreen {
     private Button scrollButton1, scrollButton2;
     private TextField scrollTextField;
     private Slider xSlider, ySlider, contentSlider;
-    private Image scrollImage;
+    private Image pikachu;
+    private Slider scrollSlider;
 
     public ExampleGUI(Screen parent) {
         super(parent);
@@ -67,18 +68,21 @@ public class ExampleGUI extends ExtendedScreen {
         scrollButton1 = new Button(30, 10, "Button 1");
         scrollButton2 = new Button(30, 330, "Button 2");
         scrollTextField = new TextField(2, 300, 100);
+        scrollSlider = new Slider(10, 212, "Another Slider: ", -20, 20, 0, () -> {
+            System.out.println("Changed to " + scrollSlider.getValueInt());
+        });
+
         xSlider = new Slider(10, 20, "ScrollPanel X Pos", 0, 350, 0, () -> scrollPanel.setX(xSlider.getValueInt()));
         ySlider = new Slider(10, 50, "ScrollPanel Y Pos", 0, 255, 0, () -> scrollPanel.setY(ySlider.getValueInt()));
         contentSlider = new Slider(10, 80, "ScrollPanel Content length", 0, 1200, 500, () -> scrollPanel.setContentHeight(contentSlider.getValueInt()));
-        scrollImage = new Image(150, 10, 150, 150);
+        pikachu = new Image(150, 40, 120, 70);
 
 
         //Load images
         beeGif.loadImage("https://gamepedia.cursecdn.com/minecraft_gamepedia/thumb/5/58/Bee.gif/120px-Bee.gif");
         apple.loadImage(new ResourceLocation("minecraft", "textures/item/apple.png"));
         dynamicImage.loadImage("https://www.minecraft.net/etc.clientlibs/minecraft/clientlibs/main/resources/img/header/logo.png");
-        scrollImage.loadImage("https://bodyback.co.za/wp-content/uploads/2017/07/scroll-down.gif");
-
+        pikachu.loadImage("https://i.pinimg.com/originals/9f/b1/25/9fb125f1fedc8cc62ab5b20699ebd87d.gif");
         //Register listeners
         exampleButton.setClickListener(() -> System.out.println("I have been clicked!"));
         exampleCheckbox.setChangeListener(() -> System.out.println(exampleCheckbox.isChecked() ? "I just got Checked" : "I just have been unchecked :/"));
@@ -109,10 +113,20 @@ public class ExampleGUI extends ExtendedScreen {
         drawTypeSlider.setTooltips("Change how the toggle button will be rendered");
         beeGif.setTooltips("This is an example image", "It was loaded from an URL");
         apple.setTooltips("Oh, look at this apple!", "", "Click to eat");
+        scrollButton1.setTooltips("An button in an scroll panel");
+        pikachu.setTooltips("Click me to open an URL");
 
         scrollButton1.setClickListener(() -> System.out.println("TEST1"));
         scrollButton2.setClickListener(() -> System.out.println("TEST2"));
         scrollTextField.setReturnAction(() -> System.out.println(scrollTextField.getText()));
+        pikachu.setCallback(() -> {
+            //Open an URL
+            openURL("http://pikachu.com", (opened) -> {
+                if (!opened) {
+                    pikachu.hide();
+                }
+            });
+        });
 
         //Set some values
         exampleTextField.setAcceptsColors(true);
@@ -125,7 +139,6 @@ public class ExampleGUI extends ExtendedScreen {
         exampleToggleButton.setValue(true);
         urlField.setLabel("Image URL");
         urlField.setMaxStringLength(1024);
-        scrollPanel.setContentHeight(500);
 
 
         //Add components
@@ -146,8 +159,8 @@ public class ExampleGUI extends ExtendedScreen {
         this.addComponent(ySlider, 3);
         this.addComponent(contentSlider, 3);
 
-        scrollPanel.addAllComponents(scrollButton1, scrollButton2, scrollTextField, scrollImage);
-
+        scrollPanel.addAllComponents(scrollButton1, scrollButton2, scrollTextField, pikachu, scrollSlider);
+        scrollPanel.fitContent();
     }
 
     @Override

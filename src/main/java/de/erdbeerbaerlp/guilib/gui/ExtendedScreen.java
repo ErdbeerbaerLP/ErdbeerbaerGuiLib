@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.erdbeerbaerlp.guilib.components.GuiComponent;
 import de.erdbeerbaerlp.guilib.components.TextField;
+import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
+import net.minecraft.client.gui.screen.ConfirmOpenLinkScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -15,6 +17,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -328,10 +331,30 @@ public abstract class ExtendedScreen extends Screen {
         return super.handleComponentClicked(p_handleComponentClicked_1_);
     }
 
+    private BooleanConsumer confirmCallback;
+
     @Override
     public void onClose() {
-        for (GuiComponent comp : components) {
-            comp.unload();
-        }
+        if (confirmCallback != null)
+            for (GuiComponent comp : components) {
+                comp.unload();
+            }
+    }
+
+    private void confirmed(boolean confirmed) {
+        confirmCallback.accept(confirmed);
+        openGui(ExtendedScreen.this);
+        confirmCallback = null;
+    }
+
+    /**
+     * Prompts the user to open an url<br>
+     *
+     * @param callback gets called with true if the user opened it, false if user copied or closed it
+     */
+    public final void openURL(String URL, @Nonnull final BooleanConsumer callback) {
+        confirmCallback = callback;
+        final ConfirmOpenLinkScreen s = new ConfirmOpenLinkScreen(this::confirmed, URL, true);
+        openGui(s);
     }
 }

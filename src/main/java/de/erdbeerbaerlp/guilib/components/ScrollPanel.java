@@ -1,5 +1,6 @@
 package de.erdbeerbaerlp.guilib.components;
 
+import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -10,6 +11,7 @@ import net.minecraftforge.fml.client.gui.GuiUtils;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ScrollPanel extends GuiComponent {
     protected final int border = 4;
@@ -95,13 +97,7 @@ public class ScrollPanel extends GuiComponent {
     protected void drawBackground() {
     }
 
-    protected void drawPanel(int mouseX, int mouseY, float partialTicks) {
-        for (final GuiComponent c : components) {
-            c.scrollOffsetY = this.getY() - (int) scrollDistance;
-            c.scrollOffsetX = this.getX();
-            c.render(mouseX, mouseY, partialTicks);
-        }
-    }
+    private ArrayList<String> tooltips = new ArrayList<>();
 
     private int getMaxScroll() {
         return this.getContentHeight() - (this.height - this.border);
@@ -137,45 +133,39 @@ public class ScrollPanel extends GuiComponent {
         return 20;
     }
 
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        this.scrolling = button == 0 && mouseX >= barLeft && mouseX < barLeft + barWidth;
-        if (this.scrolling) {
-            return true;
+    protected void drawPanel(int mouseX, int mouseY, float partialTicks) {
+        for (final GuiComponent c : components) {
+            c.scrollOffsetY = this.getY() - (int) scrollDistance;
+            c.scrollOffsetX = this.getX();
+            if (c.isVisible()) c.render(mouseX, mouseY, partialTicks);
         }
-        if (mouseX >= left && mouseX <= right) {
-            for (GuiComponent comp : components) {
-                if (comp.isVisible() && (isMouseInComponent(mouseX, mouseY, comp)) || comp instanceof TextField)
-                    comp.mouseClicked(mouseX, mouseY, button);
+    }
+
+    /**
+     * Resizes the content height to just perfectly fit all components
+     */
+    public void fitContent() {
+        for (final GuiComponent c : components) {
+            if (((c.getY() - c.scrollOffsetY) + c.getHeight() + 10) > contentHeight) {
+                contentHeight = (c.getY() - c.scrollOffsetY) + c.getHeight() + 10;
             }
         }
+    }
+
+    @Override
+    public boolean canHaveTooltip() {
         return true;
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int state) {
-        /*if (super.mouseReleased(mouseX, mouseY, state))
-            return true;*/
-        boolean ret = this.scrolling;
+    public void mouseRelease(double mouseX, double mouseY, int state) {
         this.scrolling = false;
         if (mouseX >= left && mouseX <= right) {
             for (GuiComponent comp : components) {
-                if (comp.isVisible() && (isMouseInComponent(mouseX, mouseY, comp)) || comp instanceof TextField)
+                if (comp.isVisible())
                     comp.mouseReleased(mouseX, mouseY, state);
             }
         }
-        return ret;
-    }
-
-    @Override
-    public void mouseRelease(double mouseX, double mouseY, int state) {
-        //unused
-
-    }
-
-    @Override
-    public final void mouseClick(double mouseX, double mouseY, int mouseButton) {
-        //Unused
     }
 
     /**
@@ -248,6 +238,20 @@ public class ScrollPanel extends GuiComponent {
     }
 
     @Override
+    public final void mouseClick(double mouseX, double mouseY, int mouseButton) {
+        this.scrolling = mouseButton == 0 && mouseX >= barLeft && mouseX < barLeft + barWidth;
+        if (this.scrolling) {
+            return;
+        }
+        if (mouseX >= left && mouseX <= right) {
+            for (GuiComponent comp : components) {
+                if (comp.isVisible() && (isMouseInComponent(mouseX, mouseY, comp)) || comp instanceof TextField)
+                    comp.mouseClicked(mouseX, mouseY, mouseButton);
+            }
+        }
+    }
+
+    @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
         this.drawBackground();
         Tessellator tess = Tessellator.getInstance();
@@ -312,6 +316,23 @@ public class ScrollPanel extends GuiComponent {
         RenderSystem.enableAlphaTest();
         RenderSystem.disableBlend();
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
+        for (final GuiComponent comp : Lists.reverse(components)) { //Reversing to call front component
+            tooltips.clear();
+            if (!comp.isVisible()) continue;
+            if (comp.canHaveTooltip() && isMouseInComponent(mouseX, mouseY, comp)) {
+
+                if (comp.getTooltips() != null) {
+                    tooltips.addAll(Arrays.asList(comp.getTooltips()));
+                    break;
+                }
+            }
+        }
+
+    }
+
+    @Override
+    public String[] getTooltips() {
+        return tooltips.toArray(new String[0]);
     }
 
     protected void drawGradientRect(int left, int top, int right, int bottom, int color1, int color2) {
