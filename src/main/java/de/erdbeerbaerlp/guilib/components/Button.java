@@ -213,10 +213,8 @@ public class Button extends GuiComponent {
 
     @Override
     public void mouseClick(double mouseX, double mouseY, int mouseButton) {
-        if (this.visible && mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height) {
-            playPressSound();
-            if (enabled) onClick();
-        }
+        playPressSound();
+        if (enabled) onClick();
     }
 
     @Override

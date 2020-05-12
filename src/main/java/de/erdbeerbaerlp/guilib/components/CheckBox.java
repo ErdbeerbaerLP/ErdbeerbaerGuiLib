@@ -6,9 +6,9 @@ import net.minecraftforge.fml.client.gui.GuiUtils;
 
 public class CheckBox extends GuiComponent {
     private static final ResourceLocation CHECKBOX_LOCATION = new ResourceLocation("minecraft", "textures/gui/checkbox.png");
-    private Runnable callback;
     private final int boxWidth;
     private final String displayString;
+    private Runnable callback;
     private boolean isChecked;
 
     /**
@@ -117,11 +117,10 @@ public class CheckBox extends GuiComponent {
 
     @Override
     public void mouseClick(double mouseX, double mouseY, int mouseButton) {
-        if (this.visible && mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height) {
-            this.setIsChecked(!isChecked());
-            onChange();
-            playPressSound();
-        }
+        this.setIsChecked(!isChecked());
+        onChange();
+        playPressSound();
+
     }
 
     @Override

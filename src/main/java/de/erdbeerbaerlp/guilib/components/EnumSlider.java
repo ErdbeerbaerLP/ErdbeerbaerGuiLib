@@ -7,9 +7,8 @@ import java.lang.reflect.Method;
 
 public class EnumSlider extends Slider {
     private final Runnable action;
-    private Enum<?> enumValue;
     private final Enum<?>[] enumValues;
-
+    private Enum<?> enumValue;
     private int prevIndex;
 
     /**
@@ -148,11 +147,10 @@ public class EnumSlider extends Slider {
 
     @Override
     public void mouseClick(double mouseX, double mouseY, int mouseButton) {
-        if (this.enabled && this.visible && mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height) {
-            playPressSound();
-            updateSlider();
-            this.dragging = true;
-        }
+        playPressSound();
+        updateSlider();
+        this.dragging = true;
+
     }
 
     @Override

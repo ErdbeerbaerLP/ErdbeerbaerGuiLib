@@ -19,6 +19,10 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class TextField extends GuiComponent {
+    /**
+     * if true the textbox can lose focus by clicking elsewhere on the screen
+     */
+    protected final boolean canLoseFocus = true;
     final char colorCodePlaceholder = '\u0378';
     private final ArrayList<String> suggestions = new ArrayList<>();
     private final String[] colorCodeSuggestions = new String[]{"\u00A711", "\u00A722", "\u00A733", "\u00A744", "\u00A755", "\u00A766", "\u00A777", "\u00A788", "\u00A799", "\u00A7AA", "\u00A7BB", "\u00A7CC", "\u00A7DD", "\u00A7EE", "\u00A7FF", "\u00A7LL", "\u00A7MM", "\u00A7NN", "\u00A7OO", "K\u00A7kK"};
@@ -26,10 +30,6 @@ public class TextField extends GuiComponent {
     protected int maxStringLength = 100;
     protected int cursorCounter;
     protected boolean enableBackgroundDrawing = true;
-    /**
-     * if true the textbox can lose focus by clicking elsewhere on the screen
-     */
-    protected final boolean canLoseFocus = true;
     /**
      * If this value is true along with isEnabled, keyTyped will process the keys.
      */
@@ -495,20 +495,18 @@ public class TextField extends GuiComponent {
     @Override
     public void mouseClick(double mouseX, double mouseY, int mouseButton) {
         if (this.isVisible()) {
-            boolean flag = mouseX >= (double) this.getX() && mouseX < (double) (this.getX() + this.width) && mouseY >= (double) this.getY() && mouseY < (double) (this.getY() + this.height);
+            boolean isHovered = mouseX >= (double) this.getX() && mouseX < (double) (this.getX() + this.width) && mouseY >= (double) this.getY() && mouseY < (double) (this.getY() + this.height);
             if (this.canLoseFocus) {
-                super.setFocused(flag);
+                super.setFocused(isHovered);
             }
 
-            if (this.isFocused() && flag && mouseButton == 0) {
+            if (this.isFocused() && isHovered && mouseButton == 0) {
                 int i = MathHelper.floor(mouseX) - this.getX();
                 if (this.enableBackgroundDrawing) {
                     i -= 4;
                 }
-
                 String s = this.fontRenderer.trimStringToWidth(this.text.substring(this.lineScrollOffset), this.getAdjustedWidth());
                 this.setCursorPosition(this.fontRenderer.trimStringToWidth(s, i).length() + this.lineScrollOffset);
-
             }
         }
     }

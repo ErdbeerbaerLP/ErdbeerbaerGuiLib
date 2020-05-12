@@ -5,15 +5,15 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 public class Slider extends GuiComponent {
+    protected final String dispString;
+    protected final String suffix;
+    protected final int precision;
     protected Runnable action;
     protected double prevValue;
     protected double minValue;
     protected double maxValue;
     protected double sliderValue;
-    protected final String dispString;
-    protected final String suffix;
     protected boolean showDecimal;
-    protected final int precision;
     protected String displayString;
     protected boolean drawString;
     protected boolean dragging = false;
@@ -201,11 +201,10 @@ public class Slider extends GuiComponent {
 
     @Override
     public void mouseClick(double mouseX, double mouseY, int mouseButton) {
-        if (this.visible && mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height) {
-            this.sliderValue = (mouseX - (this.getX() + 4)) / (this.width - 8);
-            updateSlider();
-            this.dragging = true;
-        }
+        this.sliderValue = (mouseX - (this.getX() + 4)) / (this.width - 8);
+        updateSlider();
+        this.dragging = true;
+
     }
 
     @Override

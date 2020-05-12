@@ -12,19 +12,19 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 
 public class ScrollPanel extends GuiComponent {
+    protected final int border = 4;
+    private final int barWidth = 6;
+    private final ArrayList<GuiComponent> components = new ArrayList<>();
     protected int top;
     protected int bottom;
     protected int right;
     protected int left;
-    protected final int border = 4;
     protected float scrollDistance;
     protected boolean captureMouse = true;
     private ResourceLocation BACKGROUND_LOCATION = new ResourceLocation("minecraft", "textures/gui/options_background.png");
-    private final int barWidth = 6;
     private int barLeft;
     private boolean scrolling;
     private int contentHeight;
-    private final ArrayList<GuiComponent> components = new ArrayList<>();
 
     public ScrollPanel(int x, int y, int width, int height) {
         super(x, y, width, height);
@@ -97,7 +97,7 @@ public class ScrollPanel extends GuiComponent {
 
     protected void drawPanel(int entryRight, int relativeY, Tessellator tess, int mouseX, int mouseY, float partialTicks) {
         for (GuiComponent c : components) {
-            c.scrollOffsetY = relativeY;
+            c.scrollOffsetY = getY() - (int) scrollDistance;
             c.scrollOffsetX = getX();
             c.render(mouseX, mouseY, partialTicks);
         }
@@ -138,25 +138,33 @@ public class ScrollPanel extends GuiComponent {
     }
 
     @Override
-    public boolean isMouseOver(double mouseX, double mouseY) {
-        return mouseX >= this.left && mouseX <= this.left + this.width &&
-                mouseY >= this.top && mouseY <= this.bottom;
-    }
-
-    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         this.scrolling = button == 0 && mouseX >= barLeft && mouseX < barLeft + barWidth;
         if (this.scrolling) {
             return true;
         }
-        int mouseListY = ((int) mouseY) - this.top - this.getContentHeight() + (int) this.scrollDistance - border;
-        if (mouseX >= left && mouseX <= right && mouseListY < 0) {
+        if (mouseX >= left && mouseX <= right) {
             for (GuiComponent comp : components) {
-                if (comp.isVisible() && (isMouseInComponent(mouseX - left, mouseY + this.top - (int) this.scrollDistance - border, comp)) || comp instanceof TextField)
-                    comp.mouseClicked(mouseX - left, mouseY + this.top - (int) this.scrollDistance - border, button);
+                if (comp.isVisible() && (isMouseInComponent(mouseX, mouseY, comp)) || comp instanceof TextField)
+                    comp.mouseClicked(mouseX, mouseY, button);
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int state) {
+        /*if (super.mouseReleased(mouseX, mouseY, state))
+            return true;*/
+        boolean ret = this.scrolling;
+        this.scrolling = false;
+        if (mouseX >= left && mouseX <= right) {
+            for (GuiComponent comp : components) {
+                if (comp.isVisible() && (isMouseInComponent(mouseX, mouseY, comp)) || comp instanceof TextField)
+                    comp.mouseReleased(mouseX, mouseY, state);
+            }
+        }
+        return ret;
     }
 
     @Override
@@ -205,23 +213,8 @@ public class ScrollPanel extends GuiComponent {
         return true;
     }
 
-    @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int state) {
-        /*if (super.mouseReleased(mouseX, mouseY, state))
-            return true;*/
-        boolean ret = this.scrolling;
-        this.scrolling = false;
-        int mouseListY = ((int) mouseY) - this.top - this.getContentHeight() + (int) this.scrollDistance - border;
-        if (mouseX >= left && mouseX <= right && mouseListY < 0)
-            for (GuiComponent comp : components) {
-                if (comp.isVisible() && (isMouseInComponent(mouseX - left, mouseY + this.top - (int) this.scrollDistance - border, comp)) || comp instanceof TextField)
-                    comp.mouseReleased(mouseX - left, mouseY + this.top - (int) this.scrollDistance - border, state);
-            }
-        return ret;
-    }
-
     private boolean isMouseInComponent(double mouseX, double mouseY, GuiComponent comp) {
-        return (mouseX >= comp.getX() && mouseY >= comp.getY() && mouseX < comp.getX() + comp.getWidth() && mouseY < comp.getY() + comp.getHeight());
+        return (mouseX >= comp.getX() - getX() && mouseY >= comp.getY() - getY() && mouseX < comp.getX() - getX() + comp.getWidth() && mouseY < comp.getY() - getY() + comp.getHeight());
     }
 
     private int getBarHeight() {
