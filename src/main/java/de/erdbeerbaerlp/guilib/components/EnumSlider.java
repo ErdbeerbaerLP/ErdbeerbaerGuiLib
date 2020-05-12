@@ -6,9 +6,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class EnumSlider extends Slider {
-    private Runnable action;
+    private final Runnable action;
     private Enum<?> enumValue;
-    private Enum<?>[] enumValues;
+    private final Enum<?>[] enumValues;
 
     private int prevIndex;
 

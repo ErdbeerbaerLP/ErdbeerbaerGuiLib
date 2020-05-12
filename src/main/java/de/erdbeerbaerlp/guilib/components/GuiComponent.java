@@ -20,10 +20,6 @@ public abstract class GuiComponent extends Widget {
     protected boolean hovered; //Sometimes used by components
     protected boolean visible = true, enabled = true;
     int scrollOffsetX = 0, scrollOffsetY = 0;
-    /**
-     * Used to prevent crash with animated images
-     */
-    private boolean shouldUpdate = false;
     private int x;
     private int y;
     private String[] tooltips = new String[0];
@@ -36,10 +32,6 @@ public abstract class GuiComponent extends Widget {
         this.setY(yIn);
         this.width = widthIn;
         this.height = heightIn;
-    }
-
-    public boolean shouldUpdate() {
-        return shouldUpdate;
     }
 
     /**
@@ -284,13 +276,5 @@ public abstract class GuiComponent extends Widget {
      */
     public void unload() {
 
-    }
-
-    /**
-     * Marks an component to require an update<br>
-     * Used by {@link Image}
-     */
-    public void markUpdate() {
-        this.shouldUpdate = true;
     }
 }

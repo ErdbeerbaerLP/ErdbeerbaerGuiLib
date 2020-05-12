@@ -10,10 +10,10 @@ public class Slider extends GuiComponent {
     protected double minValue;
     protected double maxValue;
     protected double sliderValue;
-    protected String dispString;
-    protected String suffix;
+    protected final String dispString;
+    protected final String suffix;
     protected boolean showDecimal;
-    protected int precision;
+    protected final int precision;
     protected String displayString;
     protected boolean drawString;
     protected boolean dragging = false;

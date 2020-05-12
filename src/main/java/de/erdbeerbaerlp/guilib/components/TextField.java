@@ -29,7 +29,7 @@ public class TextField extends GuiComponent {
     /**
      * if true the textbox can lose focus by clicking elsewhere on the screen
      */
-    protected boolean canLoseFocus = true;
+    protected final boolean canLoseFocus = true;
     /**
      * If this value is true along with isEnabled, keyTyped will process the keys.
      */
@@ -178,8 +178,8 @@ public class TextField extends GuiComponent {
      * returns the text between the cursor and selectionEnd
      */
     public String getSelectedText() {
-        int i = this.cursorPosition < this.selectionEnd ? this.cursorPosition : this.selectionEnd;
-        int j = this.cursorPosition < this.selectionEnd ? this.selectionEnd : this.cursorPosition;
+        int i = Math.min(this.cursorPosition, this.selectionEnd);
+        int j = Math.max(this.cursorPosition, this.selectionEnd);
         return this.text.substring(i, j);
     }
 
@@ -199,8 +199,8 @@ public class TextField extends GuiComponent {
         if (acceptsColors) {
             s1 = s1.replace(colorCodePlaceholder, '\u00A7');
         }
-        int i = this.cursorPosition < this.selectionEnd ? this.cursorPosition : this.selectionEnd;
-        int j = this.cursorPosition < this.selectionEnd ? this.selectionEnd : this.cursorPosition;
+        int i = Math.min(this.cursorPosition, this.selectionEnd);
+        int j = Math.max(this.cursorPosition, this.selectionEnd);
         int k = this.maxStringLength - this.text.length() - (i - j);
         if (!this.text.isEmpty()) {
             s = s + this.text.substring(0, i);
@@ -494,8 +494,7 @@ public class TextField extends GuiComponent {
 
     @Override
     public void mouseClick(double mouseX, double mouseY, int mouseButton) {
-        if (!this.isVisible()) {
-        } else {
+        if (this.isVisible()) {
             boolean flag = mouseX >= (double) this.getX() && mouseX < (double) (this.getX() + this.width) && mouseY >= (double) this.getY() && mouseY < (double) (this.getY() + this.height);
             if (this.canLoseFocus) {
                 super.setFocused(flag);

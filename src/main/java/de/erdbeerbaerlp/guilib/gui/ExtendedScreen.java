@@ -26,7 +26,7 @@ public abstract class ExtendedScreen extends Screen {
     private final List<GuiComponent> components = new ArrayList<>();
     private int nextComponentID = 0;
     private int currentPage = 0;
-    private Screen parentGui = null;
+    private Screen parentGui;
 
     /**
      * The constructor, you need to call this!
@@ -37,9 +37,6 @@ public abstract class ExtendedScreen extends Screen {
         super(new StringTextComponent("An GUI"));
         this.parentGui = parentGui;
         buildGui();
-    }
-
-    public final void initGui() {
     }
 
     /**

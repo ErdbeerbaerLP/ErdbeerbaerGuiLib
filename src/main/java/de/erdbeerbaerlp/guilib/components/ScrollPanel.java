@@ -16,15 +16,15 @@ public class ScrollPanel extends GuiComponent {
     protected int bottom;
     protected int right;
     protected int left;
-    protected int border = 4;
+    protected final int border = 4;
     protected float scrollDistance;
     protected boolean captureMouse = true;
     private ResourceLocation BACKGROUND_LOCATION = new ResourceLocation("minecraft", "textures/gui/options_background.png");
-    private int barWidth = 6;
+    private final int barWidth = 6;
     private int barLeft;
     private boolean scrolling;
     private int contentHeight;
-    private ArrayList<GuiComponent> components = new ArrayList<>();
+    private final ArrayList<GuiComponent> components = new ArrayList<>();
 
     public ScrollPanel(int x, int y, int width, int height) {
         super(x, y, width, height);

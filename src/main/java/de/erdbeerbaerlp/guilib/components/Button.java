@@ -18,6 +18,7 @@ public class Button extends GuiComponent {
     protected String displayString;
     private Runnable callback;
     private String errorTooltip = "";
+
     /**
      * Creates a Button
      *
@@ -97,7 +98,7 @@ public class Button extends GuiComponent {
     public Button(int xPos, int yPos, int width, int height, String displayString, String iconURL) {
         this(xPos, yPos, width, height, displayString);
         try {
-            this.BUTTON_ICON_IMAGE = new DynamicTexture(ImageUtil.getImageFromIS(ImageUtil.getInputStreamFromImageURL(iconURL), false, 16, 16));
+            this.BUTTON_ICON_IMAGE = new DynamicTexture(ImageUtil.getImageFromIS(ImageUtil.getInputStreamFromImageURL(iconURL), false, 16, 16, true));
         } catch (IOException e) {
             errorTooltip = e.getCause().getLocalizedMessage();
         }

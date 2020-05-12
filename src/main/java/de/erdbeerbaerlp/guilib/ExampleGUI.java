@@ -8,7 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "FieldCanBeLocal"})
 public class ExampleGUI extends ExtendedScreen {
     private Button exampleButton;
     private TextField exampleTextField;
@@ -65,7 +65,7 @@ public class ExampleGUI extends ExtendedScreen {
 
         scrollPanel = new ScrollPanel(0, 0, 300, 200);
         scrollButton1 = new Button(30, 10, "Button 1");
-        scrollButton2 = new Button(30, 500, "Button 2");
+        scrollButton2 = new Button(30, 330, "Button 2");
         scrollTextField = new TextField(2, 300, 100);
         xSlider = new Slider(10, 20, "ScrollPanel X Pos", 0, 350, 0, () -> scrollPanel.setX(xSlider.getValueInt()));
         ySlider = new Slider(10, 50, "ScrollPanel Y Pos", 0, 255, 0, () -> scrollPanel.setY(ySlider.getValueInt()));
@@ -94,9 +94,7 @@ public class ExampleGUI extends ExtendedScreen {
             apple.disable();
         });
         urlField.setText(dynamicImage.getImageURL());
-        urlField.setReturnAction(() -> {
-            dynamicImage.loadImage(urlField.getText());
-        });
+        urlField.setReturnAction(() -> dynamicImage.loadImage(urlField.getText()));
         nextPageButton.setClickListener(this::nextPage);
         prevPageButton.setClickListener(this::prevPage);
 

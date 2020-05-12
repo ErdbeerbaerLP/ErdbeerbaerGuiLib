@@ -84,13 +84,18 @@ public class ImageUtil {
         return new ByteArrayInputStream(toByteArray(is));
     }
 
-    public static NativeImage getImageFromIS(final InputStream is, boolean keepAspectRatio, int width, int height) throws IOException {
+    public static NativeImage getImageFromIS(final ByteArrayInputStream is, boolean keepAspectRatio, int width, int height, boolean resizingImage) throws IOException {
         final BufferedImage img = ImageIO.read(is);
+        is.reset();
         final ByteArrayOutputStream os = new ByteArrayOutputStream();
-        if (keepAspectRatio)
-            ImageIO.write(ImageUtil.scaleImageKeepAspectRatio(img, width, height), "png", os);
-        else
-            ImageIO.write(ImageUtil.scaleImage(img, width, height), "png", os);
+        if (img.getWidth() <= width && img.getHeight() <= height && !resizingImage)
+            ImageIO.write(img, "png", os);
+        else {
+            if (keepAspectRatio)
+                ImageIO.write(ImageUtil.scaleImageKeepAspectRatio(img, width, height), "png", os);
+            else
+                ImageIO.write(ImageUtil.scaleImage(img, width, height), "png", os);
+        }
         final ByteArrayInputStream is2 = new ByteArrayInputStream(os.toByteArray());
         final NativeImage imgo = NativeImage.read(is2);
         is2.close();
@@ -98,7 +103,7 @@ public class ImageUtil {
         return imgo;
     }
 
-    public static boolean isISGif(final InputStream is) throws IOException {
+    public static boolean isISGif(final ByteArrayInputStream is) throws IOException {
         final ImageInputStream iis = ImageIO.createImageInputStream(is);
         final Iterator<ImageReader> imageReaders = ImageIO.getImageReaders(iis);
         while (imageReaders.hasNext()) {

@@ -7,8 +7,8 @@ import net.minecraftforge.fml.client.gui.GuiUtils;
 public class CheckBox extends GuiComponent {
     private static final ResourceLocation CHECKBOX_LOCATION = new ResourceLocation("minecraft", "textures/gui/checkbox.png");
     private Runnable callback;
-    private int boxWidth;
-    private String displayString;
+    private final int boxWidth;
+    private final String displayString;
     private boolean isChecked;
 
     /**

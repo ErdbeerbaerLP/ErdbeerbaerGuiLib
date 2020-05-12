@@ -34,6 +34,7 @@ public class Image extends GuiComponent {
     private boolean acceptsNewImage = true;
     private boolean doGifLoop = true;
     private boolean shouldKeepSize = true;
+    private boolean resizingImage = true;
 
     /**
      * Creates an empty image
@@ -123,7 +124,6 @@ public class Image extends GuiComponent {
         doGifLoop = true;
     }
 
-
     public void loadImage(final File file) {
         try {
             final FileInputStream is = new FileInputStream(file);
@@ -175,6 +175,18 @@ public class Image extends GuiComponent {
 
     }
 
+    public boolean isResizingImage() {
+        return resizingImage;
+    }
+
+    /**
+     * Allows you to set if the visible image will be resized if it is smaller<br>
+     * Does NOT affect larger images!!
+     */
+    public void setResizingImage(boolean resizingImage) {
+        this.resizingImage = resizingImage;
+    }
+
     /**
      * Note: Closes InputStream when finished!
      */
@@ -192,7 +204,7 @@ public class Image extends GuiComponent {
                 do {
                     image = new DynamicTexture(getWidth(), getHeight(), true);
                 } while (image.getTextureData().getBytes().length == 0);
-                markUpdate();
+                mc.execute(image::updateDynamicTexture);
                 imgLoaded = false;
                 errorTooltip = "";
                 acceptsNewImage = false;
@@ -200,14 +212,14 @@ public class Image extends GuiComponent {
                     try {
                         if (ImageUtil.isISGif(is)) {
                             System.out.println("InputStream is gif");
-                            this.gif = new GifThread(this, is, image, keepAspectRatio, doGifLoop);
+                            this.gif = new GifThread(is, image, keepAspectRatio, doGifLoop, resizingImage);
                             gif.start();
                         } else
                             try {
                                 do {
-                                    image.setTextureData(ImageUtil.getImageFromIS(is, keepAspectRatio, getWidth(), getHeight()));
+                                    image.setTextureData(ImageUtil.getImageFromIS(is, keepAspectRatio, getWidth(), getHeight(), resizingImage));
                                 } while (image.getTextureData().getBytes().length == 0);
-                                markUpdate();
+                                mc.execute(image::updateDynamicTexture);
                                 is.close();
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -239,7 +251,6 @@ public class Image extends GuiComponent {
 
     @Override
     public void render(int mouseX, int mouseY, float partial) {
-        //if (image != null && shouldUpdate()) image.updateDynamicTexture();
         if (!errorTooltip.isEmpty()) {
             final int c = new Color(Color.RED.getRed(), Color.RED.getGreen(), Color.RED.getBlue(), 30).getRGB();
             GuiUtils.drawGradientRect(getBlitOffset(), this.getX(), this.getY(), this.getX() + this.width, this.getY() + height, c, c);
@@ -259,14 +270,13 @@ public class Image extends GuiComponent {
         } else {
             if (loadingGif == null || !loadingGif.isAlive()) {
                 try {
-                    loadingGif = new GifThread(this, ImageUtil.convertToByteArrayIS(mc.getResourceManager().getResource(new ResourceLocation(McMod.MODID, "textures/gui/loading.gif")).getInputStream()), loadingTexture, keepAspectRatio, doGifLoop);
+                    loadingGif = new GifThread(ImageUtil.convertToByteArrayIS(mc.getResourceManager().getResource(new ResourceLocation(McMod.MODID, "textures/gui/loading.gif")).getInputStream()), loadingTexture, keepAspectRatio, doGifLoop, resizingImage);
                 } catch (IOException ignored) {
                 }
             }
             if (!loadingGif.isAlive()) loadingGif.start();
             final int c = new Color(Color.DARK_GRAY.getRed(), Color.DARK_GRAY.getGreen(), Color.DARK_GRAY.getBlue(), 40).getRGB();
             GuiUtils.drawGradientRect(getBlitOffset(), this.getX(), this.getY(), this.getX() + this.width, this.getY() + height, c, c);
-            //if ( shouldUpdate())loadingTexture.updateDynamicTexture();
             mc.getTextureManager().bindTexture(mc.getTextureManager().getDynamicTextureLocation("loading-gif_" + imageUUID.toString().toLowerCase(), loadingTexture));
             blit(getX() + getWidth() / 2 - 16, getY() + getHeight() / 2 - 16, 0, 0, 32, 32, 32, 32);
         }
