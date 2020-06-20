@@ -516,12 +516,6 @@ public class TextField extends GuiComponent {
 
     }
 
-    /**
-     * Sets focus to this gui element
-     */
-    public void setFocused2(boolean isFocusedIn) {
-    }
-
     public boolean changeFocus(boolean p_changeFocus_1_) {
         return (this.visible && this.isEnabled()) && super.changeFocus(p_changeFocus_1_);
     }

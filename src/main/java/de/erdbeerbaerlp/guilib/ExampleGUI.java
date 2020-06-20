@@ -6,6 +6,9 @@ import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.world.BossInfo;
+
+import java.util.Random;
 
 
 @SuppressWarnings({"unused", "FieldCanBeLocal"})
@@ -33,9 +36,18 @@ public class ExampleGUI extends ExtendedScreen {
     private Image pikachu;
     private Slider scrollSlider;
 
+    private Spinner spinner;
+    private ProgressBar pBar;
+    private Slider pBarSlider;
+    private EnumSlider pBarColorSlider;
+    private Button pBarLoader;
+    private ToggleButton spinnerPlayPause;
+
     public ExampleGUI(Screen parent) {
         super(parent);
     }
+
+    private Thread loader;
 
     @Override
     public void buildGui() {
@@ -77,12 +89,24 @@ public class ExampleGUI extends ExtendedScreen {
         contentSlider = new Slider(10, 80, "ScrollPanel Content length", 0, 1200, 500, () -> scrollPanel.setContentHeight(contentSlider.getValueInt()));
         pikachu = new Image(150, 40, 120, 70);
 
+        spinner = new Spinner(0, 0);
+        pBar = new ProgressBar(0, 0, 200);
+        pBarSlider = new Slider(0, 0, "ProgressBar value: ", 0, 100, 0, () -> {
+            pBar.setValue(pBarSlider.getValueInt());
+        });
+        pBarColorSlider = new EnumSlider(0, 0, "Progress Bar Color: ", BossInfo.Color.class, BossInfo.Color.BLUE, () -> {
+            pBar.setColor((BossInfo.Color) pBarColorSlider.getEnum());
+        });
+        pBarLoader = new Button(0, 0, "Load Something", Button.DefaultButtonIcons.PLAY);
+        spinnerPlayPause = new ToggleButton(0, 0, Button.DefaultButtonIcons.PAUSE, Button.DefaultButtonIcons.PLAY);
 
         //Load images
         beeGif.loadImage("https://gamepedia.cursecdn.com/minecraft_gamepedia/thumb/5/58/Bee.gif/120px-Bee.gif");
         apple.loadImage(new ResourceLocation("minecraft", "textures/item/apple.png"));
         dynamicImage.loadImage("https://www.minecraft.net/etc.clientlibs/minecraft/clientlibs/main/resources/img/header/logo.png");
         pikachu.loadImage("https://i.pinimg.com/originals/9f/b1/25/9fb125f1fedc8cc62ab5b20699ebd87d.gif");
+
+
         //Register listeners
         exampleButton.setClickListener(() -> System.out.println("I have been clicked!"));
         exampleCheckbox.setChangeListener(() -> System.out.println(exampleCheckbox.isChecked() ? "I just got Checked" : "I just have been unchecked :/"));
@@ -101,6 +125,35 @@ public class ExampleGUI extends ExtendedScreen {
         urlField.setReturnAction(() -> dynamicImage.loadImage(urlField.getText()));
         nextPageButton.setClickListener(this::nextPage);
         prevPageButton.setClickListener(this::prevPage);
+        pBarLoader.setClickListener(() -> {
+            if (this.loader == null || !this.loader.isAlive()) {
+                this.loader = new Thread(() -> {
+                    pBarSlider.disable();
+                    pBar.setValue(0);
+                    pBar.setMaxValue(140);
+                    pBarSlider.setValue(0);
+                    pBarSlider.setMaxValue(140);
+                    for (int i = 0; i < 140; i++) {
+                        pBar.increment(1);
+                        pBarSlider.setValue(pBar.getValue());
+                        try {
+                            Thread.sleep(new Random().nextInt(5) * 100);
+                        } catch (InterruptedException ignored) {
+                        }
+                    }
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException ignored) {
+                    }
+                    pBar.setValue(0);
+                    pBar.setMaxValue(100);
+                    pBarSlider.setValue(0);
+                    pBarSlider.setMaxValue(100);
+                    pBarSlider.enable();
+                });
+                this.loader.start();
+            }
+        });
 
         //Set tooltips
         exampleButton.setTooltips("Example Tooltip", "This is a Button");
@@ -127,6 +180,12 @@ public class ExampleGUI extends ExtendedScreen {
                 }
             });
         });
+        spinnerPlayPause.setClickListener(() -> {
+            if (spinnerPlayPause.getValue())
+                spinner.resume();
+            else
+                spinner.stop();
+        });
 
         //Set some values
         exampleTextField.setAcceptsColors(true);
@@ -139,6 +198,10 @@ public class ExampleGUI extends ExtendedScreen {
         exampleToggleButton.setValue(true);
         urlField.setLabel("Image URL");
         urlField.setMaxStringLength(1024);
+        pBar.setText("Progress Bar:");
+        pBarSlider.setShowDecimal(false);
+        spinnerPlayPause.setValue(true);
+        spinnerPlayPause.setDrawType(ToggleButton.DrawType.STRING_OR_ICON);
 
 
         //Add components
@@ -158,6 +221,13 @@ public class ExampleGUI extends ExtendedScreen {
         this.addComponent(xSlider, 3);
         this.addComponent(ySlider, 3);
         this.addComponent(contentSlider, 3);
+        this.addComponent(spinner, 4);
+        this.addComponent(spinnerPlayPause, 4);
+        this.addComponent(pBar, 4);
+        this.addComponent(pBarSlider, 4);
+        this.addComponent(pBarColorSlider, 4);
+        this.addComponent(pBarLoader, 4);
+
 
         scrollPanel.addAllComponents(scrollButton1, scrollButton2, scrollTextField, pikachu, scrollSlider);
         scrollPanel.fitContent();
@@ -181,6 +251,12 @@ public class ExampleGUI extends ExtendedScreen {
         dynamicImage.setPosition(width / 2 - 150, 50);
         urlField.setPosition(dynamicImage.getX(), dynamicImage.getY() - 30);
         urlField.setWidth(dynamicImage.getWidth());
+        spinner.setPosition(width / 2 - 16, pBar.getY() - 50);
+        spinnerPlayPause.setPosition(spinner.getX() + 32 + 20, spinner.getY() + 8);
+        pBar.setPosition(spinner.getX() - pBar.getWidth() / 2, height / 2);
+        pBarSlider.setPosition(pBar.getX() + 25, pBar.getY() + 40);
+        pBarColorSlider.setPosition(pBarSlider.getX(), pBarSlider.getY() + pBarSlider.getHeight() + 4);
+        pBarLoader.setPosition(pBarSlider.getX() - pBarLoader.getWidth() - 12, pBarSlider.getY() + pBarSlider.getHeight() + 4);
     }
 
     @Override

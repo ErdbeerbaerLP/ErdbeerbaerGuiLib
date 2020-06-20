@@ -284,7 +284,9 @@ public class Image extends GuiComponent {
 
     @Override
     public final void mouseClick(double mouseX, double mouseY, int mouseButton) {
-        onClick();
+        if (isEnabled()) {
+            onClick();
+        }
     }
 
     @Override

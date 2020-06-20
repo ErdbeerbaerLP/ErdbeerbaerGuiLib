@@ -117,9 +117,11 @@ public class CheckBox extends GuiComponent {
 
     @Override
     public void mouseClick(double mouseX, double mouseY, int mouseButton) {
-        this.setIsChecked(!isChecked());
-        onChange();
         playPressSound();
+        if (isEnabled()) {
+            this.setIsChecked(!isChecked());
+            onChange();
+        }
 
     }
 

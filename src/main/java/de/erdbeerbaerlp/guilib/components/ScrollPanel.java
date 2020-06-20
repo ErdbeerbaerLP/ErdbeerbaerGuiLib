@@ -181,17 +181,20 @@ public class ScrollPanel extends GuiComponent {
 
     @Override
     public boolean charTyped(char typedChar, int keyCode) {
-        for (GuiComponent comp : components) {
-            comp.charTyped(typedChar, keyCode);
-        }
+
+        if (isEnabled())
+            for (GuiComponent comp : components) {
+                comp.charTyped(typedChar, keyCode);
+            }
         return true;
     }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        for (GuiComponent comp : components) {
-            comp.keyPressed(keyCode, scanCode, modifiers);
-        }
+        if (isEnabled())
+            for (GuiComponent comp : components) {
+                comp.keyPressed(keyCode, scanCode, modifiers);
+            }
         return true;
     }
 
@@ -220,13 +223,14 @@ public class ScrollPanel extends GuiComponent {
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        if (this.scrolling) {
-            int maxScroll = height - getBarHeight();
-            double moved = deltaY / maxScroll;
-            this.scrollDistance += getMaxScroll() * moved;
-            applyScrollLimits();
-            return true;
-        }
+        if (isEnabled())
+            if (this.scrolling) {
+                int maxScroll = height - getBarHeight();
+                double moved = deltaY / maxScroll;
+                this.scrollDistance += getMaxScroll() * moved;
+                applyScrollLimits();
+                return true;
+            }
         return false;
     }
 
@@ -239,14 +243,16 @@ public class ScrollPanel extends GuiComponent {
 
     @Override
     public final void mouseClick(double mouseX, double mouseY, int mouseButton) {
-        this.scrolling = mouseButton == 0 && mouseX >= barLeft && mouseX < barLeft + barWidth;
-        if (this.scrolling) {
-            return;
-        }
-        if (mouseX >= left && mouseX <= right) {
-            for (GuiComponent comp : components) {
-                if (comp.isVisible() && (isMouseInComponent(mouseX, mouseY, comp)) || comp instanceof TextField)
-                    comp.mouseClicked(mouseX, mouseY, mouseButton);
+        if (isEnabled()) {
+            this.scrolling = mouseButton == 0 && mouseX >= barLeft && mouseX < barLeft + barWidth;
+            if (this.scrolling) {
+                return;
+            }
+            if (mouseX >= left && mouseX <= right) {
+                for (GuiComponent comp : components) {
+                    if (comp.isVisible() && (isMouseInComponent(mouseX, mouseY, comp)) || comp instanceof TextField)
+                        comp.mouseClicked(mouseX, mouseY, mouseButton);
+                }
             }
         }
     }

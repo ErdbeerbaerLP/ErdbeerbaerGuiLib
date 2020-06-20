@@ -60,6 +60,16 @@ public class GifThread extends Thread {
         }
     }
 
+    private boolean paused = false;
+
+    public void pause() {
+        this.paused = true;
+    }
+
+    public void play() {
+        this.paused = false;
+    }
+
     @Override
     public void run() {
         //noinspection LoopConditionNotUpdatedInsideLoop
@@ -90,6 +100,8 @@ public class GifThread extends Thread {
                         outputTexture.updateDynamicTexture();
                     });
                     sleep(frame.getValue() * 10);
+                    while (paused)
+                        sleep(1);
                 } catch (InterruptedException ignored) {
                     return;
                 } catch (Exception e) {
@@ -99,4 +111,9 @@ public class GifThread extends Thread {
             }
         } while (doGifLoop);
     }
+
+    public boolean isPaused() {
+        return paused;
+    }
+
 }

@@ -59,6 +59,17 @@ public abstract class GuiComponent extends Widget {
         this.tooltips = strings;
     }
 
+    protected int getYImage(boolean isHovered) {
+        int i = 1;
+        if (!this.isEnabled()) {
+            i = 0;
+        } else if (isHovered) {
+            i = 2;
+        }
+
+        return i;
+    }
+
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         return true;
@@ -170,7 +181,7 @@ public abstract class GuiComponent extends Widget {
      * Plays a press sound
      */
     public void playPressSound() {
-        mc.getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+        mc.getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, enabled ? 1f : 0.5f));
     }
 
     /**

@@ -148,9 +148,10 @@ public class EnumSlider extends Slider {
     @Override
     public void mouseClick(double mouseX, double mouseY, int mouseButton) {
         playPressSound();
-        updateSlider();
-        this.dragging = true;
-
+        if (isEnabled()) {
+            updateSlider();
+            this.dragging = true;
+        }
     }
 
     @Override
@@ -170,8 +171,7 @@ public class EnumSlider extends Slider {
         }
 
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        blit(this.getX() + (int) (this.sliderValue * (float) (this.width - 8)), this.getY(), 0, 66, 4, 20);
-        blit(this.getX() + (int) (this.sliderValue * (float) (this.width - 8)) + 4, this.getY(), 196, 66, 4, 20);
+
         super.render(mouseX, mouseY, partial);
     }
 }

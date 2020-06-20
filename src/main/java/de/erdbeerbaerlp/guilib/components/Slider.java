@@ -2,7 +2,6 @@ package de.erdbeerbaerlp.guilib.components;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
 public class Slider extends GuiComponent {
     protected final String dispString;
@@ -105,6 +104,10 @@ public class Slider extends GuiComponent {
         this.action = action;
     }
 
+    public void setShowDecimal(boolean showDecimal) {
+        this.showDecimal = showDecimal;
+    }
+
     public void updateSlider() {
         if (this.sliderValue < 0.0F) {
             this.sliderValue = 0.0F;
@@ -152,6 +155,7 @@ public class Slider extends GuiComponent {
 
     public void setValue(double d) {
         this.sliderValue = (d - minValue) / (maxValue - minValue);
+        updateSlider();
     }
 
     /**
@@ -185,9 +189,11 @@ public class Slider extends GuiComponent {
             updateSlider();
         }
 
-        GuiUtils.drawContinuousTexturedBox(WIDGETS_LOCATION, this.getX() + (int) (this.sliderValue * (float) (this.width - 8)), this.getY(), 0, 66, 8, this.height, 200, 20, 2, 3, 2, 2, this.getBlitOffset());
-
-        int j = getFGColor();
+        if (isEnabled()) {
+            int i = (this.isHovered() ? 2 : 1) * 20;
+            this.blit(this.getX() + (int) (this.sliderValue * (double) (this.width - 8)), this.getY(), 0, 46 + i, 4, 20);
+            this.blit(this.getX() + (int) (this.sliderValue * (double) (this.width - 8)) + 4, this.getY(), 196, 46 + i, 4, 20);
+        }
         int bx = this.getX();
         int mwidth = this.width;
         String buttonText = this.displayString;
@@ -201,10 +207,12 @@ public class Slider extends GuiComponent {
 
     @Override
     public void mouseClick(double mouseX, double mouseY, int mouseButton) {
-        this.sliderValue = (mouseX - (this.getX() + 4)) / (this.width - 8);
-        updateSlider();
-        this.dragging = true;
-
+        playPressSound();
+        if (isEnabled()) {
+            this.sliderValue = (mouseX - (this.getX() + 4)) / (this.width - 8);
+            updateSlider();
+            this.dragging = true;
+        }
     }
 
     @Override
@@ -215,5 +223,17 @@ public class Slider extends GuiComponent {
     @Override
     public boolean charTyped(char typedChar, int keyCode) {
         return false;
+    }
+
+    public void setMaxValue(double maxValue) {
+        this.maxValue = maxValue;
+        if (sliderValue > maxValue) sliderValue = maxValue;
+        updateSlider();
+    }
+
+    public void setMinValue(double minValue) {
+        this.minValue = minValue;
+        if (sliderValue < minValue) sliderValue = minValue;
+        updateSlider();
     }
 }

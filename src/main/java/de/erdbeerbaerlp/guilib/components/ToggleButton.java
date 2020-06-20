@@ -88,7 +88,8 @@ public class ToggleButton extends Button {
     }
 
     /**
-     * Creates an new ToggleButton
+     * Creates an new ToggleButton<br>
+     * DrawType defaults to {@linkplain DrawType#STRING_OR_ICON}
      *
      * @param xPos    X positon
      * @param yPos    Y Position
@@ -98,6 +99,7 @@ public class ToggleButton extends Button {
     public ToggleButton(int xPos, int yPos, ResourceLocation onIcon, ResourceLocation offIcon) {
         this(xPos, yPos, 20, "", onIcon);
         this.offIcon = offIcon;
+        this.drawType = DrawType.STRING_OR_ICON;
     }
 
     @Override

@@ -166,7 +166,7 @@ public class Button extends GuiComponent {
         this.isHovered = mouseX >= getX() && mouseY >= getY() && mouseX < this.getX() + this.width && mouseY < getY() + this.height;
         if (packedFGColor != 0) {
             color = packedFGColor;
-        } else if (!this.enabled) {
+        } else if (!this.isEnabled()) {
             color = 10526880;
         } else if (this.hovered) {
             color = 16777120;
