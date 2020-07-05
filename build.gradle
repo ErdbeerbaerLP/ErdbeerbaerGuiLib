@@ -50,7 +50,7 @@ minecraft {
     // stable_#            Stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: 'snapshot', version: '20200218-1.15.1'
+    mappings channel: 'snapshot', version: '20200514-1.16'
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
@@ -95,7 +95,7 @@ configurations {
     compile.extendsFrom(embed)
 }
 shadowJar {
-    classifier = '1.15'
+    classifier = '1.16'
     configurations = [project.configurations.embed]
     relocate 'com.icafe4j', 'guilibshadow.cafe4j'
 }
@@ -104,7 +104,7 @@ repositories {
     maven{ url "http://maven.geotoolkit.org"} //Java Advanced Imaging for ImageIO
 }
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.2-31.1.75'
+    minecraft 'net.minecraftforge:forge:1.16.1-32.0.23'
     compile("org.spongepowered:mixin:0.8-SNAPSHOT") {
         transitive = false
     }
@@ -124,7 +124,7 @@ artifacts {
     archives tasks.shadowJar
 }
 jar {
-    classifier = "1.15"
+    classifier = "1.16"
     manifest {
         attributes([
                 'Maven-Artifact'          : "${project.group}:${project.archivesBaseName}:${project.version}",
