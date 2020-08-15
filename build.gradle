@@ -154,9 +154,6 @@ curseforge {
             relations {
                 requiredDependency 'mixinbootstrap'
             }
-            options {
-                forgeGradleIntegration = false // defaults to true
-            }
         }
     }
 }

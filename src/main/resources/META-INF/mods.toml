@@ -29,6 +29,12 @@ A easy-to-use gui library
 [[dependencies.eguilib]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.1,1.16.3]"
+    versionRange="[1.16.2]"
+    ordering="NONE"
+    side="CLIENT"
+[[dependencies.eguilib]]
+    modId="forge"
+    mandatory=true
+    versionRange="[33.0.5,)"
     ordering="NONE"
     side="CLIENT"
