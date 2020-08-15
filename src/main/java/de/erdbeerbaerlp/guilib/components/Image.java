@@ -1,6 +1,7 @@
 package de.erdbeerbaerlp.guilib.components;
 
 import com.icafe4j.image.ImageIO;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import de.erdbeerbaerlp.guilib.McMod;
 import de.erdbeerbaerlp.guilib.util.ImageUtil;
 import net.minecraft.client.renderer.texture.DynamicTexture;
@@ -250,23 +251,23 @@ public class Image extends GuiComponent {
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partial) {
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
         if (!errorTooltip.isEmpty()) {
             final int c = new Color(Color.RED.getRed(), Color.RED.getGreen(), Color.RED.getBlue(), 30).getRGB();
-            GuiUtils.drawGradientRect(getBlitOffset(), this.getX(), this.getY(), this.getX() + this.width, this.getY() + height, c, c);
+            GuiUtils.drawGradientRect(matrixStack.getLast().getMatrix(), getBlitOffset(), this.getX(), this.getY(), this.getX() + this.width, this.getY() + height, c, c);
             mc.getTextureManager().bindTexture(errorIcon);
-            blit(getX() + getWidth() / 2 - 8, getY() + getHeight() / 2 - 8, 0, 0, 16, 16, 16, 16);
+            blit(matrixStack, getX() + getWidth() / 2 - 8, getY() + getHeight() / 2 - 8, 0, 0, 16, 16, 16, 16);
             return;
         }
         if (imgLoaded) {
             if (image == null) {
                 final int c = new Color(Color.DARK_GRAY.getRed(), Color.DARK_GRAY.getGreen(), Color.DARK_GRAY.getBlue(), 40).getRGB();
-                GuiUtils.drawGradientRect(getBlitOffset(), this.getX(), this.getY(), this.getX() + this.width, this.getY() + height, c, c);
+                GuiUtils.drawGradientRect(matrixStack.getLast().getMatrix(), getBlitOffset(), this.getX(), this.getY(), this.getX() + this.width, this.getY() + height, c, c);
                 return;
             }
             if (loadingGif != null && loadingGif.isAlive()) loadingGif.interrupt();
             mc.getTextureManager().bindTexture(resLoc);
-            blit(getX(), getY(), 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
+            blit(matrixStack, getX(), getY(), 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
         } else {
             if (loadingGif == null || !loadingGif.isAlive()) {
                 try {
@@ -276,9 +277,9 @@ public class Image extends GuiComponent {
             }
             if (!loadingGif.isAlive()) loadingGif.start();
             final int c = new Color(Color.DARK_GRAY.getRed(), Color.DARK_GRAY.getGreen(), Color.DARK_GRAY.getBlue(), 40).getRGB();
-            GuiUtils.drawGradientRect(getBlitOffset(), this.getX(), this.getY(), this.getX() + this.width, this.getY() + height, c, c);
+            GuiUtils.drawGradientRect(matrixStack.getLast().getMatrix(), getBlitOffset(), this.getX(), this.getY(), this.getX() + this.width, this.getY() + height, c, c);
             mc.getTextureManager().bindTexture(mc.getTextureManager().getDynamicTextureLocation("loading-gif_" + imageUUID.toString().toLowerCase(), loadingTexture));
-            blit(getX() + getWidth() / 2 - 16, getY() + getHeight() / 2 - 16, 0, 0, 32, 32, 32, 32);
+            blit(matrixStack, getX() + getWidth() / 2 - 16, getY() + getHeight() / 2 - 16, 0, 0, 32, 32, 32, 32);
         }
     }
 

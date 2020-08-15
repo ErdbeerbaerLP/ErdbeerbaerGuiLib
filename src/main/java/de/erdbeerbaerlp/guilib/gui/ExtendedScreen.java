@@ -1,6 +1,7 @@
 package de.erdbeerbaerlp.guilib.gui;
 
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.erdbeerbaerlp.guilib.components.GuiComponent;
 import de.erdbeerbaerlp.guilib.components.TextField;
@@ -11,16 +12,16 @@ import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -180,33 +181,7 @@ public abstract class ExtendedScreen extends Screen {
         return false;
     }
 
-    @Override
-    public final void render(int mouseX, int mouseY, float partialTicks) {
-        super.render(mouseX, mouseY, partialTicks);
-        updateGui();
-        renderBackground();
-        for (final GuiComponent comp : components) {
-            if (comp.getAssignedPage() != -1) if (comp.getAssignedPage() != currentPage) continue;
-            if (comp.isVisible()) comp.render(mouseX, mouseY, partialTicks);
-        }
-        //Second for to not have components overlap the tooltips
-        for (final GuiComponent comp : Lists.reverse(components)) { //Reversing to call front component
-            if (!comp.isVisible() || (comp.getAssignedPage() != -1 && comp.getAssignedPage() != currentPage)) continue;
-            if (comp.canHaveTooltip() && isHovered(comp, mouseX, mouseY)) {
-
-                final ArrayList<String> list = new ArrayList<>();
-                if (comp.getTooltips() != null) {
-                    list.addAll(Arrays.asList(comp.getTooltips()));
-                }
-                if (!list.isEmpty()) {
-                    renderTooltip(list, mouseX, mouseY);
-                    break;
-                }
-            }
-        }
-
-
-    }
+    private boolean unloadOnClose = true;
 
     public Screen getParentGui() {
         return parentGui;
@@ -216,29 +191,34 @@ public abstract class ExtendedScreen extends Screen {
         this.parentGui = parentGui;
     }
 
-
-    /**
-     * Override to draw a custom background
-     */
-    public void renderBackground() {
-        if (this.minecraft.world != null && !forceDirtBackground()) {
-            this.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
-        } else {
-            RenderSystem.disableLighting();
-            RenderSystem.disableFog();
-            Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder bufferbuilder = tessellator.getBuffer();
-            this.minecraft.getTextureManager().bindTexture(getBackground());
-            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-            float f = 32.0F;
-            bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-            bufferbuilder.pos(0.0D, this.height, 0.0D).tex(0.0F, (float) this.height / 32.0F + (float) 0).color(64, 64, 64, 255).endVertex();
-            bufferbuilder.pos(this.width, this.height, 0.0D).tex((float) this.width / 32.0F, (float) this.height / 32.0F + (float) 0).color(64, 64, 64, 255).endVertex();
-            bufferbuilder.pos(this.width, 0.0D, 0.0D).tex((float) this.width / 32.0F, (float) 0).color(64, 64, 64, 255).endVertex();
-            bufferbuilder.pos(0.0D, 0.0D, 0.0D).tex(0.0F, (float) 0).color(64, 64, 64, 255).endVertex();
-            tessellator.draw();
-            net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.GuiScreenEvent.BackgroundDrawnEvent(this));
+    @Override
+    public final void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        updateGui();
+        renderBackground(matrixStack);
+        for (final GuiComponent comp : components) {
+            if (comp.getAssignedPage() != -1) if (comp.getAssignedPage() != currentPage) continue;
+            if (comp.isVisible()) comp.render(matrixStack, mouseX, mouseY, partialTicks);
         }
+        //Second for to not have components overlap the tooltips
+        for (final GuiComponent comp : Lists.reverse(components)) { //Reversing to call front component
+            if (!comp.isVisible() || (comp.getAssignedPage() != -1 && comp.getAssignedPage() != currentPage)) continue;
+            if (comp.canHaveTooltip() && isHovered(comp, mouseX, mouseY)) {
+
+                final ArrayList<IReorderingProcessor> list = new ArrayList<>();
+                if (comp.getTooltips() != null) {
+                    for (String tooltip : comp.getTooltips()) {
+                        list.add(IReorderingProcessor.func_242239_a(tooltip, Style.EMPTY));
+                    }
+                }
+                if (!list.isEmpty()) {
+                    renderTooltip(matrixStack, list, mouseX, mouseY);
+                    break;
+                }
+            }
+        }
+
+
     }
 
     protected boolean forceDirtBackground() {
@@ -326,16 +306,40 @@ public abstract class ExtendedScreen extends Screen {
         return true;
     }
 
-    @Override
-    public boolean handleComponentClicked(ITextComponent p_handleComponentClicked_1_) {
-        return super.handleComponentClicked(p_handleComponentClicked_1_);
+    /**
+     * Override to draw a custom background
+     */
+    public void renderBackground(MatrixStack matrixStack) {
+        if (this.minecraft.world != null && !forceDirtBackground()) {
+            this.fillGradient(matrixStack, 0, 0, this.width, this.height, -1072689136, -804253680);
+        } else {
+            RenderSystem.disableLighting();
+            RenderSystem.disableFog();
+            Tessellator tessellator = Tessellator.getInstance();
+            BufferBuilder bufferbuilder = tessellator.getBuffer();
+            this.minecraft.getTextureManager().bindTexture(getBackground());
+            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+            float f = 32.0F;
+            bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+            bufferbuilder.pos(0.0D, this.height, 0.0D).tex(0.0F, (float) this.height / 32.0F + (float) 0).color(64, 64, 64, 255).endVertex();
+            bufferbuilder.pos(this.width, this.height, 0.0D).tex((float) this.width / 32.0F, (float) this.height / 32.0F + (float) 0).color(64, 64, 64, 255).endVertex();
+            bufferbuilder.pos(this.width, 0.0D, 0.0D).tex((float) this.width / 32.0F, (float) 0).color(64, 64, 64, 255).endVertex();
+            bufferbuilder.pos(0.0D, 0.0D, 0.0D).tex(0.0F, (float) 0).color(64, 64, 64, 255).endVertex();
+            tessellator.draw();
+            net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.GuiScreenEvent.BackgroundDrawnEvent(this, matrixStack));
+        }
     }
 
     private BooleanConsumer confirmCallback;
 
     @Override
+    public boolean handleComponentClicked(Style style) {
+        return super.handleComponentClicked(style);
+    }
+
+    @Override
     public void onClose() {
-        if (confirmCallback != null)
+        if (unloadOnClose)
             for (GuiComponent comp : components) {
                 comp.unload();
             }
@@ -345,6 +349,7 @@ public abstract class ExtendedScreen extends Screen {
         confirmCallback.accept(confirmed);
         openGui(ExtendedScreen.this);
         confirmCallback = null;
+        unloadOnClose = true;
     }
 
     /**
@@ -354,6 +359,7 @@ public abstract class ExtendedScreen extends Screen {
      */
     public final void openURL(String URL, @Nonnull final BooleanConsumer callback) {
         confirmCallback = callback;
+        unloadOnClose = false;
         final ConfirmOpenLinkScreen s = new ConfirmOpenLinkScreen(this::confirmed, URL, true);
         openGui(s);
     }

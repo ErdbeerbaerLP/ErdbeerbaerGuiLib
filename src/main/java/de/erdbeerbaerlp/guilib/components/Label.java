@@ -1,6 +1,7 @@
 package de.erdbeerbaerlp.guilib.components;
 
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.resources.I18n;
@@ -58,7 +59,7 @@ public class Label extends GuiComponent {
 
 
     @Override
-    public void render(int mouseX, int mouseY, float partial) {
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         int i = this.getY() + this.height / 2 + this.border / 2;
@@ -66,9 +67,9 @@ public class Label extends GuiComponent {
 
         for (int k = 0; k < this.labels.size(); ++k) {
             if (this.centered) {
-                this.drawCenteredString(this.fontRenderer, this.labels.get(k), this.getX(), j + k * 10, this.textColor);
+                drawCenteredString(matrixStack, this.fontRenderer, this.labels.get(k), this.getX(), j + k * 10, this.textColor);
             } else {
-                this.drawString(this.fontRenderer, this.labels.get(k), this.getX(), j + k * 10, this.textColor);
+                drawString(matrixStack, this.fontRenderer, this.labels.get(k), this.getX(), j + k * 10, this.textColor);
             }
         }
     }

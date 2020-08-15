@@ -1,5 +1,6 @@
 package de.erdbeerbaerlp.guilib.components;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import de.erdbeerbaerlp.guilib.McMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
@@ -7,6 +8,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.StringTextComponent;
 
 @SuppressWarnings("unused")
 public abstract class GuiComponent extends Widget {
@@ -26,7 +28,7 @@ public abstract class GuiComponent extends Widget {
     private int assignedPage = -1;
 
     public GuiComponent(int xIn, int yIn, int widthIn, int heightIn) {
-        super(xIn, yIn, widthIn, heightIn, "");
+        super(xIn, yIn, widthIn, heightIn, new StringTextComponent(""));
         this.fontRenderer = mc.fontRenderer;
         this.setX(xIn);
         this.setY(yIn);
@@ -188,7 +190,7 @@ public abstract class GuiComponent extends Widget {
      * Draws the component
      */
     @Override
-    public abstract void render(int mouseX, int mouseY, float partial);
+    public abstract void render(MatrixStack matrixStack, int mouseX, int mouseY, float partial);
 
     /**
      * Called on mouse click

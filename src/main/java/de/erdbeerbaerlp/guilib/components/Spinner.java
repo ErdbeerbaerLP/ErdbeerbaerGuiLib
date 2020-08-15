@@ -1,5 +1,6 @@
 package de.erdbeerbaerlp.guilib.components;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import de.erdbeerbaerlp.guilib.McMod;
 import de.erdbeerbaerlp.guilib.util.ImageUtil;
 import net.minecraft.client.renderer.texture.DynamicTexture;
@@ -32,7 +33,7 @@ public class Spinner extends GuiComponent {
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partial) {
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
         if (loadingGif == null || !loadingGif.isAlive()) {
             try {
                 loadingGif = new GifThread(ImageUtil.convertToByteArrayIS(mc.getResourceManager().getResource(this.spinnerRes).getInputStream()), spinnerTexture, true, true, true);
@@ -41,7 +42,7 @@ public class Spinner extends GuiComponent {
         }
         if (!loadingGif.isAlive()) loadingGif.start();
         mc.getTextureManager().bindTexture(mc.getTextureManager().getDynamicTextureLocation("spinner_" + spinnerUUID.toString().toLowerCase(), spinnerTexture));
-        blit(getX() + getWidth() / 2 - 16, getY() + getHeight() / 2 - 16, 0, 0, 32, 32, 32, 32);
+        blit(matrixStack, getX() + getWidth() / 2 - 16, getY() + getHeight() / 2 - 16, 0, 0, 32, 32, 32, 32);
     }
 
     /**

@@ -1,6 +1,7 @@
 package de.erdbeerbaerlp.guilib.components;
 
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -133,11 +134,11 @@ public class ScrollPanel extends GuiComponent {
         return 20;
     }
 
-    protected void drawPanel(int mouseX, int mouseY, float partialTicks) {
+    protected void drawPanel(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         for (final GuiComponent c : components) {
             c.scrollOffsetY = this.getY() - (int) scrollDistance;
             c.scrollOffsetX = this.getX();
-            if (c.isVisible()) c.render(mouseX, mouseY, partialTicks);
+            if (c.isVisible()) c.render(matrixStack, mouseX, mouseY, partialTicks);
         }
     }
 
@@ -258,7 +259,7 @@ public class ScrollPanel extends GuiComponent {
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.drawBackground();
         Tessellator tess = Tessellator.getInstance();
         BufferBuilder worldr = tess.getBuffer();
@@ -267,7 +268,7 @@ public class ScrollPanel extends GuiComponent {
         GL11.glScissor((int) (left * scale), (int) (mc.getMainWindow().getFramebufferHeight() - (bottom * scale)),
                 (int) (width * scale), (int) (height * scale));
         if (this.mc.world != null) {
-            this.drawGradientRect(this.left, this.top, this.right, this.bottom, 0xC0101010, 0xD0101010);
+            this.drawGradientRect(matrixStack, this.left, this.top, this.right, this.bottom, 0xC0101010, 0xD0101010);
         } else // Draw dark dirt background
         {
             RenderSystem.disableLighting();
@@ -283,7 +284,7 @@ public class ScrollPanel extends GuiComponent {
             tess.draw();
         }
 
-        this.drawPanel(mouseX, mouseY, partialTicks);
+        this.drawPanel(matrixStack, mouseX, mouseY, partialTicks);
 
         RenderSystem.disableDepthTest();
 
@@ -341,7 +342,7 @@ public class ScrollPanel extends GuiComponent {
         return tooltips.toArray(new String[0]);
     }
 
-    protected void drawGradientRect(int left, int top, int right, int bottom, int color1, int color2) {
-        GuiUtils.drawGradientRect(0, left, top, right, bottom, color1, color2);
+    protected void drawGradientRect(MatrixStack matrixStack, int left, int top, int right, int bottom, int color1, int color2) {
+        GuiUtils.drawGradientRect(matrixStack.getLast().getMatrix(), 0, left, top, right, bottom, color1, color2);
     }
 }

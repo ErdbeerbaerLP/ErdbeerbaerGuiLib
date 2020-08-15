@@ -1,5 +1,6 @@
 package de.erdbeerbaerlp.guilib.components;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -103,7 +104,7 @@ public class ToggleButton extends Button {
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partial) {
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
         int color = 14737632;
         this.isHovered = mouseX >= getX() && mouseY >= getY() && mouseX < this.getX() + this.width && mouseY < getY() + this.height;
         if (packedFGColor != 0) {
@@ -119,16 +120,16 @@ public class ToggleButton extends Button {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        this.blit(getX(), getY(), 0, 46 + i * 20, this.width / 2, this.height);
-        this.blit(getX() + this.width / 2, getY(), 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
-        this.renderBg(mc, mouseX, mouseY);
+        this.blit(matrixStack, getX(), getY(), 0, 46 + i * 20, this.width / 2, this.height);
+        this.blit(matrixStack, getX() + this.width / 2, getY(), 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
+        this.renderBg(matrixStack, mc, mouseX, mouseY);
         int j = getFGColor();
         int bx = this.getX();
         int mwidth = this.width;
 
         if (BUTTON_ICON != null) {
             Minecraft.getInstance().getTextureManager().bindTexture((this.offIcon != null && (this.drawType == DrawType.STRING_OR_ICON || this.drawType == DrawType.BOTH) ? (this.value ? BUTTON_ICON : offIcon) : BUTTON_ICON));
-            blit(bx + 2, getY() + 2, 0, 0, 16, 16, 16, 16);
+            blit(matrixStack, bx + 2, getY() + 2, 0, 0, 16, 16, 16, 16);
 
             // ! MODIFY X !
             bx += 2 + 16;
@@ -138,12 +139,12 @@ public class ToggleButton extends Button {
         int strWidth = mc.fontRenderer.getStringWidth(buttonText);
         int ellipsisWidth = mc.fontRenderer.getStringWidth("...");
         if (strWidth > mwidth - 6 && strWidth > ellipsisWidth)
-            buttonText = mc.fontRenderer.trimStringToWidth(buttonText, mwidth - 6 - ellipsisWidth).trim() + "...";
-        this.drawCenteredString(mc.fontRenderer, buttonText + (((drawType == DrawType.STRING_OR_ICON || drawType == DrawType.BOTH) && this.offIcon == null) ? (this.value ? "ON" : "OFF") : ""), bx + mwidth / 2, this.getY() + (this.height - 8) / 2, color);
+            buttonText = mc.fontRenderer.func_238412_a_(buttonText, mwidth - 6 - ellipsisWidth).trim() + "...";
+        drawCenteredString(matrixStack, mc.fontRenderer, buttonText + (((drawType == DrawType.STRING_OR_ICON || drawType == DrawType.BOTH) && this.offIcon == null) ? (this.value ? "ON" : "OFF") : ""), bx + mwidth / 2, this.getY() + (this.height - 8) / 2, color);
 
         if (this.drawType == DrawType.COLORED_LINE || this.drawType == DrawType.BOTH) {
             int col = value ? Color.GREEN.getRGB() : Color.red.getRGB();
-            GuiUtils.drawGradientRect(getBlitOffset(), this.getX() + 6, this.getY() + height - 3, this.getX() + this.width - 6, this.getY() + height - 4, col, col);
+            GuiUtils.drawGradientRect(matrixStack.getLast().getMatrix(), getBlitOffset(), this.getX() + 6, this.getY() + height - 3, this.getX() + this.width - 6, this.getY() + height - 4, col, col);
 
         }
 

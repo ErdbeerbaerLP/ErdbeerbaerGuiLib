@@ -1,5 +1,6 @@
 package de.erdbeerbaerlp.guilib.components;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import java.lang.reflect.InvocationTargetException;
@@ -155,7 +156,7 @@ public class EnumSlider extends Slider {
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partial) {
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
         if (this.dragging) {
             final int index = getCurrentIndex();
             this.sliderValue = (float) (mouseX - (this.getX() + 4)) / (float) (this.width - 8);
@@ -172,6 +173,6 @@ public class EnumSlider extends Slider {
 
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-        super.render(mouseX, mouseY, partial);
+        super.render(matrixStack, mouseX, mouseY, partial);
     }
 }

@@ -1,5 +1,6 @@
 package de.erdbeerbaerlp.guilib.components;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.BossInfo;
@@ -46,26 +47,26 @@ public class ProgressBar extends GuiComponent {
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partial) {
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         mc.getTextureManager().bindTexture(GUI_BARS_TEXTURES);
         int progress = (int) (getPercent() * getWidth());
 
         for (int w = 0; w <= getWidth(); w++) {
             if (w == 0) {
-                this.blit(getX(), getY() + 10, 0, color.ordinal() * 5 * 2, 1, 5);
+                this.blit(matrixStack, getX(), getY() + 10, 0, color.ordinal() * 5 * 2, 1, 5);
                 if (progress > 0) {
-                    this.blit(getX(), getY() + 10, 0, color.ordinal() * 5 * 2 + 5, 1, 5);
+                    this.blit(matrixStack, getX(), getY() + 10, 0, color.ordinal() * 5 * 2 + 5, 1, 5);
                 }
             } else if (w == getWidth()) {
-                this.blit(getX() + w, getY() + 10, 182, color.ordinal() * 5 * 2, 1, 5);
+                this.blit(matrixStack, getX() + w, getY() + 10, 182, color.ordinal() * 5 * 2, 1, 5);
                 if (progress == 1.0f) {
-                    this.blit(getX() + w, getY() + 10, 182, color.ordinal() * 5 * 2 + 5, 1, 5);
+                    this.blit(matrixStack, getX() + w, getY() + 10, 182, color.ordinal() * 5 * 2 + 5, 1, 5);
                 }
             } else {
-                this.blit(getX() + w, getY() + 10, 5, color.ordinal() * 5 * 2, 1, 5);
+                this.blit(matrixStack, getX() + w, getY() + 10, 5, color.ordinal() * 5 * 2, 1, 5);
                 if (progress >= w) {
-                    this.blit(getX() + w, getY() + 10, 5, color.ordinal() * 5 * 2 + 5, 1, 5);
+                    this.blit(matrixStack, getX() + w, getY() + 10, 5, color.ordinal() * 5 * 2 + 5, 1, 5);
                 }
             }
         }
@@ -85,7 +86,7 @@ public class ProgressBar extends GuiComponent {
 
         String s = text + (showPercentText ? (" " + val + "%") : "");
         int l = mc.fontRenderer.getStringWidth(s);
-        mc.fontRenderer.drawStringWithShadow(s, getX() + (getWidth() / 2 - l / 2), (float) getY(), 16777215);
+        mc.fontRenderer.drawStringWithShadow(matrixStack, s, getX() + (getWidth() / 2 - l / 2), (float) getY(), 16777215);
     }
 
     private float getPercent() {

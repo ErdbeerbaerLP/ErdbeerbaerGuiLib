@@ -1,5 +1,6 @@
 package de.erdbeerbaerlp.guilib.components;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -12,6 +13,8 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.util.SharedConstants;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.IFormattableTextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 import java.util.ArrayList;
 import java.util.function.BiFunction;
@@ -145,9 +148,9 @@ public class TextField extends GuiComponent {
         this.textFormatter = textFormatterIn;
     }
 
-    protected String getNarrationMessage() {
-        String s = this.getMessage();
-        return s.isEmpty() ? "" : I18n.format("gui.narrate.editBox", s, this.text);
+    protected IFormattableTextComponent getNarrationMessage() {
+        String s = this.getMessage().getString();
+        return new StringTextComponent(s.isEmpty() ? "" : I18n.format("gui.narrate.editBox", s, this.text));
     }
 
     /**
@@ -383,16 +386,16 @@ public class TextField extends GuiComponent {
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partial) {
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
         if (this.getEnableBackgroundDrawing()) {
-            fill(this.getX() - 1, this.getY() - 1, this.getX() + this.width + 1, this.getY() + this.height + 1, -6250336);
-            fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, -16777216);
+            fill(matrixStack, this.getX() - 1, this.getY() - 1, this.getX() + this.width + 1, this.getY() + this.height + 1, -6250336);
+            fill(matrixStack, this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, -16777216);
         }
 
         int currentColor = this.isEnabled() ? this.enabledColor : this.disabledColor;
         int j = this.cursorPosition - this.lineScrollOffset;
         int k = this.selectionEnd - this.lineScrollOffset;
-        String s = this.fontRenderer.trimStringToWidth(this.text.substring(this.lineScrollOffset), this.getAdjustedWidth());
+        String s = this.fontRenderer.func_238412_a_(this.text.substring(this.lineScrollOffset), this.getAdjustedWidth());
         boolean flag = j >= 0 && j <= s.length();
         boolean flag1 = this.isFocused() && this.cursorCounter / 6 % 2 == 0 && flag;
         int l = this.enableBackgroundDrawing ? this.getX() + 4 : this.getX();
@@ -404,7 +407,7 @@ public class TextField extends GuiComponent {
 
         if (!s.isEmpty()) {
             String s1 = flag ? s.substring(0, j) : s;
-            j1 = this.fontRenderer.drawStringWithShadow(this.textFormatter.apply(s1, this.lineScrollOffset), (float) l, (float) i1, currentColor);
+            j1 = this.fontRenderer.drawStringWithShadow(matrixStack, this.textFormatter.apply(s1, this.lineScrollOffset), (float) l, (float) i1, currentColor);
         }
 
         boolean flag2 = this.cursorPosition < this.text.length() || this.text.length() >= this.getMaxStringLength();
@@ -417,19 +420,19 @@ public class TextField extends GuiComponent {
         }
 
         if (!s.isEmpty() && flag && j < s.length()) {
-            this.fontRenderer.drawStringWithShadow(this.textFormatter.apply(s.substring(j), this.cursorPosition), (float) j1, (float) i1, currentColor);
+            this.fontRenderer.drawStringWithShadow(matrixStack, this.textFormatter.apply(s.substring(j), this.cursorPosition), (float) j1, (float) i1, currentColor);
         }
 
         if (!flag2 && !getCurrentSuggestion().isEmpty()) {
-            this.fontRenderer.drawStringWithShadow(getCurrentSuggestion(), (float) (k1 - 1), (float) i1, -8355712);
+            this.fontRenderer.drawStringWithShadow(matrixStack, getCurrentSuggestion(), (float) (k1 - 1), (float) i1, -8355712);
         }
         if (!label.isEmpty())
-            fontRenderer.drawString(label, getX(), getY() - 8, currentColor);
+            fontRenderer.drawString(matrixStack, label, getX(), getY() - 8, currentColor);
         if (flag1) {
             if (flag2) {
-                AbstractGui.fill(k1, i1 - 1, k1 + 1, i1 + 1 + 9, -3092272);
+                AbstractGui.fill(matrixStack, k1, i1 - 1, k1 + 1, i1 + 1 + 9, -3092272);
             } else {
-                this.fontRenderer.drawStringWithShadow("_", (float) k1, (float) i1, currentColor);
+                this.fontRenderer.drawStringWithShadow(matrixStack, "_", (float) k1, (float) i1, currentColor);
             }
         }
 
@@ -505,8 +508,8 @@ public class TextField extends GuiComponent {
                 if (this.enableBackgroundDrawing) {
                     i -= 4;
                 }
-                String s = this.fontRenderer.trimStringToWidth(this.text.substring(this.lineScrollOffset), this.getAdjustedWidth());
-                this.setCursorPosition(this.fontRenderer.trimStringToWidth(s, i).length() + this.lineScrollOffset);
+                String s = this.fontRenderer.func_238412_a_(this.text.substring(this.lineScrollOffset), this.getAdjustedWidth());
+                this.setCursorPosition(this.fontRenderer.func_238412_a_(s, i).length() + this.lineScrollOffset);
             }
         }
     }
@@ -587,10 +590,10 @@ public class TextField extends GuiComponent {
             }
 
             int j = this.getAdjustedWidth();
-            String s = this.fontRenderer.trimStringToWidth(this.text.substring(this.lineScrollOffset), j);
+            String s = this.fontRenderer.func_238412_a_(this.text.substring(this.lineScrollOffset), j);
             int k = s.length() + this.lineScrollOffset;
             if (this.selectionEnd == this.lineScrollOffset) {
-                this.lineScrollOffset -= this.fontRenderer.trimStringToWidth(this.text, j, true).length();
+                this.lineScrollOffset -= this.fontRenderer.func_238413_a_(this.text, j, true).length();
             }
 
             if (this.selectionEnd > k) {

@@ -50,7 +50,7 @@ minecraft {
     // stable_#            Stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: 'snapshot', version: '20200514-1.16'
+    mappings channel: 'snapshot', version: '20200723-1.16.1'
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
@@ -98,16 +98,15 @@ shadowJar {
     classifier = '1.16'
     configurations = [project.configurations.embed]
     relocate 'com.icafe4j', 'guilibshadow.cafe4j'
+    relocate 'com.sun.media', 'guilibshadow.com.sun.media'
 }
 repositories {
     maven { url 'https://jitpack.io' }
     maven{ url "http://maven.geotoolkit.org"} //Java Advanced Imaging for ImageIO
 }
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.1-32.0.23'
-    compile("org.spongepowered:mixin:0.8-SNAPSHOT") {
-        transitive = false
-    }
+    minecraft 'net.minecraftforge:forge:1.16.2-33.0.5'
+
     embed 'com.github.dragon66:icafe:26c49d5d40'
     embed 'com.github.rkalla:imgscalr:4.2-release'
 }
@@ -148,9 +147,9 @@ curseforge {
             id = '332522'
             changelog = project.changelog
             releaseType = 'beta'
-            addGameVersion '1.15.2'
+            addGameVersion '1.16.2'
             mainArtifact(jar) {
-                displayName = "Erdbeerbaer's GUI Library-$version (MC 1.15)"
+                displayName = "Erdbeerbaer's GUI Library-$version (MC 1.16)"
             }
             relations {
                 requiredDependency 'mixinbootstrap'
@@ -162,21 +161,3 @@ curseforge {
     }
 }
 tasks.curseforge.dependsOn(build)
-// Example configuration to allow publishing using the maven-publish task
-// This is the preferred method to reobfuscate your jar file
-jar.finalizedBy('reobfJar')
-// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
-//publish.dependsOn('reobfJar')
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact jar
-        }
-    }
-    repositories {
-        maven {
-            url "file:///${project.projectDir}/mcmodsrepo"
-        }
-    }
-}
