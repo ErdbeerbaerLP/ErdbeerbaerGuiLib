@@ -101,6 +101,17 @@ public class EnumSlider extends Slider {
         return enumValue;
     }
 
+    /**
+     * Sets the enum value
+     *
+     * @return void
+     */
+    public void setEnum(Enum<?> value) {
+        enumValue = value;
+        sliderValue = (getCurrentIndex() - minValue) / (maxValue - minValue);
+        prevIndex = getCurrentIndex();
+    }
+
     @Override
     public void updateSlider() {
         if (this.sliderValue < 0.0F) {
