@@ -34,7 +34,7 @@ repositories {
         url = 'https://repo.spongepowered.org/maven'
     }
 }
-version = "1.0.2"
+version = "1.0.3"
 group = "de.erdbeerbaerlp.eguilib" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "eguilib"
 
