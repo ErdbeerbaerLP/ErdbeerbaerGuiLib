@@ -159,14 +159,18 @@ public abstract class GuiComponent extends Widget {
         this.width = width;
     }
 
+    @Override
+    public final int getHeightRealms() {
+        return height;
+    }
+
     /**
      * Gets the component height
      *
      * @return height
      */
-    @Override
     public final int getHeight() {
-        return height;
+        return getHeightRealms();
     }
 
     /**

@@ -6,6 +6,7 @@ import de.erdbeerbaerlp.guilib.McMod;
 import de.erdbeerbaerlp.guilib.util.ImageUtil;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -108,7 +109,8 @@ public class Image extends GuiComponent {
     @Override
     public String[] getTooltips() {
         if (!errorTooltip.isEmpty()) {
-            return ArrayUtils.addAll(super.getTooltips(), "", "\u00A7cError loading image:", "\u00A7c" + errorTooltip);
+            return ArrayUtils.addAll(super.getTooltips(), "", TextFormatting.RED + "Error loading image:",
+                    TextFormatting.RED + errorTooltip);
         }
         return super.getTooltips();
     }
@@ -212,7 +214,6 @@ public class Image extends GuiComponent {
                 final Thread t = new Thread(() -> {
                     try {
                         if (ImageUtil.isISGif(is)) {
-                            System.out.println("InputStream is gif");
                             this.gif = new GifThread(is, image, keepAspectRatio, doGifLoop, resizingImage);
                             gif.start();
                         } else
@@ -297,7 +298,6 @@ public class Image extends GuiComponent {
 
     @Override
     public void unload() {
-        System.out.println("Closing...");
         if (gif != null && gif.isAlive()) gif.interrupt();
         if (loadingGif != null && loadingGif.isAlive()) loadingGif.interrupt();
     }

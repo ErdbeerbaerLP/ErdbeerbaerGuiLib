@@ -108,7 +108,6 @@ public class ImageUtil {
         final Iterator<ImageReader> imageReaders = ImageIO.getImageReaders(iis);
         while (imageReaders.hasNext()) {
             final ImageReader reader = imageReaders.next();
-            System.out.println("formatName: " + reader.getFormatName());
             if (reader.getFormatName().endsWith("gif")) {
                 iis.close();
                 reader.dispose();

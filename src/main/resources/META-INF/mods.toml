@@ -4,37 +4,37 @@
 # Note that there are a couple of TOML lists in this file.
 # Find more information on toml format here:  https://github.com/toml-lang/toml
 # The name of the mod loader type to load - for regular FML @Mod mods it should be javafml
-modLoader="javafml" #mandatory
+modLoader = "javafml" #mandatory
 # A version range to match for said mod loader - for regular FML @Mod it will be the forge version
-loaderVersion="[31,)" #mandatory (26 is current forge version)
-license="MIT License"
+loaderVersion = "[35,)" #mandatory (26 is current forge version)
+license = "MIT License"
 # A URL to refer people to when problems occur with this mod
-issueTrackerURL="https://github.com/ErdbeerbaerLP/ErdbeerbaerGuiLib/issues" #optional
+issueTrackerURL = "https://github.com/ErdbeerbaerLP/ErdbeerbaerGuiLib/issues" #optional
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]] #mandatory
 # The modid of the mod
-modId="eguilib" #mandatory
+modId = "eguilib" #mandatory
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
-version="${file.jarVersion}" #mandatory
- # A display name for the mod
-displayName="Erdbeerbaer's GUI Library" #mandatory
+version = "${file.jarVersion}" #mandatory
+# A display name for the mod
+displayName = "Erdbeerbaer's GUI Library" #mandatory
 # A URL for the "homepage" for this mod, displayed in the mod UI
-displayURL="https://github.com/ErdbeerbaerLP/ErdbeerbaerGuiLib/wiki/Documentation" #optional
+displayURL = "https://github.com/ErdbeerbaerLP/ErdbeerbaerGuiLib/wiki/Documentation" #optional
 # A text field displayed in the mod UI
-authors="ErdbeerbaerLP" #optional
+authors = "ErdbeerbaerLP" #optional
 # The description text for the mod (multi line!) (#mandatory)
-description='''
+description = '''
 A easy-to-use gui library
 '''
 [[dependencies.eguilib]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[1.16.2]"
-    ordering="NONE"
-    side="CLIENT"
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.16.4]"
+ordering = "NONE"
+side = "CLIENT"
 [[dependencies.eguilib]]
-    modId="forge"
-    mandatory=true
-    versionRange="[33.0.5,)"
-    ordering="NONE"
-    side="CLIENT"
+modId = "forge"
+mandatory = true
+versionRange = "[35.1,)"
+ordering = "NONE"
+side = "CLIENT"

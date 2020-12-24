@@ -283,8 +283,8 @@ public class ExampleGUI extends ExtendedScreen {
         VALUES("values.", 98234.5f),
         YAAAY("Yaay!", -0f);
 
-        private String name;
-        private float otherValue;
+        private final String name;
+        private final float otherValue;
 
         ExampleEnum(String name, float someOtherValue) {
             this.name = name;

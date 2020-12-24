@@ -12,15 +12,13 @@ import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +26,7 @@ import java.util.List;
 @OnlyIn(Dist.CLIENT)
 public abstract class ExtendedScreen extends Screen {
     private final List<GuiComponent> components = new ArrayList<>();
-    private int nextComponentID = 0;
+    private final int nextComponentID = 0;
     private int currentPage = 0;
     private Screen parentGui;
 
@@ -37,7 +35,7 @@ public abstract class ExtendedScreen extends Screen {
      *
      * @param parentGui The gui this was opened from. Can be null
      */
-    public ExtendedScreen(@Nullable Screen parentGui) {
+    public ExtendedScreen(Screen parentGui) {
         super(new StringTextComponent("An GUI"));
         this.parentGui = parentGui;
         buildGui();
@@ -205,14 +203,14 @@ public abstract class ExtendedScreen extends Screen {
             if (!comp.isVisible() || (comp.getAssignedPage() != -1 && comp.getAssignedPage() != currentPage)) continue;
             if (comp.canHaveTooltip() && isHovered(comp, mouseX, mouseY)) {
 
-                final ArrayList<IReorderingProcessor> list = new ArrayList<>();
+                final TextComponent txt = new StringTextComponent("");
                 if (comp.getTooltips() != null) {
-                    for (String tooltip : comp.getTooltips()) {
-                        list.add(IReorderingProcessor.func_242239_a(tooltip, Style.EMPTY));
+                    for (int i = 0; i < comp.getTooltips().length; i++) {
+                        txt.append(new StringTextComponent(comp.getTooltips()[i] + (i == comp.getTooltips().length - 1 ? "" : "\n")));
                     }
                 }
-                if (!list.isEmpty()) {
-                    renderTooltip(matrixStack, list, mouseX, mouseY);
+                if (!txt.getSiblings().isEmpty()) {
+                    renderTooltip(matrixStack, minecraft.fontRenderer.trimStringToWidth(txt, Math.max(this.width / 2, 220)), mouseX, mouseY);
                     break;
                 }
             }
@@ -250,9 +248,8 @@ public abstract class ExtendedScreen extends Screen {
      *
      * @param gui GuiScreen or null
      */
-    public final void openGui(@Nullable Screen gui) {
-        if (gui == null) minecraft.displayGuiScreen(null);
-        else minecraft.displayGuiScreen(gui);
+    public final void openGui(Screen gui) {
+        minecraft.displayGuiScreen(gui);
     }
 
     /**
@@ -357,7 +354,7 @@ public abstract class ExtendedScreen extends Screen {
      *
      * @param callback gets called with true if the user opened it, false if user copied or closed it
      */
-    public final void openURL(String URL, @Nonnull final BooleanConsumer callback) {
+    public final void openURL(String URL, final BooleanConsumer callback) {
         confirmCallback = callback;
         unloadOnClose = false;
         final ConfirmOpenLinkScreen s = new ConfirmOpenLinkScreen(this::confirmed, URL, true);

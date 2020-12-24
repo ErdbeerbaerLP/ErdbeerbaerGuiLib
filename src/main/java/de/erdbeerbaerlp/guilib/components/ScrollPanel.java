@@ -98,7 +98,7 @@ public class ScrollPanel extends GuiComponent {
     protected void drawBackground() {
     }
 
-    private ArrayList<String> tooltips = new ArrayList<>();
+    private final ArrayList<String> tooltips = new ArrayList<>();
 
     private int getMaxScroll() {
         return this.getContentHeight() - (this.height - this.border);
