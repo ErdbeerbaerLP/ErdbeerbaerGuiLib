@@ -111,7 +111,7 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.16.4-35.1.13'
     embed 'com.github.dragon66:icafe:26c49d5d40'
     embed 'com.github.rkalla:imgscalr:4.2-release'
-    embed 'org.mp4parser:isoparser:1.9.27'
+    embed 'org.mp4parser:isoparser:1.9.41'
 }
 mixin {
     add sourceSets.main, 'mixins.eguilib.refmap.json'
