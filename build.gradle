@@ -34,7 +34,7 @@ repositories {
         url = 'https://repo.spongepowered.org/maven'
     }
 }
-version = "1.0.4"
+version = "1.0.5"
 group = "de.erdbeerbaerlp.eguilib" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "eguilib"
 
@@ -108,7 +108,7 @@ repositories {
     maven{ url "http://maven.geotoolkit.org"} //Java Advanced Imaging for ImageIO
 }
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.4-35.1.13'
+    minecraft 'net.minecraftforge:forge:1.16.5-36.0.0'
     embed 'com.github.dragon66:icafe:26c49d5d40'
     embed 'com.github.rkalla:imgscalr:4.2-release'
     embed 'org.mp4parser:isoparser:1.9.41'
@@ -152,11 +152,9 @@ curseforge {
             changelog = project.changelog
             releaseType = 'beta'
             addGameVersion '1.16.4'
+            addGameVersion '1.16.5'
             mainArtifact(jar) {
-                displayName = "Erdbeerbaer's GUI Library-$version (MC 1.16.4)"
-            }
-            relations {
-                requiredDependency 'mixinbootstrap'
+                displayName = "Erdbeerbaer's GUI Library-$version (MC 1.16.4+)"
             }
         }
     }
