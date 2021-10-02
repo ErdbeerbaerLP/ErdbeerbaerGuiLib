@@ -67,9 +67,9 @@ public class Label extends GuiComponent {
 
         for (int k = 0; k < this.labels.size(); ++k) {
             if (this.centered) {
-                drawCenteredString(matrixStack, this.fontRenderer, this.labels.get(k), this.getX(), j + k * 10, this.textColor);
+                drawCenteredString(matrixStack, this.renderer, this.labels.get(k), this.getX(), j + k * 10, this.textColor);
             } else {
-                drawString(matrixStack, this.fontRenderer, this.labels.get(k), this.getX(), j + k * 10, this.textColor);
+                drawString(matrixStack, this.renderer, this.labels.get(k), this.getX(), j + k * 10, this.textColor);
             }
         }
     }
@@ -80,7 +80,7 @@ public class Label extends GuiComponent {
      * @param p_175202_1_ Text
      */
     public void addLine(String p_175202_1_) {
-        this.labels.add(I18n.format(p_175202_1_));
+        this.labels.add(I18n.get(p_175202_1_));
     }
 
     /**

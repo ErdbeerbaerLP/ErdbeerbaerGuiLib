@@ -44,13 +44,13 @@ public class GifThread extends Thread {
         for (final GIFFrame frame : gifFrames) {
             try {
                 final ByteArrayOutputStream os = new ByteArrayOutputStream();
-                if (frame.getFrame().getWidth() <= outputTexture.getTextureData().getWidth() && frame.getFrame().getHeight() <= outputTexture.getTextureData().getHeight() && !resizingImage)
+                if (frame.getFrame().getWidth() <= outputTexture.getPixels().getWidth() && frame.getFrame().getHeight() <= outputTexture.getPixels().getHeight() && !resizingImage)
                     ImageIO.write(frame.getFrame(), "png", os);
                 else {
                     if (keepAspectRatio)
-                        ImageIO.write(ImageUtil.scaleImageKeepAspectRatio(frame.getFrame(), outputTexture.getTextureData().getWidth(), outputTexture.getTextureData().getHeight()), "png", os);
+                        ImageIO.write(ImageUtil.scaleImageKeepAspectRatio(frame.getFrame(), outputTexture.getPixels().getWidth(), outputTexture.getPixels().getHeight()), "png", os);
                     else
-                        ImageIO.write(ImageUtil.scaleImage(frame.getFrame(), outputTexture.getTextureData().getWidth(), outputTexture.getTextureData().getHeight()), "png", os);
+                        ImageIO.write(ImageUtil.scaleImage(frame.getFrame(), outputTexture.getPixels().getWidth(), outputTexture.getPixels().getHeight()), "png", os);
                 }
                 gifData.add(new AbstractMap.SimpleEntry<>(os.toByteArray(), frame.getDelay()));
                 os.close();
@@ -93,11 +93,11 @@ public class GifThread extends Thread {
                 try {
                     Minecraft.getInstance().execute(() -> {
                         try {
-                            outputTexture.setTextureData(frame.getKey());
+                            outputTexture.setPixels(frame.getKey());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        outputTexture.updateDynamicTexture();
+                        outputTexture.upload();
                     });
                     sleep(frame.getValue() * 10);
                     while (paused)

@@ -150,7 +150,7 @@ public class TextField extends GuiComponent {
 
     protected IFormattableTextComponent getNarrationMessage() {
         String s = this.getMessage().getString();
-        return new StringTextComponent(s.isEmpty() ? "" : I18n.format("gui.narrate.editBox", s, this.text));
+        return new StringTextComponent(s.isEmpty() ? "" : I18n.get("gui.narrate.editBox", s, this.text));
     }
 
     /**
@@ -198,7 +198,7 @@ public class TextField extends GuiComponent {
         if (acceptsColors) {
             textToWrite = textToWrite.replace('\u00A7', colorCodePlaceholder);
         }
-        String s1 = SharedConstants.filterAllowedCharacters(textToWrite);
+        String s1 = SharedConstants.filterText(textToWrite);
         if (acceptsColors) {
             s1 = s1.replace(colorCodePlaceholder, '\u00A7');
         }
@@ -235,7 +235,7 @@ public class TextField extends GuiComponent {
             this.guiResponder.accept(newText);
         }
 
-        this.nextNarration = Util.milliTime() + 500L;
+        this.nextNarration = Util.getMillis() + 500L;
     }
 
     private void delete(int p_212950_1_) {
@@ -373,7 +373,7 @@ public class TextField extends GuiComponent {
             if (acceptsColors && character == '\u00A7') {
                 character = colorCodePlaceholder;
             }
-            if (SharedConstants.isAllowedCharacter(character)) {
+            if (SharedConstants.isAllowedChatCharacter(character)) {
                 if (this.isEnabled()) {
                     if (acceptsColors && character == colorCodePlaceholder) character = '\u00A7';
                     this.writeText(Character.toString(character));
@@ -395,7 +395,7 @@ public class TextField extends GuiComponent {
         int currentColor = this.isEnabled() ? this.enabledColor : this.disabledColor;
         int j = this.cursorPosition - this.lineScrollOffset;
         int k = this.selectionEnd - this.lineScrollOffset;
-        String s = this.fontRenderer.func_238412_a_(this.text.substring(this.lineScrollOffset), this.getAdjustedWidth());
+        String s = this.renderer.plainSubstrByWidth(this.text.substring(this.lineScrollOffset), this.getAdjustedWidth());
         boolean flag = j >= 0 && j <= s.length();
         boolean flag1 = this.isFocused() && this.cursorCounter / 6 % 2 == 0 && flag;
         int l = this.enableBackgroundDrawing ? this.getX() + 4 : this.getX();
@@ -407,7 +407,7 @@ public class TextField extends GuiComponent {
 
         if (!s.isEmpty()) {
             String s1 = flag ? s.substring(0, j) : s;
-            j1 = this.fontRenderer.drawStringWithShadow(matrixStack, this.textFormatter.apply(s1, this.lineScrollOffset), (float) l, (float) i1, currentColor);
+            j1 = this.renderer.drawShadow(matrixStack, this.textFormatter.apply(s1, this.lineScrollOffset), (float) l, (float) i1, currentColor);
         }
 
         boolean flag2 = this.cursorPosition < this.text.length() || this.text.length() >= this.getMaxStringLength();
@@ -420,24 +420,24 @@ public class TextField extends GuiComponent {
         }
 
         if (!s.isEmpty() && flag && j < s.length()) {
-            this.fontRenderer.drawStringWithShadow(matrixStack, this.textFormatter.apply(s.substring(j), this.cursorPosition), (float) j1, (float) i1, currentColor);
+            this.renderer.drawShadow(matrixStack, this.textFormatter.apply(s.substring(j), this.cursorPosition), (float) j1, (float) i1, currentColor);
         }
 
         if (!flag2 && !getCurrentSuggestion().isEmpty()) {
-            this.fontRenderer.drawStringWithShadow(matrixStack, getCurrentSuggestion(), (float) (k1 - 1), (float) i1, -8355712);
+            this.renderer.drawShadow(matrixStack, getCurrentSuggestion(), (float) (k1 - 1), (float) i1, -8355712);
         }
         if (!label.isEmpty())
-            fontRenderer.drawString(matrixStack, label, getX(), getY() - 8, currentColor);
+            renderer.draw(matrixStack, label, getX(), getY() - 8, currentColor);
         if (flag1) {
             if (flag2) {
                 AbstractGui.fill(matrixStack, k1, i1 - 1, k1 + 1, i1 + 1 + 9, -3092272);
             } else {
-                this.fontRenderer.drawStringWithShadow(matrixStack, "_", (float) k1, (float) i1, currentColor);
+                this.renderer.drawShadow(matrixStack, "_", (float) k1, (float) i1, currentColor);
             }
         }
 
         if (k != j) {
-            int l1 = l + this.fontRenderer.getStringWidth(s.substring(0, k));
+            int l1 = l + this.renderer.width(s.substring(0, k));
             this.drawSelectionBox(k1, i1 - 1, l1 - 1, i1 + 1 + 9);
         }
 
@@ -480,17 +480,17 @@ public class TextField extends GuiComponent {
         }
 
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        BufferBuilder bufferbuilder = tessellator.getBuilder();
         RenderSystem.color4f(0.0F, 0.0F, 255.0F, 255.0F);
         RenderSystem.disableTexture();
         RenderSystem.enableColorLogicOp();
         RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
-        bufferbuilder.pos(startX, endY, 0.0D).endVertex();
-        bufferbuilder.pos(endX, endY, 0.0D).endVertex();
-        bufferbuilder.pos(endX, startY, 0.0D).endVertex();
-        bufferbuilder.pos(startX, startY, 0.0D).endVertex();
-        tessellator.draw();
+        bufferbuilder.vertex(startX, endY, 0.0D).endVertex();
+        bufferbuilder.vertex(endX, endY, 0.0D).endVertex();
+        bufferbuilder.vertex(endX, startY, 0.0D).endVertex();
+        bufferbuilder.vertex(startX, startY, 0.0D).endVertex();
+        tessellator.end();
         RenderSystem.disableColorLogicOp();
         RenderSystem.enableTexture();
     }
@@ -508,8 +508,8 @@ public class TextField extends GuiComponent {
                 if (this.enableBackgroundDrawing) {
                     i -= 4;
                 }
-                String s = this.fontRenderer.func_238412_a_(this.text.substring(this.lineScrollOffset), this.getAdjustedWidth());
-                this.setCursorPosition(this.fontRenderer.func_238412_a_(s, i).length() + this.lineScrollOffset);
+                String s = this.renderer.plainSubstrByWidth(this.text.substring(this.lineScrollOffset), this.getAdjustedWidth());
+                this.setCursorPosition(this.renderer.plainSubstrByWidth(s, i).length() + this.lineScrollOffset);
             }
         }
     }
@@ -584,16 +584,16 @@ public class TextField extends GuiComponent {
     public void setSelectionPos(int position) {
         int i = this.text.length();
         this.selectionEnd = MathHelper.clamp(position, 0, i);
-        if (this.fontRenderer != null) {
+        if (this.renderer != null) {
             if (this.lineScrollOffset > i) {
                 this.lineScrollOffset = i;
             }
 
             int j = this.getAdjustedWidth();
-            String s = this.fontRenderer.func_238412_a_(this.text.substring(this.lineScrollOffset), j);
+            String s = this.renderer.plainSubstrByWidth(this.text.substring(this.lineScrollOffset), j);
             int k = s.length() + this.lineScrollOffset;
             if (this.selectionEnd == this.lineScrollOffset) {
-                this.lineScrollOffset -= this.fontRenderer.func_238413_a_(this.text, j, true).length();
+                this.lineScrollOffset -= this.renderer.plainSubstrByWidth(this.text, j, true).length();
             }
 
             if (this.selectionEnd > k) {
@@ -618,16 +618,16 @@ public class TextField extends GuiComponent {
                 this.setSelectionPos(0);
                 return true;
             } else if (Screen.isCopy(keyCode)) {
-                Minecraft.getInstance().keyboardListener.setClipboardString(this.getSelectedText());
+                Minecraft.getInstance().keyboardHandler.setClipboard(this.getSelectedText());
                 return true;
             } else if (Screen.isPaste(keyCode)) {
                 if (this.isEnabled()) {
-                    this.writeText(Minecraft.getInstance().keyboardListener.getClipboardString());
+                    this.writeText(Minecraft.getInstance().keyboardHandler.getClipboard());
                 }
 
                 return true;
             } else if (Screen.isCut(keyCode)) {
-                Minecraft.getInstance().keyboardListener.setClipboardString(this.getSelectedText());
+                Minecraft.getInstance().keyboardHandler.setClipboard(this.getSelectedText());
                 if (this.isEnabled()) {
                     this.writeText("");
                 }

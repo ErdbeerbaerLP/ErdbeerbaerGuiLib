@@ -182,7 +182,7 @@ public class EnumSlider extends Slider {
             }
         }
 
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         super.render(matrixStack, mouseX, mouseY, partial);
     }

@@ -198,16 +198,16 @@ public class Image extends GuiComponent {
         mc.execute(() -> {
             try {
                 final ByteArrayInputStream is = ImageUtil.convertToByteArrayIS(inp); //To always allow reset()
-                if (!shouldKeepSize || getWidth() == 0 || getHeight() == 0) {
+                if (!shouldKeepSize || getWidth() == 0 || getComponentHeight() == 0) {
                     final BufferedImage img = ImageIO.read(is);
                     this.setWidth(img.getWidth());
                     this.setHeight(img.getHeight());
                 }
                 is.reset();
                 do {
-                    image = new DynamicTexture(getWidth(), getHeight(), true);
-                } while (image.getTextureData().getBytes().length == 0);
-                mc.execute(image::updateDynamicTexture);
+                    image = new DynamicTexture(getWidth(), getComponentHeight(), true);
+                } while (image.getPixels().asByteArray().length == 0);
+                mc.execute(image::upload);
                 imgLoaded = false;
                 errorTooltip = "";
                 acceptsNewImage = false;
@@ -219,9 +219,9 @@ public class Image extends GuiComponent {
                         } else
                             try {
                                 do {
-                                    image.setTextureData(ImageUtil.getImageFromIS(is, keepAspectRatio, getWidth(), getHeight(), resizingImage));
-                                } while (image.getTextureData().getBytes().length == 0);
-                                mc.execute(image::updateDynamicTexture);
+                                    image.setPixels(ImageUtil.getImageFromIS(is, keepAspectRatio, getWidth(), getComponentHeight(), resizingImage));
+                                } while (image.getPixels().asByteArray().length == 0);
+                                mc.execute(image::upload);
                                 is.close();
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -234,7 +234,7 @@ public class Image extends GuiComponent {
                         acceptsNewImage = true;
                         return;
                     }
-                    resLoc = mc.getTextureManager().getDynamicTextureLocation("image_" + imageUUID.toString().toLowerCase(), image);
+                    resLoc = mc.getTextureManager().register("image_" + imageUUID.toString().toLowerCase(), image);
                     acceptsNewImage = true;
                     imgLoaded = true;
                 });
@@ -255,20 +255,20 @@ public class Image extends GuiComponent {
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
         if (!errorTooltip.isEmpty()) {
             final int c = new Color(Color.RED.getRed(), Color.RED.getGreen(), Color.RED.getBlue(), 30).getRGB();
-            GuiUtils.drawGradientRect(matrixStack.getLast().getMatrix(), getBlitOffset(), this.getX(), this.getY(), this.getX() + this.width, this.getY() + height, c, c);
-            mc.getTextureManager().bindTexture(errorIcon);
-            blit(matrixStack, getX() + getWidth() / 2 - 8, getY() + getHeight() / 2 - 8, 0, 0, 16, 16, 16, 16);
+            GuiUtils.drawGradientRect(matrixStack.last().pose(), getBlitOffset(), this.getX(), this.getY(), this.getX() + this.width, this.getY() + height, c, c);
+            mc.getTextureManager().bind(errorIcon);
+            blit(matrixStack, getX() + getWidth() / 2 - 8, getY() + getComponentHeight() / 2 - 8, 0, 0, 16, 16, 16, 16);
             return;
         }
         if (imgLoaded) {
             if (image == null) {
                 final int c = new Color(Color.DARK_GRAY.getRed(), Color.DARK_GRAY.getGreen(), Color.DARK_GRAY.getBlue(), 40).getRGB();
-                GuiUtils.drawGradientRect(matrixStack.getLast().getMatrix(), getBlitOffset(), this.getX(), this.getY(), this.getX() + this.width, this.getY() + height, c, c);
+                GuiUtils.drawGradientRect(matrixStack.last().pose(), getBlitOffset(), this.getX(), this.getY(), this.getX() + this.width, this.getY() + height, c, c);
                 return;
             }
             if (loadingGif != null && loadingGif.isAlive()) loadingGif.interrupt();
-            mc.getTextureManager().bindTexture(resLoc);
-            blit(matrixStack, getX(), getY(), 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
+            mc.getTextureManager().bind(resLoc);
+            blit(matrixStack, getX(), getY(), 0, 0, getWidth(), getComponentHeight(), getWidth(), getComponentHeight());
         } else {
             if (loadingGif == null || !loadingGif.isAlive()) {
                 try {
@@ -278,9 +278,9 @@ public class Image extends GuiComponent {
             }
             if (!loadingGif.isAlive()) loadingGif.start();
             final int c = new Color(Color.DARK_GRAY.getRed(), Color.DARK_GRAY.getGreen(), Color.DARK_GRAY.getBlue(), 40).getRGB();
-            GuiUtils.drawGradientRect(matrixStack.getLast().getMatrix(), getBlitOffset(), this.getX(), this.getY(), this.getX() + this.width, this.getY() + height, c, c);
-            mc.getTextureManager().bindTexture(mc.getTextureManager().getDynamicTextureLocation("loading-gif_" + imageUUID.toString().toLowerCase(), loadingTexture));
-            blit(matrixStack, getX() + getWidth() / 2 - 16, getY() + getHeight() / 2 - 16, 0, 0, 32, 32, 32, 32);
+            GuiUtils.drawGradientRect(matrixStack.last().pose(), getBlitOffset(), this.getX(), this.getY(), this.getX() + this.width, this.getY() + height, c, c);
+            mc.getTextureManager().bind(mc.getTextureManager().register("loading-gif_" + imageUUID.toString().toLowerCase(), loadingTexture));
+            blit(matrixStack, getX() + getWidth() / 2 - 16, getY() + getComponentHeight() / 2 - 16, 0, 0, 32, 32, 32, 32);
         }
     }
 

@@ -51,7 +51,7 @@ public abstract class MixinModListScreen extends Screen {
                     try {
                         final Method getCfg = mod.getClass().getDeclaredMethod("getConfigGUI", Screen.class);
                         final Screen s = (Screen) getCfg.invoke(mod, this);
-                        minecraft.displayGuiScreen(s);
+                        minecraft.setScreen(s);
                     } catch (NoSuchMethodException | SecurityException | IllegalAccessException | InvocationTargetException e) {
                         e.printStackTrace();
                     }

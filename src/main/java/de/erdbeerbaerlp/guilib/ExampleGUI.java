@@ -117,7 +117,7 @@ public class ExampleGUI extends ExtendedScreen {
             this.exampleButton.setEnabled(exampleToggleButton.getValue());
         });
         apple.setCallback(() -> {
-            minecraft.getSoundHandler().play(SimpleSound.master(SoundEvents.ENTITY_PLAYER_BURP, 1));
+            minecraft.getSoundManager().play(SimpleSound.forUI(SoundEvents.PLAYER_BURP, 1));
             apple.setVisible(false);
             apple.disable();
         });
@@ -238,7 +238,7 @@ public class ExampleGUI extends ExtendedScreen {
         //Update positions
         exampleLabel1.setX(width / 2); //always centered!
 
-        nextPageButton.setPosition(width - nextPageButton.getWidth() - 6, height - nextPageButton.getHeight() - 15);
+        nextPageButton.setPosition(width - nextPageButton.getWidth() - 6, height - nextPageButton.getComponentHeight() - 15);
         prevPageButton.setPosition(6, nextPageButton.getY());
         pageIndicator.setPosition(width / 2, height - 13);
         pageIndicator.setText("Page " + getCurrentPage());
@@ -255,8 +255,8 @@ public class ExampleGUI extends ExtendedScreen {
         spinnerPlayPause.setPosition(spinner.getX() + 32 + 20, spinner.getY() + 8);
         pBar.setPosition(spinner.getX() - pBar.getWidth() / 2, height / 2);
         pBarSlider.setPosition(pBar.getX() + 25, pBar.getY() + 40);
-        pBarColorSlider.setPosition(pBarSlider.getX(), pBarSlider.getY() + pBarSlider.getHeight() + 4);
-        pBarLoader.setPosition(pBarSlider.getX() - pBarLoader.getWidth() - 12, pBarSlider.getY() + pBarSlider.getHeight() + 4);
+        pBarColorSlider.setPosition(pBarSlider.getX(), pBarSlider.getY() + pBarSlider.getComponentHeight() + 4);
+        pBarLoader.setPosition(pBarSlider.getX() - pBarLoader.getWidth() - 12, pBarSlider.getY() + pBarSlider.getComponentHeight() + 4);
     }
 
     @Override

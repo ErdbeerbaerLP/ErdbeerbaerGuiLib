@@ -179,7 +179,7 @@ public class Slider extends GuiComponent {
         } else if (this.hovered) {
             color = 16777120;
         }
-        mc.getTextureManager().bindTexture(WIDGETS_LOCATION);
+        mc.getTextureManager().bind(WIDGETS_LOCATION);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.alpha);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -199,12 +199,12 @@ public class Slider extends GuiComponent {
         int bx = this.getX();
         int mwidth = this.width;
         String buttonText = this.displayString;
-        int strWidth = mc.fontRenderer.getStringWidth(buttonText);
-        int ellipsisWidth = mc.fontRenderer.getStringWidth("...");
+        int strWidth = mc.font.width(buttonText);
+        int ellipsisWidth = mc.font.width("...");
         if (strWidth > mwidth - 6 && strWidth > ellipsisWidth)
-            buttonText = mc.fontRenderer.func_238412_a_(buttonText, mwidth - 6 - ellipsisWidth).trim() + "...";
+            buttonText = mc.font.plainSubstrByWidth(buttonText, mwidth - 6 - ellipsisWidth).trim() + "...";
 
-        drawCenteredString(matrixStack, mc.fontRenderer, buttonText, bx + mwidth / 2, this.getY() + (this.height - 8) / 2, color);
+        drawCenteredString(matrixStack, mc.font, buttonText, bx + mwidth / 2, this.getY() + (this.height - 8) / 2, color);
     }
 
     @Override
