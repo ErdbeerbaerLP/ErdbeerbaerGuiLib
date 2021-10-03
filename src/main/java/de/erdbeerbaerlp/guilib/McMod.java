@@ -6,7 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod(McMod.MODID)
-public class McMod implements IHasConfigGUI {
+public class McMod {
     public static final String MODID = "eguilib";
     public static final String NAME = "Erdbeerbaer´s GuiLib";
     public static final String VERSION = "1.0.5";
@@ -15,8 +15,10 @@ public class McMod implements IHasConfigGUI {
     public McMod() {
     }
 
-    @Override
-    public Screen getConfigGUI(final Screen modList) {
-        return new ExampleGUI(modList);
+    @HasConfigGui
+    private static class ConfigGetter {
+        public Screen getConfigGUI(final Screen modList) {
+            return new ExampleGUI(modList);
+        }
     }
 }

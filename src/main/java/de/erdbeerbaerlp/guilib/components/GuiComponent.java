@@ -14,7 +14,7 @@ import net.minecraft.util.text.StringTextComponent;
 public abstract class GuiComponent extends Widget {
     protected static final ResourceLocation WIDGETS_LOCATION = new ResourceLocation("textures/gui/widgets.png");
     protected static final ResourceLocation errorIcon = new ResourceLocation(McMod.MODID, "textures/gui/imgerror.png");
-    protected final FontRenderer fontRenderer;
+    protected final FontRenderer renderer;
     protected Minecraft mc = Minecraft.getInstance();
     protected int width;
     protected int height;
@@ -29,7 +29,7 @@ public abstract class GuiComponent extends Widget {
 
     public GuiComponent(int xIn, int yIn, int widthIn, int heightIn) {
         super(xIn, yIn, widthIn, heightIn, new StringTextComponent(""));
-        this.fontRenderer = mc.fontRenderer;
+        this.renderer = Minecraft.getInstance().font;
         this.setX(xIn);
         this.setY(yIn);
         this.width = widthIn;
@@ -160,7 +160,7 @@ public abstract class GuiComponent extends Widget {
     }
 
     @Override
-    public final int getHeightRealms() {
+    public final int getHeight() {
         return height;
     }
 
@@ -169,8 +169,8 @@ public abstract class GuiComponent extends Widget {
      *
      * @return height
      */
-    public final int getHeight() {
-        return getHeightRealms();
+    public final int getComponentHeight() {
+        return getHeight();
     }
 
     /**
@@ -187,7 +187,7 @@ public abstract class GuiComponent extends Widget {
      * Plays a press sound
      */
     public void playPressSound() {
-        mc.getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, enabled ? 1f : 0.5f));
+        mc.getSoundManager().play(SimpleSound.forUI(SoundEvents.UI_BUTTON_CLICK, enabled ? 1f : 0.5f));
     }
 
     /**

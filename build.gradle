@@ -12,9 +12,10 @@ buildscript {
                 url "https://plugins.gradle.org/m2/"
             }
         }
+        maven { url = 'https://sizableshrimp.me/maven' }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'me.sizableshrimp.parchmenttest', name: 'ForgeGradle', version: '4.1.+', changing: true
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
         classpath "com.github.jengelman.gradle.plugins:shadow:4.0.4"
     }
@@ -34,7 +35,7 @@ repositories {
         url = 'https://repo.spongepowered.org/maven'
     }
 }
-version = "1.0.5"
+version = "1.0.6"
 group = "de.erdbeerbaerlp.eguilib" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "eguilib"
 
@@ -50,7 +51,7 @@ minecraft {
     // stable_#            Stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: 'snapshot', version: '20201028-1.16.3'
+    mappings channel: 'parchment', version: "2021.08.08-1.16.5"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
@@ -95,7 +96,6 @@ configurations {
     compile.extendsFrom(embed)
 }
 shadowJar {
-    classifier = '1.16'
     configurations = [project.configurations.embed]
     relocate 'com.icafe4j', 'guilibshadow.cafe4j'
     relocate 'org.imgscalr', 'guilibshadow.org.imgscalr'
@@ -108,7 +108,8 @@ repositories {
     maven{ url "http://maven.geotoolkit.org"} //Java Advanced Imaging for ImageIO
 }
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.0.0'
+    minecraft 'net.minecraftforge:forge:1.16.5-36.2.6'
+    annotationProcessor "org.spongepowered:mixin:0.8.2:processor"
     embed 'com.github.dragon66:icafe:26c49d5d40'
     embed 'com.github.rkalla:imgscalr:4.2-release'
     embed 'org.mp4parser:isoparser:1.9.41'
@@ -126,7 +127,6 @@ artifacts {
     archives tasks.shadowJar
 }
 jar {
-    classifier = "1.16"
     manifest {
         attributes([
                 'Maven-Artifact'          : "${project.group}:${project.archivesBaseName}:${project.version}",
@@ -160,3 +160,15 @@ curseforge {
     }
 }
 tasks.curseforge.dependsOn(build)
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+        }
+    }
+    repositories {
+        maven {
+            url "file:///${project.projectDir}/mcmodsrepo"
+        }
+    }
+}

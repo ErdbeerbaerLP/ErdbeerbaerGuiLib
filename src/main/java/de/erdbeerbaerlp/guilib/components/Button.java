@@ -172,7 +172,7 @@ public class Button extends GuiComponent {
         } else if (this.hovered) {
             color = 16777120;
         }
-        mc.getTextureManager().bindTexture(WIDGETS_LOCATION);
+        mc.getTextureManager().bind(WIDGETS_LOCATION);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.alpha);
         int i = this.getYImage(this.isHovered());
         RenderSystem.enableBlend();
@@ -185,31 +185,31 @@ public class Button extends GuiComponent {
         int bx = this.getX();
         int mwidth = this.width;
         if (BUTTON_ICON != null && BUTTON_ICON_IMAGE == null) {
-            Minecraft.getInstance().getTextureManager().bindTexture(BUTTON_ICON);
+            Minecraft.getInstance().getTextureManager().bind(BUTTON_ICON);
             blit(matrixStack, bx + 2, getY() + 2, 0, 0, 16, 16, 16, 16);
 
             // ! MODIFY X !
             bx += 2 + 16;
             mwidth -= 16;
         } else if (BUTTON_ICON_IMAGE != null && BUTTON_ICON == null) {
-            mc.getTextureManager().bindTexture(mc.getTextureManager().getDynamicTextureLocation("icon", BUTTON_ICON_IMAGE));
+            mc.getTextureManager().bind(mc.getTextureManager().register("icon", BUTTON_ICON_IMAGE));
             blit(matrixStack, bx + 2, getY(), 0, 0, 16, 16, 16, 16);
             bx += 2 + 16;
             mwidth -= 16;
         } else //noinspection ConstantConditions
             if (BUTTON_ICON_IMAGE == null && BUTTON_ICON == null && !errorTooltip.equals("")) {
-                mc.getTextureManager().bindTexture(errorIcon);
+                mc.getTextureManager().bind(errorIcon);
                 blit(matrixStack, bx + 2, getY(), 0, 0, 16, 16, 16, 16);
                 bx += 2 + 16;
                 mwidth -= 16;
             }
         String buttonText = this.displayString;
-        int strWidth = mc.fontRenderer.getStringWidth(buttonText);
-        int ellipsisWidth = mc.fontRenderer.getStringWidth("...");
+        int strWidth = mc.font.width(buttonText);
+        int ellipsisWidth = mc.font.width("...");
         if (strWidth > mwidth - 6 && strWidth > ellipsisWidth)
-            buttonText = mc.fontRenderer.func_238412_a_(buttonText, mwidth - 6 - ellipsisWidth).trim() + "...";
+            buttonText = mc.font.plainSubstrByWidth(buttonText, mwidth - 6 - ellipsisWidth).trim() + "...";
 
-        drawCenteredString(matrixStack, mc.fontRenderer, buttonText, bx + mwidth / 2, this.getY() + (this.height - 8) / 2, color);
+        drawCenteredString(matrixStack, mc.font, buttonText, bx + mwidth / 2, this.getY() + (this.height - 8) / 2, color);
     }
 
     @Override

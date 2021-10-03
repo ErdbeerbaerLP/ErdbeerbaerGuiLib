@@ -49,7 +49,7 @@ public class ProgressBar extends GuiComponent {
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.getTextureManager().bindTexture(GUI_BARS_TEXTURES);
+        mc.getTextureManager().bind(GUI_BARS_TEXTURES);
         int progress = (int) (getPercent() * getWidth());
 
         for (int w = 0; w <= getWidth(); w++) {
@@ -85,8 +85,8 @@ public class ProgressBar extends GuiComponent {
         }
 
         String s = text + (showPercentText ? (" " + val + "%") : "");
-        int l = mc.fontRenderer.getStringWidth(s);
-        mc.fontRenderer.drawStringWithShadow(matrixStack, s, getX() + (getWidth() / 2 - l / 2), (float) getY(), 16777215);
+        int l = mc.font.width(s);
+        mc.font.drawShadow(matrixStack, s, getX() + (getWidth() / 2 - l / 2), (float) getY(), 16777215);
     }
 
     private float getPercent() {

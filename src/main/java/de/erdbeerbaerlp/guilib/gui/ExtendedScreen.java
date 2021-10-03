@@ -154,7 +154,7 @@ public abstract class ExtendedScreen extends Screen {
     public boolean mouseScrolled(double mouseX, double mouseY, double scroll) {
         for (GuiComponent comp : components) {
             if (comp.getAssignedPage() != -1) if (comp.getAssignedPage() != currentPage) continue;
-            if (comp.isVisible() && mouseX >= comp.getX() && mouseY >= comp.getY() && mouseX < comp.getX() + comp.getWidth() && mouseY < comp.getY() + comp.getHeight())
+            if (comp.isVisible() && mouseX >= comp.getX() && mouseY >= comp.getY() && mouseX < comp.getX() + comp.getWidth() && mouseY < comp.getY() + comp.getComponentHeight())
                 comp.mouseScrolled(mouseX, mouseY, scroll);
         }
         return true;
@@ -210,7 +210,7 @@ public abstract class ExtendedScreen extends Screen {
                     }
                 }
                 if (!txt.getSiblings().isEmpty()) {
-                    renderTooltip(matrixStack, minecraft.fontRenderer.trimStringToWidth(txt, Math.max(this.width / 2, 220)), mouseX, mouseY);
+                    renderTooltip(matrixStack, minecraft.font.split(txt, Math.max(this.width / 2, 220)), mouseX, mouseY);
                     break;
                 }
             }
@@ -235,7 +235,7 @@ public abstract class ExtendedScreen extends Screen {
         final int x = comp.getX();
         final int y = comp.getY();
         final int w = comp.getWidth();
-        final int h = comp.getHeight();
+        final int h = comp.getComponentHeight();
         return (mouseX >= x && mouseY >= y && mouseX < x + w && mouseY < y + h);
     }
 
@@ -249,7 +249,7 @@ public abstract class ExtendedScreen extends Screen {
      * @param gui GuiScreen or null
      */
     public final void openGui(Screen gui) {
-        minecraft.displayGuiScreen(gui);
+        minecraft.setScreen(gui);
     }
 
     /**
@@ -263,7 +263,7 @@ public abstract class ExtendedScreen extends Screen {
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
         for (GuiComponent comp : components) {
             if (comp.getAssignedPage() != -1) if (comp.getAssignedPage() != currentPage) continue;
-            if (comp.isVisible() && ((mouseX >= comp.getX() && mouseY >= comp.getY() && mouseX < comp.getX() + comp.getWidth() && mouseY < comp.getY() + comp.getHeight()) || comp instanceof TextField))
+            if (comp.isVisible() && ((mouseX >= comp.getX() && mouseY >= comp.getY() && mouseX < comp.getX() + comp.getWidth() && mouseY < comp.getY() + comp.getComponentHeight()) || comp instanceof TextField))
                 comp.mouseClicked(mouseX, mouseY, mouseButton);
         }
         return true;
@@ -290,10 +290,10 @@ public abstract class ExtendedScreen extends Screen {
     public boolean keyPressed(int keyCode, int p_keyPressed_2_, int p_keyPressed_3_) {
         if (keyCode == 256 && doesEscCloseGui()) {
             //noinspection RedundantCast
-            this.minecraft.displayGuiScreen((Screen) null);
+            this.minecraft.setScreen((Screen) null);
 
-            if (this.minecraft.currentScreen == null) {
-                this.minecraft.setGameFocused(true);
+            if (this.minecraft.screen == null) {
+                this.minecraft.setWindowActive(true);
             }
         }
         for (GuiComponent comp : components) {
@@ -307,22 +307,22 @@ public abstract class ExtendedScreen extends Screen {
      * Override to draw a custom background
      */
     public void renderBackground(MatrixStack matrixStack) {
-        if (this.minecraft.world != null && !forceDirtBackground()) {
+        if (this.minecraft.level != null && !forceDirtBackground()) {
             this.fillGradient(matrixStack, 0, 0, this.width, this.height, -1072689136, -804253680);
         } else {
             RenderSystem.disableLighting();
             RenderSystem.disableFog();
             Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder bufferbuilder = tessellator.getBuffer();
-            this.minecraft.getTextureManager().bindTexture(getBackground());
+            BufferBuilder bufferbuilder = tessellator.getBuilder();
+            this.minecraft.getTextureManager().bind(getBackground());
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             float f = 32.0F;
             bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-            bufferbuilder.pos(0.0D, this.height, 0.0D).tex(0.0F, (float) this.height / 32.0F + (float) 0).color(64, 64, 64, 255).endVertex();
-            bufferbuilder.pos(this.width, this.height, 0.0D).tex((float) this.width / 32.0F, (float) this.height / 32.0F + (float) 0).color(64, 64, 64, 255).endVertex();
-            bufferbuilder.pos(this.width, 0.0D, 0.0D).tex((float) this.width / 32.0F, (float) 0).color(64, 64, 64, 255).endVertex();
-            bufferbuilder.pos(0.0D, 0.0D, 0.0D).tex(0.0F, (float) 0).color(64, 64, 64, 255).endVertex();
-            tessellator.draw();
+            bufferbuilder.vertex(0.0D, this.height, 0.0D).uv(0.0F, (float) this.height / 32.0F + (float) 0).color(64, 64, 64, 255).endVertex();
+            bufferbuilder.vertex(this.width, this.height, 0.0D).uv((float) this.width / 32.0F, (float) this.height / 32.0F + (float) 0).color(64, 64, 64, 255).endVertex();
+            bufferbuilder.vertex(this.width, 0.0D, 0.0D).uv((float) this.width / 32.0F, (float) 0).color(64, 64, 64, 255).endVertex();
+            bufferbuilder.vertex(0.0D, 0.0D, 0.0D).uv(0.0F, (float) 0).color(64, 64, 64, 255).endVertex();
+            tessellator.end();
             net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.GuiScreenEvent.BackgroundDrawnEvent(this, matrixStack));
         }
     }

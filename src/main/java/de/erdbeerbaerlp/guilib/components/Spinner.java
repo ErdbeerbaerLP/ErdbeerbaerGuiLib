@@ -41,8 +41,8 @@ public class Spinner extends GuiComponent {
             }
         }
         if (!loadingGif.isAlive()) loadingGif.start();
-        mc.getTextureManager().bindTexture(mc.getTextureManager().getDynamicTextureLocation("spinner_" + spinnerUUID.toString().toLowerCase(), spinnerTexture));
-        blit(matrixStack, getX() + getWidth() / 2 - 16, getY() + getHeight() / 2 - 16, 0, 0, 32, 32, 32, 32);
+        mc.getTextureManager().bind(mc.getTextureManager().register("spinner_" + spinnerUUID.toString().toLowerCase(), spinnerTexture));
+        blit(matrixStack, getX() + getWidth() / 2 - 16, getY() + getComponentHeight() / 2 - 16, 0, 0, 32, 32, 32, 32);
     }
 
     /**

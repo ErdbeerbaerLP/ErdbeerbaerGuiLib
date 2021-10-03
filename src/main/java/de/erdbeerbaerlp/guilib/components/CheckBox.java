@@ -26,7 +26,7 @@ public class CheckBox extends GuiComponent {
         this.isChecked = isChecked;
         this.boxWidth = 11;
         this.height = 11;
-        this.width = this.boxWidth + 2 + Minecraft.getInstance().fontRenderer.getStringWidth(displayString);
+        this.width = this.boxWidth + 2 + Minecraft.getInstance().font.width(displayString);
     }
 
     /**
@@ -111,9 +111,9 @@ public class CheckBox extends GuiComponent {
         }
         GuiUtils.drawContinuousTexturedBox(WIDGETS_LOCATION, this.getX(), this.getY(), 0, 46, this.boxWidth, this.height, 200, 20, 2, 3, 2, 2, this.getBlitOffset());
         if (this.isChecked)
-            drawCenteredString(matrixStack, mc.fontRenderer, "x", this.getX() + this.boxWidth / 2 + 1, this.getY() + 1, 14737632);
+            drawCenteredString(matrixStack, mc.font, "x", this.getX() + this.boxWidth / 2 + 1, this.getY() + 1, 14737632);
 
-        drawString(matrixStack, mc.fontRenderer, displayString, this.getX() + this.boxWidth + 2, this.getY() + 2, color);
+        drawString(matrixStack, mc.font, displayString, this.getX() + this.boxWidth + 2, this.getY() + 2, color);
     }
 
     @Override
