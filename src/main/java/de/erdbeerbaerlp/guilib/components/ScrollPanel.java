@@ -138,7 +138,12 @@ public class ScrollPanel extends GuiComponent {
         for (final GuiComponent c : components) {
             c.scrollOffsetY = this.getY() - (int) scrollDistance;
             c.scrollOffsetX = this.getX();
-            if (c.isVisible()) c.render(matrixStack, mouseX, mouseY, partialTicks);
+            if (c.isVisible()
+                    && c.getY() < this.getY() + this.getHeight()
+                    && c.getY() + c.getHeight() > this.getY()
+            ) {
+                c.render(matrixStack, mouseX, mouseY, partialTicks);
+            }
         }
     }
 
