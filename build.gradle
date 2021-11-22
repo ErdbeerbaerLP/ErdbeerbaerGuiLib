@@ -108,7 +108,7 @@ repositories {
     maven{ url "http://maven.geotoolkit.org"} //Java Advanced Imaging for ImageIO
 }
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.2.6'
+    minecraft 'net.minecraftforge:forge:1.17.1-37.0.112'
     annotationProcessor "org.spongepowered:mixin:0.8.2:processor"
     embed 'com.github.dragon66:icafe:26c49d5d40'
     embed 'com.github.rkalla:imgscalr:4.2-release'
