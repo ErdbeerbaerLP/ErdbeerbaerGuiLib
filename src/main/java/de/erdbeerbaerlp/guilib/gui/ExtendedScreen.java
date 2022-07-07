@@ -1,21 +1,21 @@
 package de.erdbeerbaerlp.guilib.gui;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import de.erdbeerbaerlp.guilib.components.GuiComponent;
 import de.erdbeerbaerlp.guilib.components.TextField;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
-import net.minecraft.client.gui.screen.ConfirmOpenLinkScreen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponent;
+import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.screens.ConfirmLinkScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -36,7 +36,7 @@ public abstract class ExtendedScreen extends Screen {
      * @param parentGui The gui this was opened from. Can be null
      */
     public ExtendedScreen(Screen parentGui) {
-        super(new StringTextComponent("An GUI"));
+        super(Component.literal("An GUI"));
         this.parentGui = parentGui;
         buildGui();
     }
@@ -142,7 +142,7 @@ public abstract class ExtendedScreen extends Screen {
 
     @Override
     @Deprecated
-    protected final <T extends Widget> T addButton(T buttonIn) {
+    protected final <T extends GuiEventListener & Widget & NarratableEntry> T addRenderableWidget(T buttonIn) {
         throw new UnsupportedOperationException();
     }
 
@@ -190,27 +190,27 @@ public abstract class ExtendedScreen extends Screen {
     }
 
     @Override
-    public final void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+    public final void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+        super.render(poseStack, mouseX, mouseY, partialTicks);
         updateGui();
-        renderBackground(matrixStack);
+        renderBackground(poseStack);
         for (final GuiComponent comp : components) {
             if (comp.getAssignedPage() != -1) if (comp.getAssignedPage() != currentPage) continue;
-            if (comp.isVisible()) comp.render(matrixStack, mouseX, mouseY, partialTicks);
+            if (comp.isVisible()) comp.render(poseStack, mouseX, mouseY, partialTicks);
         }
         //Second for to not have components overlap the tooltips
         for (final GuiComponent comp : Lists.reverse(components)) { //Reversing to call front component
             if (!comp.isVisible() || (comp.getAssignedPage() != -1 && comp.getAssignedPage() != currentPage)) continue;
             if (comp.canHaveTooltip() && isHovered(comp, mouseX, mouseY)) {
 
-                final TextComponent txt = new StringTextComponent("");
+                final MutableComponent txt = Component.literal("");
                 if (comp.getTooltips() != null) {
                     for (int i = 0; i < comp.getTooltips().length; i++) {
-                        txt.append(new StringTextComponent(comp.getTooltips()[i] + (i == comp.getTooltips().length - 1 ? "" : "\n")));
+                        txt.append(Component.literal(comp.getTooltips()[i] + (i == comp.getTooltips().length - 1 ? "" : "\n")));
                     }
                 }
                 if (!txt.getSiblings().isEmpty()) {
-                    renderTooltip(matrixStack, minecraft.font.split(txt, Math.max(this.width / 2, 220)), mouseX, mouseY);
+                    renderTooltip(poseStack, minecraft.font.split(txt, Math.max(this.width / 2, 220)), mouseX, mouseY);
                     break;
                 }
             }
@@ -224,7 +224,7 @@ public abstract class ExtendedScreen extends Screen {
     }
 
     /**
-     * @return Resource Location of GUIs Background, defaults to {@link net.minecraft.client.gui.AbstractGui#BACKGROUND_LOCATION}
+     * @return Resource Location of GUIs Background, defaults to {@link Screen#BACKGROUND_LOCATION}
      */
     protected ResourceLocation getBackground() {
         return BACKGROUND_LOCATION;
@@ -306,24 +306,23 @@ public abstract class ExtendedScreen extends Screen {
     /**
      * Override to draw a custom background
      */
-    public void renderBackground(MatrixStack matrixStack) {
+    public void renderBackground(PoseStack poseStack) {
         if (this.minecraft.level != null && !forceDirtBackground()) {
-            this.fillGradient(matrixStack, 0, 0, this.width, this.height, -1072689136, -804253680);
+            this.fillGradient(poseStack, 0, 0, this.width, this.height, -1072689136, -804253680);
         } else {
-            RenderSystem.disableLighting();
-            RenderSystem.disableFog();
-            Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder bufferbuilder = tessellator.getBuilder();
-            this.minecraft.getTextureManager().bind(getBackground());
-            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+            Tesselator tesselator = Tesselator.getInstance();
+            BufferBuilder bufferbuilder = tesselator.getBuilder();
+            RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+            RenderSystem.setShaderTexture(0, BACKGROUND_LOCATION);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             float f = 32.0F;
-            bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+            bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
             bufferbuilder.vertex(0.0D, this.height, 0.0D).uv(0.0F, (float) this.height / 32.0F + (float) 0).color(64, 64, 64, 255).endVertex();
             bufferbuilder.vertex(this.width, this.height, 0.0D).uv((float) this.width / 32.0F, (float) this.height / 32.0F + (float) 0).color(64, 64, 64, 255).endVertex();
             bufferbuilder.vertex(this.width, 0.0D, 0.0D).uv((float) this.width / 32.0F, (float) 0).color(64, 64, 64, 255).endVertex();
             bufferbuilder.vertex(0.0D, 0.0D, 0.0D).uv(0.0F, (float) 0).color(64, 64, 64, 255).endVertex();
-            tessellator.end();
-            net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.GuiScreenEvent.BackgroundDrawnEvent(this, matrixStack));
+            tesselator.end();
+            net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.ScreenEvent.BackgroundDrawnEvent(this, poseStack));
         }
     }
 
@@ -357,7 +356,7 @@ public abstract class ExtendedScreen extends Screen {
     public final void openURL(String URL, final BooleanConsumer callback) {
         confirmCallback = callback;
         unloadOnClose = false;
-        final ConfirmOpenLinkScreen s = new ConfirmOpenLinkScreen(this::confirmed, URL, true);
+        final ConfirmLinkScreen s = new ConfirmLinkScreen(this::confirmed, URL, true);
         openGui(s);
     }
 }

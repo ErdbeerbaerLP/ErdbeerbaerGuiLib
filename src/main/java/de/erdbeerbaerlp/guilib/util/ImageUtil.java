@@ -1,6 +1,6 @@
 package de.erdbeerbaerlp.guilib.util;
 
-import net.minecraft.client.renderer.texture.NativeImage;
+import com.mojang.blaze3d.platform.NativeImage;
 import org.imgscalr.Scalr;
 
 import javax.imageio.ImageIO;
@@ -83,7 +83,6 @@ public class ImageUtil {
     public static ByteArrayInputStream convertToByteArrayIS(InputStream is) throws IOException {
         return new ByteArrayInputStream(toByteArray(is));
     }
-
     public static NativeImage getImageFromIS(final ByteArrayInputStream is, boolean keepAspectRatio, int width, int height, boolean resizingImage) throws IOException {
         final BufferedImage img = ImageIO.read(is);
         is.reset();

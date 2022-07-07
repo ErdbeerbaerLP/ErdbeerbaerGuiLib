@@ -1,20 +1,12 @@
 package de.erdbeerbaerlp.guilib.components;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.SharedConstants;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.util.Mth;
 
 import java.util.ArrayList;
 import java.util.function.BiFunction;
@@ -148,10 +140,6 @@ public class TextField extends GuiComponent {
         this.textFormatter = textFormatterIn;
     }
 
-    protected IFormattableTextComponent getNarrationMessage() {
-        String s = this.getMessage().getString();
-        return new StringTextComponent(s.isEmpty() ? "" : I18n.get("gui.narrate.editBox", s, this.text));
-    }
 
     /**
      * Returns the contents of the textbox
@@ -235,7 +223,6 @@ public class TextField extends GuiComponent {
             this.guiResponder.accept(newText);
         }
 
-        this.nextNarration = Util.getMillis() + 500L;
     }
 
     private void delete(int p_212950_1_) {
@@ -349,7 +336,7 @@ public class TextField extends GuiComponent {
     }
 
     public void clampCursorPosition(int pos) {
-        this.cursorPosition = MathHelper.clamp(pos, 0, this.text.length());
+        this.cursorPosition = Mth.clamp(pos, 0, this.text.length());
     }
 
     /**
@@ -386,10 +373,10 @@ public class TextField extends GuiComponent {
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partial) {
         if (this.getEnableBackgroundDrawing()) {
-            fill(matrixStack, this.getX() - 1, this.getY() - 1, this.getX() + this.width + 1, this.getY() + this.height + 1, -6250336);
-            fill(matrixStack, this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, -16777216);
+            fill(poseStack, this.getX() - 1, this.getY() - 1, this.getX() + this.width + 1, this.getY() + this.height + 1, -6250336);
+            fill(poseStack, this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, -16777216);
         }
 
         int currentColor = this.isEnabled() ? this.enabledColor : this.disabledColor;
@@ -407,7 +394,7 @@ public class TextField extends GuiComponent {
 
         if (!s.isEmpty()) {
             String s1 = flag ? s.substring(0, j) : s;
-            j1 = this.renderer.drawShadow(matrixStack, this.textFormatter.apply(s1, this.lineScrollOffset), (float) l, (float) i1, currentColor);
+            j1 = this.renderer.drawShadow(poseStack, this.textFormatter.apply(s1, this.lineScrollOffset), (float) l, (float) i1, currentColor);
         }
 
         boolean flag2 = this.cursorPosition < this.text.length() || this.text.length() >= this.getMaxStringLength();
@@ -420,19 +407,19 @@ public class TextField extends GuiComponent {
         }
 
         if (!s.isEmpty() && flag && j < s.length()) {
-            this.renderer.drawShadow(matrixStack, this.textFormatter.apply(s.substring(j), this.cursorPosition), (float) j1, (float) i1, currentColor);
+            this.renderer.drawShadow(poseStack, this.textFormatter.apply(s.substring(j), this.cursorPosition), (float) j1, (float) i1, currentColor);
         }
 
         if (!flag2 && !getCurrentSuggestion().isEmpty()) {
-            this.renderer.drawShadow(matrixStack, getCurrentSuggestion(), (float) (k1 - 1), (float) i1, -8355712);
+            this.renderer.drawShadow(poseStack, getCurrentSuggestion(), (float) (k1 - 1), (float) i1, -8355712);
         }
         if (!label.isEmpty())
-            renderer.draw(matrixStack, label, getX(), getY() - 8, currentColor);
+            renderer.draw(poseStack, label, getX(), getY() - 8, currentColor);
         if (flag1) {
             if (flag2) {
-                AbstractGui.fill(matrixStack, k1, i1 - 1, k1 + 1, i1 + 1 + 9, -3092272);
+                Screen.fill(poseStack, k1, i1 - 1, k1 + 1, i1 + 1 + 9, -3092272);
             } else {
-                this.renderer.drawShadow(matrixStack, "_", (float) k1, (float) i1, currentColor);
+                this.renderer.drawShadow(poseStack, "_", (float) k1, (float) i1, currentColor);
             }
         }
 
@@ -479,13 +466,13 @@ public class TextField extends GuiComponent {
             startX = this.getX() + this.width;
         }
 
-        Tessellator tessellator = Tessellator.getInstance();
+        Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuilder();
-        RenderSystem.color4f(0.0F, 0.0F, 255.0F, 255.0F);
+        RenderSystem.clearColor(0.0F, 0.0F, 255.0F, 255.0F);
         RenderSystem.disableTexture();
         RenderSystem.enableColorLogicOp();
         RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-        bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
+        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
         bufferbuilder.vertex(startX, endY, 0.0D).endVertex();
         bufferbuilder.vertex(endX, endY, 0.0D).endVertex();
         bufferbuilder.vertex(endX, startY, 0.0D).endVertex();
@@ -504,7 +491,7 @@ public class TextField extends GuiComponent {
             }
 
             if (this.isFocused() && isHovered && mouseButton == 0) {
-                int i = MathHelper.floor(mouseX) - this.getX();
+                int i = Mth.floor(mouseX) - this.getX();
                 if (this.enableBackgroundDrawing) {
                     i -= 4;
                 }
@@ -583,7 +570,7 @@ public class TextField extends GuiComponent {
      */
     public void setSelectionPos(int position) {
         int i = this.text.length();
-        this.selectionEnd = MathHelper.clamp(position, 0, i);
+        this.selectionEnd = Mth.clamp(position, 0, i);
         if (this.renderer != null) {
             if (this.lineScrollOffset > i) {
                 this.lineScrollOffset = i;
@@ -602,7 +589,7 @@ public class TextField extends GuiComponent {
                 this.lineScrollOffset -= this.lineScrollOffset - this.selectionEnd;
             }
 
-            this.lineScrollOffset = MathHelper.clamp(this.lineScrollOffset, 0, i);
+            this.lineScrollOffset = Mth.clamp(this.lineScrollOffset, 0, i);
         }
 
     }

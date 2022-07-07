@@ -2,11 +2,11 @@ package de.erdbeerbaerlp.guilib;
 
 import de.erdbeerbaerlp.guilib.components.*;
 import de.erdbeerbaerlp.guilib.gui.ExtendedScreen;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.world.BossInfo;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.BossEvent;
 
 import java.util.Random;
 
@@ -94,8 +94,8 @@ public class ExampleGUI extends ExtendedScreen {
         pBarSlider = new Slider(0, 0, "ProgressBar value: ", 0, 100, 0, () -> {
             pBar.setValue(pBarSlider.getValueInt());
         });
-        pBarColorSlider = new EnumSlider(0, 0, "Progress Bar Color: ", BossInfo.Color.class, BossInfo.Color.BLUE, () -> {
-            pBar.setColor((BossInfo.Color) pBarColorSlider.getEnum());
+        pBarColorSlider = new EnumSlider(0, 0, "Progress Bar Color: ", BossEvent.BossBarColor.class, BossEvent.BossBarColor.BLUE, () -> {
+            pBar.setColor((BossEvent.BossBarColor) pBarColorSlider.getEnum());
         });
         pBarLoader = new Button(0, 0, "Load Something", Button.DefaultButtonIcons.PLAY);
         spinnerPlayPause = new ToggleButton(0, 0, Button.DefaultButtonIcons.PAUSE, Button.DefaultButtonIcons.PLAY);
@@ -103,7 +103,7 @@ public class ExampleGUI extends ExtendedScreen {
         //Load images
         beeGif.loadImage("https://gamepedia.cursecdn.com/minecraft_gamepedia/thumb/5/58/Bee.gif/120px-Bee.gif");
         apple.loadImage(new ResourceLocation("minecraft", "textures/item/apple.png"));
-        dynamicImage.loadImage("https://www.minecraft.net/etc.clientlibs/minecraft/clientlibs/main/resources/img/header/logo.png");
+        dynamicImage.loadImage("https://static.wikia.nocookie.net/minecraft_de_gamepedia/images/0/0a/Creeper.png/revision/latest?cb=20120514161909");
         pikachu.loadImage("https://i.pinimg.com/originals/9f/b1/25/9fb125f1fedc8cc62ab5b20699ebd87d.gif");
 
 
@@ -117,7 +117,7 @@ public class ExampleGUI extends ExtendedScreen {
             this.exampleButton.setEnabled(exampleToggleButton.getValue());
         });
         apple.setCallback(() -> {
-            minecraft.getSoundManager().play(SimpleSound.forUI(SoundEvents.PLAYER_BURP, 1));
+            minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.PLAYER_BURP, 1));
             apple.setVisible(false);
             apple.disable();
         });

@@ -1,14 +1,11 @@
 package de.erdbeerbaerlp.guilib.components;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.client.gui.GuiUtils;
+import com.mojang.blaze3d.vertex.*;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.gui.GuiUtils;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -134,11 +131,11 @@ public class ScrollPanel extends GuiComponent {
         return 20;
     }
 
-    protected void drawPanel(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    protected void drawPanel(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
         for (final GuiComponent c : components) {
             c.scrollOffsetY = this.getY() - (int) scrollDistance;
             c.scrollOffsetX = this.getX();
-            if (c.isVisible()) c.render(matrixStack, mouseX, mouseY, partialTicks);
+            if (c.isVisible()) c.render(poseStack, mouseX, mouseY, partialTicks);
         }
     }
 
@@ -236,7 +233,7 @@ public class ScrollPanel extends GuiComponent {
     }
 
     /**
-     * @return Resource Location of Scroll Panel Background, defaults to {@link AbstractGui#BACKGROUND_LOCATION}
+     * @return Resource Location of Scroll Panel Background, defaults to {@link net.minecraft.client.gui.screens.Screen#BACKGROUND_LOCATION}
      */
     protected ResourceLocation getBackground() {
         return BACKGROUND_LOCATION;
@@ -259,24 +256,23 @@ public class ScrollPanel extends GuiComponent {
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
         this.drawBackground();
-        Tessellator tess = Tessellator.getInstance();
+        Tesselator tess = Tesselator.getInstance();
         BufferBuilder worldr = tess.getBuilder();
         double scale = mc.getWindow().getGuiScale();
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
         GL11.glScissor((int) (left * scale), (int) (mc.getWindow().getHeight() - (bottom * scale)),
                 (int) (width * scale), (int) (height * scale));
         if (this.mc.level != null) {
-            this.drawGradientRect(matrixStack, this.left, this.top, this.right, this.bottom, 0xC0101010, 0xD0101010);
+            this.drawGradientRect(poseStack, this.left, this.top, this.right, this.bottom, 0xC0101010, 0xD0101010);
         } else // Draw dark dirt background
         {
-            RenderSystem.disableLighting();
-            RenderSystem.disableFog();
-            this.mc.getTextureManager().bind(getBackground());
-            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+            RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+            RenderSystem.setShaderTexture(0, getBackground());
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             final float texScale = 32.0F;
-            worldr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+            worldr.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
             worldr.vertex(this.left, this.bottom, 0.0D).uv(this.left / texScale, (this.bottom + (int) this.scrollDistance) / texScale).color(0x20, 0x20, 0x20, 0xFF).endVertex();
             worldr.vertex(this.right, this.bottom, 0.0D).uv(this.right / texScale, (this.bottom + (int) this.scrollDistance) / texScale).color(0x20, 0x20, 0x20, 0xFF).endVertex();
             worldr.vertex(this.right, this.top, 0.0D).uv(this.right / texScale, (this.top + (int) this.scrollDistance) / texScale).color(0x20, 0x20, 0x20, 0xFF).endVertex();
@@ -284,7 +280,7 @@ public class ScrollPanel extends GuiComponent {
             tess.end();
         }
 
-        this.drawPanel(matrixStack, mouseX, mouseY, partialTicks);
+        this.drawPanel(poseStack, mouseX, mouseY, partialTicks);
 
         RenderSystem.disableDepthTest();
 
@@ -296,21 +292,17 @@ public class ScrollPanel extends GuiComponent {
             if (barTop < this.top) {
                 barTop = this.top;
             }
-
             RenderSystem.disableTexture();
-            worldr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+            RenderSystem.setShader(GameRenderer::getPositionColorShader);
+            worldr.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
             worldr.vertex(barLeft, this.bottom, 0.0D).uv(0.0F, 1.0F).color(0x00, 0x00, 0x00, 0xFF).endVertex();
             worldr.vertex(barLeft + barWidth, this.bottom, 0.0D).uv(1.0F, 1.0F).color(0x00, 0x00, 0x00, 0xFF).endVertex();
             worldr.vertex(barLeft + barWidth, this.top, 0.0D).uv(1.0F, 0.0F).color(0x00, 0x00, 0x00, 0xFF).endVertex();
             worldr.vertex(barLeft, this.top, 0.0D).uv(0.0F, 0.0F).color(0x00, 0x00, 0x00, 0xFF).endVertex();
-            tess.end();
-            worldr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
             worldr.vertex(barLeft, barTop + barHeight, 0.0D).uv(0.0F, 1.0F).color(0x80, 0x80, 0x80, 0xFF).endVertex();
             worldr.vertex(barLeft + barWidth, barTop + barHeight, 0.0D).uv(1.0F, 1.0F).color(0x80, 0x80, 0x80, 0xFF).endVertex();
             worldr.vertex(barLeft + barWidth, barTop, 0.0D).uv(1.0F, 0.0F).color(0x80, 0x80, 0x80, 0xFF).endVertex();
             worldr.vertex(barLeft, barTop, 0.0D).uv(0.0F, 0.0F).color(0x80, 0x80, 0x80, 0xFF).endVertex();
-            tess.end();
-            worldr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
             worldr.vertex(barLeft, barTop + barHeight - 1, 0.0D).uv(0.0F, 1.0F).color(0xC0, 0xC0, 0xC0, 0xFF).endVertex();
             worldr.vertex(barLeft + barWidth - 1, barTop + barHeight - 1, 0.0D).uv(1.0F, 1.0F).color(0xC0, 0xC0, 0xC0, 0xFF).endVertex();
             worldr.vertex(barLeft + barWidth - 1, barTop, 0.0D).uv(1.0F, 0.0F).color(0xC0, 0xC0, 0xC0, 0xFF).endVertex();
@@ -319,8 +311,8 @@ public class ScrollPanel extends GuiComponent {
         }
 
         RenderSystem.enableTexture();
-        RenderSystem.shadeModel(GL11.GL_FLAT);
-        RenderSystem.enableAlphaTest();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        RenderSystem.enableDepthTest();
         RenderSystem.disableBlend();
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
         for (final GuiComponent comp : Lists.reverse(components)) { //Reversing to call front component
@@ -342,7 +334,7 @@ public class ScrollPanel extends GuiComponent {
         return tooltips.toArray(new String[0]);
     }
 
-    protected void drawGradientRect(MatrixStack matrixStack, int left, int top, int right, int bottom, int color1, int color2) {
-        GuiUtils.drawGradientRect(matrixStack.last().pose(), 0, left, top, right, bottom, color1, color2);
+    protected void drawGradientRect(PoseStack poseStack, int left, int top, int right, int bottom, int color1, int color2) {
+        GuiUtils.drawGradientRect(poseStack.last().pose(), 0, left, top, right, bottom, color1, color2);
     }
 }

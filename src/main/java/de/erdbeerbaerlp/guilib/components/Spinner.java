@@ -1,10 +1,12 @@
 package de.erdbeerbaerlp.guilib.components;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import de.erdbeerbaerlp.guilib.McMod;
 import de.erdbeerbaerlp.guilib.util.ImageUtil;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -33,16 +35,18 @@ public class Spinner extends GuiComponent {
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partial) {
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         if (loadingGif == null || !loadingGif.isAlive()) {
             try {
-                loadingGif = new GifThread(ImageUtil.convertToByteArrayIS(mc.getResourceManager().getResource(this.spinnerRes).getInputStream()), spinnerTexture, true, true, true);
+                loadingGif = new GifThread(ImageUtil.convertToByteArrayIS(mc.getResourceManager().getResource(this.spinnerRes).get().open()), spinnerTexture, true, true, true);
             } catch (IOException ignored) {
             }
         }
         if (!loadingGif.isAlive()) loadingGif.start();
-        mc.getTextureManager().bind(mc.getTextureManager().register("spinner_" + spinnerUUID.toString().toLowerCase(), spinnerTexture));
-        blit(matrixStack, getX() + getWidth() / 2 - 16, getY() + getComponentHeight() / 2 - 16, 0, 0, 32, 32, 32, 32);
+        RenderSystem.setShaderTexture(0, mc.getTextureManager().register("spinner_" + spinnerUUID.toString().toLowerCase(), spinnerTexture));
+        blit(poseStack, getX() + getWidth() / 2 - 16, getY() + getComponentHeight() / 2 - 16, 0, 0, 32, 32, 32, 32);
     }
 
     /**

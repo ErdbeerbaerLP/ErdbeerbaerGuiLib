@@ -1,20 +1,21 @@
 package de.erdbeerbaerlp.guilib.components;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import de.erdbeerbaerlp.guilib.McMod;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 
 @SuppressWarnings("unused")
-public abstract class GuiComponent extends Widget {
+public abstract class GuiComponent extends AbstractWidget {
     protected static final ResourceLocation WIDGETS_LOCATION = new ResourceLocation("textures/gui/widgets.png");
     protected static final ResourceLocation errorIcon = new ResourceLocation(McMod.MODID, "textures/gui/imgerror.png");
-    protected final FontRenderer renderer;
+    protected final Font renderer;
     protected Minecraft mc = Minecraft.getInstance();
     protected int width;
     protected int height;
@@ -28,12 +29,16 @@ public abstract class GuiComponent extends Widget {
     private int assignedPage = -1;
 
     public GuiComponent(int xIn, int yIn, int widthIn, int heightIn) {
-        super(xIn, yIn, widthIn, heightIn, new StringTextComponent(""));
+        super(xIn, yIn, widthIn, heightIn, Component.literal(""));
         this.renderer = Minecraft.getInstance().font;
         this.setX(xIn);
         this.setY(yIn);
         this.width = widthIn;
         this.height = heightIn;
+    }
+
+    @Override
+    public void updateNarration(NarrationElementOutput p_169152_) {
     }
 
     /**
@@ -64,6 +69,7 @@ public abstract class GuiComponent extends Widget {
     protected int getYImage(boolean isHovered) {
         int i = 1;
         if (!this.isEnabled()) {
+
             i = 0;
         } else if (isHovered) {
             i = 2;
@@ -187,25 +193,25 @@ public abstract class GuiComponent extends Widget {
      * Plays a press sound
      */
     public void playPressSound() {
-        mc.getSoundManager().play(SimpleSound.forUI(SoundEvents.UI_BUTTON_CLICK, enabled ? 1f : 0.5f));
+        mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, enabled ? 1f : 0.5f));
     }
 
     /**
      * Draws the component
      */
     @Override
-    public abstract void render(MatrixStack matrixStack, int mouseX, int mouseY, float partial);
+    public abstract void render(PoseStack poseStack, int mouseX, int mouseY, float partial);
 
     /**
      * Called on mouse click
      */
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-        mouseClick(mouseX, mouseY, mouseButton);
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        mouseClick(mouseX, mouseY, button);
         return true;
     }
 
-    public abstract void mouseClick(double mouseX, double mouseY, int mouseButton);
+    public abstract void mouseClick(double mouseX, double mouseY, int button);
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int state) {

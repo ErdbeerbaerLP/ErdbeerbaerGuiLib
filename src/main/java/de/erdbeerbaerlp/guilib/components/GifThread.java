@@ -2,10 +2,10 @@ package de.erdbeerbaerlp.guilib.components;
 
 import com.icafe4j.image.gif.GIFFrame;
 import com.icafe4j.image.reader.GIFReader;
+import com.mojang.blaze3d.platform.NativeImage;
 import de.erdbeerbaerlp.guilib.util.ImageUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.client.renderer.texture.NativeImage;
 
 import javax.imageio.ImageIO;
 import java.io.ByteArrayInputStream;
@@ -26,7 +26,7 @@ public class GifThread extends Thread {
         this.outputTexture = outputTexture;
         this.doGifLoop = doGifLoop;
         setDaemon(true);
-        setName("Gif Renderer " + UUID.randomUUID().toString());
+        setName("Gif Renderer " + UUID.randomUUID());
         List<GIFFrame> gifFrames;
         final GIFReader r = new GIFReader();
         try {

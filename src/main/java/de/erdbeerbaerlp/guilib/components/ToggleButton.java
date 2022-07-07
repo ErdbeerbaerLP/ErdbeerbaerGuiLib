@@ -1,11 +1,11 @@
 package de.erdbeerbaerlp.guilib.components;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.client.gui.GuiUtils;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.gui.GuiUtils;
 
 import java.awt.*;
 
@@ -104,7 +104,7 @@ public class ToggleButton extends Button {
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partial) {
         int color = 14737632;
         this.isHovered = mouseX >= getX() && mouseY >= getY() && mouseX < this.getX() + this.width && mouseY < getY() + this.height;
         if (packedFGColor != 0) {
@@ -114,23 +114,23 @@ public class ToggleButton extends Button {
         } else if (this.hovered) {
             color = 16777120;
         }
-        mc.getTextureManager().bind(WIDGETS_LOCATION);
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.alpha);
-        int i = this.getYImage(this.isHovered());
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+        RenderSystem.setShaderTexture(0, WIDGETS_LOCATION);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
+        int i = this.getYImage(this.isHoveredOrFocused());
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        this.blit(matrixStack, getX(), getY(), 0, 46 + i * 20, this.width / 2, this.height);
-        this.blit(matrixStack, getX() + this.width / 2, getY(), 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
-        this.renderBg(matrixStack, mc, mouseX, mouseY);
+        this.blit(poseStack, getX(), getY(), 0, 46 + i * 20, this.width / 2, this.height);
+        this.blit(poseStack, getX() + this.width / 2, getY(), 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
+        this.renderBg(poseStack, mc, mouseX, mouseY);
         int j = getFGColor();
         int bx = this.getX();
         int mwidth = this.width;
 
         if (BUTTON_ICON != null) {
-            Minecraft.getInstance().getTextureManager().bind((this.offIcon != null && (this.drawType == DrawType.STRING_OR_ICON || this.drawType == DrawType.BOTH) ? (this.value ? BUTTON_ICON : offIcon) : BUTTON_ICON));
-            blit(matrixStack, bx + 2, getY() + 2, 0, 0, 16, 16, 16, 16);
-
+            RenderSystem.setShaderTexture(0, (this.offIcon != null && (this.drawType == DrawType.STRING_OR_ICON || this.drawType == DrawType.BOTH) ? (this.value ? BUTTON_ICON : offIcon) : BUTTON_ICON));
+            blit(poseStack, bx + 2, getY() + 2, 0, 0, 16, 16, 16, 16);
             // ! MODIFY X !
             bx += 2 + 16;
             mwidth -= 16;
@@ -140,11 +140,13 @@ public class ToggleButton extends Button {
         int ellipsisWidth = mc.font.width("...");
         if (strWidth > mwidth - 6 && strWidth > ellipsisWidth)
             buttonText = mc.font.plainSubstrByWidth(buttonText, mwidth - 6 - ellipsisWidth).trim() + "...";
-        drawCenteredString(matrixStack, mc.font, buttonText + (((drawType == DrawType.STRING_OR_ICON || drawType == DrawType.BOTH) && this.offIcon == null) ? (this.value ? "ON" : "OFF") : ""), bx + mwidth / 2, this.getY() + (this.height - 8) / 2, color);
+        drawCenteredString(poseStack, mc.font, buttonText + (((drawType == DrawType.STRING_OR_ICON || drawType == DrawType.BOTH) && this.offIcon == null) ? (this.value ? "ON" : "OFF") : ""), bx + mwidth / 2, this.getY() + (this.height - 8) / 2, color);
+
 
         if (this.drawType == DrawType.COLORED_LINE || this.drawType == DrawType.BOTH) {
             int col = value ? Color.GREEN.getRGB() : Color.red.getRGB();
-            GuiUtils.drawGradientRect(matrixStack.last().pose(), getBlitOffset(), this.getX() + 6, this.getY() + height - 3, this.getX() + this.width - 6, this.getY() + height - 4, col, col);
+            RenderSystem.disableTexture();
+            GuiUtils.drawGradientRect(poseStack.last().pose(), getBlitOffset(), this.getX() + 6, this.getY() + height - 3, this.getX() + this.width - 6, this.getY() + height - 4, col, col);
 
         }
 

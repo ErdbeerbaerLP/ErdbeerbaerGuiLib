@@ -1,19 +1,23 @@
 package de.erdbeerbaerlp.guilib.components;
 
 import com.icafe4j.image.ImageIO;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import de.erdbeerbaerlp.guilib.McMod;
 import de.erdbeerbaerlp.guilib.util.ImageUtil;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.client.gui.GuiUtils;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraftforge.client.gui.GuiUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
+import java.util.Optional;
 import java.util.UUID;
 
 public class Image extends GuiComponent {
@@ -109,8 +113,8 @@ public class Image extends GuiComponent {
     @Override
     public String[] getTooltips() {
         if (!errorTooltip.isEmpty()) {
-            return ArrayUtils.addAll(super.getTooltips(), "", TextFormatting.RED + "Error loading image:",
-                    TextFormatting.RED + errorTooltip);
+            return ArrayUtils.addAll(super.getTooltips(), "", ChatFormatting.RED + "Error loading image:",
+                    ChatFormatting.RED + errorTooltip);
         }
         return super.getTooltips();
     }
@@ -141,8 +145,10 @@ public class Image extends GuiComponent {
 
     public void loadImage(final ResourceLocation res) {
         if (!acceptsNewImage) return;
+        final Optional<Resource> resource = mc.getResourceManager().getResource(res);
+        if (resource.isEmpty()) return;
         try {
-            loadImage(mc.getResourceManager().getResource(res).getInputStream());
+            loadImage(resource.get().open());
         } catch (IOException e) {
             errorTooltip = (e.getCause() == null) ? e.getClass().getCanonicalName() + ": " + e.getMessage() : e.getCause().getLocalizedMessage();
             image = null;
@@ -252,35 +258,37 @@ public class Image extends GuiComponent {
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partial) {
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
         if (!errorTooltip.isEmpty()) {
             final int c = new Color(Color.RED.getRed(), Color.RED.getGreen(), Color.RED.getBlue(), 30).getRGB();
-            GuiUtils.drawGradientRect(matrixStack.last().pose(), getBlitOffset(), this.getX(), this.getY(), this.getX() + this.width, this.getY() + height, c, c);
-            mc.getTextureManager().bind(errorIcon);
-            blit(matrixStack, getX() + getWidth() / 2 - 8, getY() + getComponentHeight() / 2 - 8, 0, 0, 16, 16, 16, 16);
+            GuiUtils.drawGradientRect(poseStack.last().pose(), getBlitOffset(), this.getX(), this.getY(), this.getX() + this.width, this.getY() + height, c, c);
+            RenderSystem.setShaderTexture(0, errorIcon);
+            blit(poseStack, getX() + getWidth() / 2 - 8, getY() + getComponentHeight() / 2 - 8, 0, 0, 16, 16, 16, 16);
             return;
         }
         if (imgLoaded) {
             if (image == null) {
                 final int c = new Color(Color.DARK_GRAY.getRed(), Color.DARK_GRAY.getGreen(), Color.DARK_GRAY.getBlue(), 40).getRGB();
-                GuiUtils.drawGradientRect(matrixStack.last().pose(), getBlitOffset(), this.getX(), this.getY(), this.getX() + this.width, this.getY() + height, c, c);
+                GuiUtils.drawGradientRect(poseStack.last().pose(), getBlitOffset(), this.getX(), this.getY(), this.getX() + this.width, this.getY() + height, c, c);
                 return;
             }
             if (loadingGif != null && loadingGif.isAlive()) loadingGif.interrupt();
-            mc.getTextureManager().bind(resLoc);
-            blit(matrixStack, getX(), getY(), 0, 0, getWidth(), getComponentHeight(), getWidth(), getComponentHeight());
+            RenderSystem.setShaderTexture(0, resLoc);
+            blit(poseStack, getX(), getY(), 0, 0, getWidth(), getComponentHeight(), getWidth(), getComponentHeight());
         } else {
             if (loadingGif == null || !loadingGif.isAlive()) {
                 try {
-                    loadingGif = new GifThread(ImageUtil.convertToByteArrayIS(mc.getResourceManager().getResource(new ResourceLocation(McMod.MODID, "textures/gui/loading.gif")).getInputStream()), loadingTexture, keepAspectRatio, doGifLoop, resizingImage);
+                    loadingGif = new GifThread(ImageUtil.convertToByteArrayIS(mc.getResourceManager().getResource(new ResourceLocation(McMod.MODID, "textures/gui/loading.gif")).get().open()), loadingTexture, keepAspectRatio, doGifLoop, resizingImage);
                 } catch (IOException ignored) {
                 }
             }
             if (!loadingGif.isAlive()) loadingGif.start();
             final int c = new Color(Color.DARK_GRAY.getRed(), Color.DARK_GRAY.getGreen(), Color.DARK_GRAY.getBlue(), 40).getRGB();
-            GuiUtils.drawGradientRect(matrixStack.last().pose(), getBlitOffset(), this.getX(), this.getY(), this.getX() + this.width, this.getY() + height, c, c);
-            mc.getTextureManager().bind(mc.getTextureManager().register("loading-gif_" + imageUUID.toString().toLowerCase(), loadingTexture));
-            blit(matrixStack, getX() + getWidth() / 2 - 16, getY() + getComponentHeight() / 2 - 16, 0, 0, 32, 32, 32, 32);
+            GuiUtils.drawGradientRect(poseStack.last().pose(), getBlitOffset(), this.getX(), this.getY(), this.getX() + this.width, this.getY() + height, c, c);
+            RenderSystem.setShaderTexture(0, mc.getTextureManager().register("loading-gif_" + imageUUID.toString().toLowerCase(), loadingTexture));
+            blit(poseStack, getX() + getWidth() / 2 - 16, getY() + getComponentHeight() / 2 - 16, 0, 0, 32, 32, 32, 32);
         }
     }
 

@@ -1,9 +1,9 @@
 package de.erdbeerbaerlp.guilib.components;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.client.gui.GuiUtils;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.gui.GuiUtils;
 
 public class CheckBox extends GuiComponent {
     private static final ResourceLocation CHECKBOX_LOCATION = new ResourceLocation("minecraft", "textures/gui/checkbox.png");
@@ -99,7 +99,7 @@ public class CheckBox extends GuiComponent {
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partial) {
         this.isHovered = mouseX >= getX() && mouseY >= getY() && mouseX < this.getX() + this.width && mouseY < getY() + this.height;
         int color = 14737632;
         if (packedFGColor != 0) {
@@ -109,11 +109,11 @@ public class CheckBox extends GuiComponent {
         } else if (this.hovered) {
             color = 16777120;
         }
-        GuiUtils.drawContinuousTexturedBox(WIDGETS_LOCATION, this.getX(), this.getY(), 0, 46, this.boxWidth, this.height, 200, 20, 2, 3, 2, 2, this.getBlitOffset());
+        GuiUtils.drawContinuousTexturedBox(poseStack, WIDGETS_LOCATION, this.getX(), this.getY(), 0, 46, this.boxWidth, this.height, 200, 20, 2, 3, 2, 2, this.getBlitOffset());
         if (this.isChecked)
-            drawCenteredString(matrixStack, mc.font, "x", this.getX() + this.boxWidth / 2 + 1, this.getY() + 1, 14737632);
+            drawCenteredString(poseStack, mc.font, "x", this.getX() + this.boxWidth / 2 + 1, this.getY() + 1, 14737632);
 
-        drawString(matrixStack, mc.font, displayString, this.getX() + this.boxWidth + 2, this.getY() + 2, color);
+        drawString(poseStack, mc.font, displayString, this.getX() + this.boxWidth + 2, this.getY() + 2, color);
     }
 
     @Override

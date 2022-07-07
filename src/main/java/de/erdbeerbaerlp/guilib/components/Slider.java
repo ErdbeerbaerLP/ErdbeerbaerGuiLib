@@ -1,9 +1,10 @@
 package de.erdbeerbaerlp.guilib.components;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.util.text.StringTextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
 
 public class Slider extends GuiComponent {
     protected final String dispString;
@@ -141,7 +142,7 @@ public class Slider extends GuiComponent {
 
         if (drawString) {
             displayString = dispString + val + suffix;
-            setMessage(new StringTextComponent(displayString));
+            setMessage(Component.literal(displayString));
         }
         if (prevValue != getValue()) onValueChanged();
         prevValue = getValue();
@@ -168,7 +169,7 @@ public class Slider extends GuiComponent {
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partial) {
 
         int color = 14737632;
         this.isHovered = mouseX >= getX() && mouseY >= getY() && mouseX < this.getX() + this.width && mouseY < getY() + this.height;
@@ -179,22 +180,23 @@ public class Slider extends GuiComponent {
         } else if (this.hovered) {
             color = 16777120;
         }
-        mc.getTextureManager().bind(WIDGETS_LOCATION);
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.alpha);
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+        RenderSystem.setShaderTexture(0, WIDGETS_LOCATION);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        this.blit(matrixStack, getX(), getY(), 0, 46, this.width / 2, this.height);
-        this.blit(matrixStack, getX() + this.width / 2, getY(), 200 - this.width / 2, 46, this.width / 2, this.height);
+        this.blit(poseStack, getX(), getY(), 0, 46, this.width / 2, this.height);
+        this.blit(poseStack, getX() + this.width / 2, getY(), 200 - this.width / 2, 46, this.width / 2, this.height);
         if (this.dragging) {
             this.sliderValue = (mouseX - (this.getX() + 4)) / (float) (this.width - 8);
             updateSlider();
         }
 
         if (isEnabled()) {
-            int i = (this.isHovered() ? 2 : 1) * 20;
-            this.blit(matrixStack, this.getX() + (int) (this.sliderValue * (double) (this.width - 8)), this.getY(), 0, 46 + i, 4, 20);
-            this.blit(matrixStack, this.getX() + (int) (this.sliderValue * (double) (this.width - 8)) + 4, this.getY(), 196, 46 + i, 4, 20);
+            int i = (this.isHoveredOrFocused() ? 2 : 1) * 20;
+            this.blit(poseStack, this.getX() + (int) (this.sliderValue * (double) (this.width - 8)), this.getY(), 0, 46 + i, 4, 20);
+            this.blit(poseStack, this.getX() + (int) (this.sliderValue * (double) (this.width - 8)) + 4, this.getY(), 196, 46 + i, 4, 20);
         }
         int bx = this.getX();
         int mwidth = this.width;
@@ -204,7 +206,7 @@ public class Slider extends GuiComponent {
         if (strWidth > mwidth - 6 && strWidth > ellipsisWidth)
             buttonText = mc.font.plainSubstrByWidth(buttonText, mwidth - 6 - ellipsisWidth).trim() + "...";
 
-        drawCenteredString(matrixStack, mc.font, buttonText, bx + mwidth / 2, this.getY() + (this.height - 8) / 2, color);
+        drawCenteredString(poseStack, mc.font, buttonText, bx + mwidth / 2, this.getY() + (this.height - 8) / 2, color);
     }
 
     @Override

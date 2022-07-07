@@ -29,12 +29,12 @@ A easy-to-use gui library
 [[dependencies.eguilib]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.16.4,1.16.5]"
+versionRange = "[1.19,)"
 ordering = "NONE"
 side = "CLIENT"
 [[dependencies.eguilib]]
 modId = "forge"
 mandatory = true
-versionRange = "[35.1,)"
+versionRange = "[41.0,)"
 ordering = "NONE"
 side = "CLIENT"
