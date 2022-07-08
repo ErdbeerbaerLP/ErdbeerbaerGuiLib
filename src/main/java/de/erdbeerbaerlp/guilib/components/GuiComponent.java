@@ -17,14 +17,10 @@ public abstract class GuiComponent extends AbstractWidget {
     protected static final ResourceLocation errorIcon = new ResourceLocation(McMod.MODID, "textures/gui/imgerror.png");
     protected final Font renderer;
     protected Minecraft mc = Minecraft.getInstance();
-    protected int width;
-    protected int height;
     protected int id;
     protected boolean hovered; //Sometimes used by components
     protected boolean visible = true, enabled = true;
     int scrollOffsetX = 0, scrollOffsetY = 0;
-    private int x;
-    private int y;
     private String[] tooltips = new String[0];
     private int assignedPage = -1;
 
@@ -212,6 +208,11 @@ public abstract class GuiComponent extends AbstractWidget {
     }
 
     public abstract void mouseClick(double mouseX, double mouseY, int button);
+
+    @Override
+    public boolean clicked(double mouseX, double mouseY) {
+        return isVisible() && ((mouseX >= getX() && mouseY >= getY() && mouseX < getX() + getWidth() && mouseY < getY() + getComponentHeight()));
+    }
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int state) {

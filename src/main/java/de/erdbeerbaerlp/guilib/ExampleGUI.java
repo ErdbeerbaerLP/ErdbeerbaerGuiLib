@@ -174,9 +174,13 @@ public class ExampleGUI extends ExtendedScreen {
         scrollTextField.setReturnAction(() -> System.out.println(scrollTextField.getText()));
         pikachu.setCallback(() -> {
             //Open an URL
-            openURL("http://pikachu.com", (opened) -> {
-                if (!opened) {
-                    pikachu.hide();
+            openURL("http://pikachu.com");
+        });
+        beeGif.setCallback(() -> {
+            openYesNo("Pet the bee?", "Are you sure you want to pet the bee?", (pet) -> {
+                if (pet) {
+                    beeGif.loadImage("https://static.wikia.nocookie.net/minecraft_gamepedia/images/4/47/Bee_%28angry%29.gif/revision/latest?cb=20200414132748");
+                    beeGif.setCallback(null);
                 }
             });
         });

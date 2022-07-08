@@ -33,7 +33,7 @@ repositories {
         url = 'https://repo.spongepowered.org/maven'
     }
 }
-version = "2.0.0"
+version = "2.0.1"
 group = "de.erdbeerbaerlp.eguilib" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "eguilib"
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)

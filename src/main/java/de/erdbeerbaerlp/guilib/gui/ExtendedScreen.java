@@ -6,10 +6,12 @@ import com.mojang.blaze3d.vertex.*;
 import de.erdbeerbaerlp.guilib.components.GuiComponent;
 import de.erdbeerbaerlp.guilib.components.TextField;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
+import net.minecraft.Util;
 import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
+import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -263,7 +265,7 @@ public abstract class ExtendedScreen extends Screen {
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
         for (GuiComponent comp : components) {
             if (comp.getAssignedPage() != -1) if (comp.getAssignedPage() != currentPage) continue;
-            if (comp.isVisible() && ((mouseX >= comp.getX() && mouseY >= comp.getY() && mouseX < comp.getX() + comp.getWidth() && mouseY < comp.getY() + comp.getComponentHeight()) || comp instanceof TextField))
+            if (comp.clicked(mouseX, mouseY) || comp instanceof TextField)
                 comp.mouseClicked(mouseX, mouseY, mouseButton);
         }
         return true;
@@ -349,14 +351,53 @@ public abstract class ExtendedScreen extends Screen {
     }
 
     /**
-     * Prompts the user to open an url<br>
-     *
-     * @param callback gets called with true if the user opened it, false if user copied or closed it
+     * Prompts the user to open an url
      */
-    public final void openURL(String URL, final BooleanConsumer callback) {
-        confirmCallback = callback;
+    public final void openURL(String URL) {
+        confirmCallback = (b) -> runUrl(b, URL);
         unloadOnClose = false;
         final ConfirmLinkScreen s = new ConfirmLinkScreen(this::confirmed, URL, true);
+        openGui(s);
+    }
+
+    /**
+     * Callback for URL opening
+     *
+     * @param bool
+     * @param URL
+     */
+    private void runUrl(boolean bool, String URL) {
+        if (bool)
+            Util.getPlatform().openUri(URL);
+    }
+
+    /**
+     * Creates a yes/no confirmation screen
+     *
+     * @param title    Title of the confirmation
+     * @param text     Text of the confirmation
+     * @param callback Callback to execute on confirmation
+     */
+    public final void openYesNo(String title, String text, final BooleanConsumer callback) {
+        confirmCallback = callback;
+        unloadOnClose = false;
+        final ConfirmScreen s = new ConfirmScreen(this::confirmed, Component.literal(title), Component.literal(text));
+        openGui(s);
+    }
+
+    /**
+     * Creates a custom confirmation screen
+     *
+     * @param title       Title of the confirmation
+     * @param text        Text of the confirmation
+     * @param trueButton  Text of the button that returns true
+     * @param falseButton Text of the button that returns false
+     * @param callback    Callback to execute on confirmation
+     */
+    public final void openConfirmation(String title, String text, String trueButton, String falseButton, final BooleanConsumer callback) {
+        confirmCallback = callback;
+        unloadOnClose = false;
+        final ConfirmScreen s = new ConfirmScreen(this::confirmed, Component.literal(title), Component.literal(text), Component.literal(trueButton), Component.literal(falseButton));
         openGui(s);
     }
 }
