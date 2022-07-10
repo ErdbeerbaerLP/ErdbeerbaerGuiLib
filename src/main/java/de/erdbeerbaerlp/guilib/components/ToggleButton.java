@@ -5,7 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.gui.GuiUtils;
+import net.minecraftforge.client.gui.ScreenUtils;
 
 import java.awt.*;
 
@@ -146,7 +146,7 @@ public class ToggleButton extends Button {
         if (this.drawType == DrawType.COLORED_LINE || this.drawType == DrawType.BOTH) {
             int col = value ? Color.GREEN.getRGB() : Color.red.getRGB();
             RenderSystem.disableTexture();
-            GuiUtils.drawGradientRect(poseStack.last().pose(), getBlitOffset(), this.getX() + 6, this.getY() + height - 3, this.getX() + this.width - 6, this.getY() + height - 4, col, col);
+            ScreenUtils.drawGradientRect(poseStack.last().pose(), getBlitOffset(), this.getX() + 6, this.getY() + height - 3, this.getX() + this.width - 6, this.getY() + height - 4, col, col);
 
         }
 

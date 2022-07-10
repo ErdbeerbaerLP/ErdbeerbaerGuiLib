@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
-import net.minecraftforge.client.gui.GuiUtils;
+import net.minecraftforge.client.gui.ScreenUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.awt.*;
@@ -263,7 +263,7 @@ public class Image extends GuiComponent {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
         if (!errorTooltip.isEmpty()) {
             final int c = new Color(Color.RED.getRed(), Color.RED.getGreen(), Color.RED.getBlue(), 30).getRGB();
-            GuiUtils.drawGradientRect(poseStack.last().pose(), getBlitOffset(), this.getX(), this.getY(), this.getX() + this.width, this.getY() + height, c, c);
+            ScreenUtils.drawGradientRect(poseStack.last().pose(), getBlitOffset(), this.getX(), this.getY(), this.getX() + this.width, this.getY() + height, c, c);
             RenderSystem.setShaderTexture(0, errorIcon);
             blit(poseStack, getX() + getWidth() / 2 - 8, getY() + getComponentHeight() / 2 - 8, 0, 0, 16, 16, 16, 16);
             return;
@@ -271,7 +271,7 @@ public class Image extends GuiComponent {
         if (imgLoaded) {
             if (image == null) {
                 final int c = new Color(Color.DARK_GRAY.getRed(), Color.DARK_GRAY.getGreen(), Color.DARK_GRAY.getBlue(), 40).getRGB();
-                GuiUtils.drawGradientRect(poseStack.last().pose(), getBlitOffset(), this.getX(), this.getY(), this.getX() + this.width, this.getY() + height, c, c);
+                ScreenUtils.drawGradientRect(poseStack.last().pose(), getBlitOffset(), this.getX(), this.getY(), this.getX() + this.width, this.getY() + height, c, c);
                 return;
             }
             if (loadingGif != null && loadingGif.isAlive()) loadingGif.interrupt();
@@ -286,7 +286,7 @@ public class Image extends GuiComponent {
             }
             if (!loadingGif.isAlive()) loadingGif.start();
             final int c = new Color(Color.DARK_GRAY.getRed(), Color.DARK_GRAY.getGreen(), Color.DARK_GRAY.getBlue(), 40).getRGB();
-            GuiUtils.drawGradientRect(poseStack.last().pose(), getBlitOffset(), this.getX(), this.getY(), this.getX() + this.width, this.getY() + height, c, c);
+            ScreenUtils.drawGradientRect(poseStack.last().pose(), getBlitOffset(), this.getX(), this.getY(), this.getX() + this.width, this.getY() + height, c, c);
             RenderSystem.setShaderTexture(0, mc.getTextureManager().register("loading-gif_" + imageUUID.toString().toLowerCase(), loadingTexture));
             blit(poseStack, getX() + getWidth() / 2 - 16, getY() + getComponentHeight() / 2 - 16, 0, 0, 32, 32, 32, 32);
         }

@@ -3,7 +3,7 @@ package de.erdbeerbaerlp.guilib.components;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.gui.GuiUtils;
+import net.minecraftforge.client.gui.ScreenUtils;
 
 public class CheckBox extends GuiComponent {
     private static final ResourceLocation CHECKBOX_LOCATION = new ResourceLocation("minecraft", "textures/gui/checkbox.png");
@@ -109,7 +109,7 @@ public class CheckBox extends GuiComponent {
         } else if (this.hovered) {
             color = 16777120;
         }
-        GuiUtils.drawContinuousTexturedBox(poseStack, WIDGETS_LOCATION, this.getX(), this.getY(), 0, 46, this.boxWidth, this.height, 200, 20, 2, 3, 2, 2, this.getBlitOffset());
+        ScreenUtils.blitWithBorder(poseStack, WIDGETS_LOCATION, this.getX(), this.getY(), 0, 46, this.boxWidth, this.height, 200, 20, 2, 3, 2, 2, this.getBlitOffset());
         if (this.isChecked)
             drawCenteredString(poseStack, mc.font, "x", this.getX() + this.boxWidth / 2 + 1, this.getY() + 1, 14737632);
 

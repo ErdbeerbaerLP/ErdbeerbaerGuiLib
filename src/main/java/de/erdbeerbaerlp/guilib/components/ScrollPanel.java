@@ -5,7 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.gui.GuiUtils;
+import net.minecraftforge.client.gui.ScreenUtils;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -336,6 +336,6 @@ public class ScrollPanel extends GuiComponent {
     }
 
     protected void drawGradientRect(PoseStack poseStack, int left, int top, int right, int bottom, int color1, int color2) {
-        GuiUtils.drawGradientRect(poseStack.last().pose(), 0, left, top, right, bottom, color1, color2);
+        ScreenUtils.drawGradientRect(poseStack.last().pose(), 0, left, top, right, bottom, color1, color2);
     }
 }
