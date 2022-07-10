@@ -34,7 +34,7 @@ repositories {
     }
 }
 version = "2.0.2"
-group = "de.erdbeerbaerlp.eguilib" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group = "de.erdbeerbaerlp.guilib" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "eguilib"
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
