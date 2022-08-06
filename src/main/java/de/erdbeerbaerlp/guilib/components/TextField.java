@@ -118,7 +118,7 @@ public class TextField extends GuiComponent {
             if (selectedSuggestion < 0) selectedSuggestion = fittingSuggestions.size();
             if (fittingSuggestions.size() < selectedSuggestion) selectedSuggestion = 0;
             if (fittingSuggestions.isEmpty()) return "";
-            return fittingSuggestions.get(selectedSuggestion).replaceAll(getText(), "");
+            return fittingSuggestions.get(selectedSuggestion);
         }
         return "";
     }
@@ -623,7 +623,7 @@ public class TextField extends GuiComponent {
             } else {
                 switch (keyCode) {
                     //Return keys
-                    case 258:setText(this.text + getCurrentSuggestion());
+                    case 257:
                     case 335:
                         this.onReturn();
                         return true;
