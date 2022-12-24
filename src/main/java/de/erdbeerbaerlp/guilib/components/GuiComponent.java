@@ -33,9 +33,6 @@ public abstract class GuiComponent extends AbstractWidget {
         this.height = heightIn;
     }
 
-    @Override
-    public void updateNarration(NarrationElementOutput p_169152_) {
-    }
 
     /**
      * @return can the component have a tooltip?
@@ -113,7 +110,7 @@ public abstract class GuiComponent extends AbstractWidget {
      * @return X position
      */
     public final int getX() {
-        return x + scrollOffsetX;
+        return getX() + scrollOffsetX;
     }
 
     /**
@@ -122,14 +119,14 @@ public abstract class GuiComponent extends AbstractWidget {
      * @param x X position
      */
     public void setX(int x) {
-        this.x = x;
+        this.setX(x);
     }
 
     /**
      * @return Y position
      */
     public final int getY() {
-        return y + scrollOffsetY;
+        return getY() + scrollOffsetY;
     }
 
     /**
@@ -138,7 +135,12 @@ public abstract class GuiComponent extends AbstractWidget {
      * @param y Y position
      */
     public void setY(int y) {
-        this.y = y;
+        this.setY(y);
+    }
+
+    @Override
+    protected void updateWidgetNarration(NarrationElementOutput p_259858_) {
+
     }
 
     /**

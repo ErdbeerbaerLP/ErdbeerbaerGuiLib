@@ -7,7 +7,7 @@ import de.erdbeerbaerlp.guilib.components.GuiComponent;
 import de.erdbeerbaerlp.guilib.components.TextField;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.minecraft.Util;
-import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
@@ -21,6 +21,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ScreenEvent;
+import org.jline.reader.Widget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -145,7 +146,7 @@ public abstract class ExtendedScreen extends Screen {
 
     @Override
     @Deprecated
-    protected final <T extends GuiEventListener & Widget & NarratableEntry> T addRenderableWidget(T buttonIn) {
+    protected final <T extends GuiEventListener & Renderable & NarratableEntry> T addRenderableWidget(T buttonIn) {
         throw new UnsupportedOperationException();
     }
 

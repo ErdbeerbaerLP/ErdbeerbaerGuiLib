@@ -214,6 +214,7 @@ public class Button extends GuiComponent {
         drawCenteredString(poseStack, mc.font, buttonText, bx + mwidth / 2, this.getY() + (this.height - 8) / 2, color);
     }
 
+
     @Override
     public void mouseClick(double mouseX, double mouseY, int mouseButton) {
         playPressSound();
